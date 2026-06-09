@@ -985,9 +985,10 @@ function NoteModal({verse,onSave,onClose}){
 }
 
 function shortGloss(s){
-  if(!s||!S[s])return "";
+  if(!s)return "";
+  if(GLOSS[s])return GLOSS[s].l;
+  if(!S[s])return "";
   const d=S[s].d;
-  // Take up to the first comma or semicolon, max 20 chars
   const cut=d.split(/[,;]/)[0].trim();
   return cut.length>22?cut.slice(0,20)+"…":cut;
 }

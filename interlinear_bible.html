@@ -2211,7 +2211,9 @@ function App(){
   useEffect(()=>{
     setFetchedVerses(null);
     const iDataCheck=(INTERLINEAR[test]||{})[book]||{};
-    if(!iDataCheck[ch]){
+    const preloadedCount=Object.keys(iDataCheck).length;
+    const totalChapters=(BOOKS[test]||{})[book]||1;
+    if(preloadedCount<totalChapters){
       setFetchingInterlinear(true);
       fetchInterlinearBook(test,book).then(data=>{
         if(data&&data.chapters){

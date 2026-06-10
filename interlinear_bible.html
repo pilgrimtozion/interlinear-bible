@@ -2015,14 +2015,29 @@ function TheologyPanel({onClose, onNavigate}){
 // ── Strong's Word Study search ─────────────────────────────────────────────
 function WordStudyResults({strongs, isNT, onNavigate, onClose}){
   const [results,setResults]=useState(null);
+  const [loading,setLoading]=useState(false);
 
-  function runSearch(){
+  async function runSearch(){
+    setLoading(true);
+    // Determine which testaments to fetch based on Strong's prefix
+    const toFetch = strongs.startsWith("G") ? ["NT"] : strongs.startsWith("H") ? ["OT"] : ["NT","OT"];
+    // Fetch all books for relevant testaments, store into INTERLINEAR for searching
+    await Promise.all(toFetch.flatMap(t=>
+      Object.keys(BOOKS[t]||{}).map(async book=>{
+        const data = await fetchInterlinearBook(t, book);
+        if(data&&data.chapters){
+          if(!INTERLINEAR[t][book]) INTERLINEAR[t][book]={};
+          Object.entries(data.chapters).forEach(([ch,verses])=>{
+            const n=parseInt(ch);
+            if(!INTERLINEAR[t][book][n]) INTERLINEAR[t][book][n]=verses;
+          });
+        }
+      })
+    ));
+    // Search all loaded data
     const hits={};
-    const testaments = isNT ? ["NT"] : ["OT"];
-    // Also search both if word shows up in both
     ["NT","OT"].forEach(t=>{
-      const books=INTERLINEAR[t]||{};
-      Object.entries(books).forEach(([bk,chaps])=>{
+      Object.entries(INTERLINEAR[t]||{}).forEach(([bk,chaps])=>{
         Object.entries(chaps).forEach(([ch,verses])=>{
           const vArr=Array.isArray(verses)?verses:Object.values(verses);
           vArr.forEach(verse=>{
@@ -2036,18 +2051,25 @@ function WordStudyResults({strongs, isNT, onNavigate, onClose}){
         });
       });
     });
-    // Deduplicate refs
     Object.values(hits).forEach(h=>{
       const seen=new Set();
       h.refs=h.refs.filter(r=>{const k=r.ch+":"+r.v;if(seen.has(k))return false;seen.add(k);return true;});
     });
     setResults(hits);
+    setLoading(false);
   }
 
-  if(!results) return(
+  if(!results&&!loading) return(
     <button className={"ws-btn"+(isNT?"":" ot")} onClick={runSearch}>
-      📖 Find {strongs} across loaded books
+      📖 Find {strongs} across all books
     </button>
+  );
+
+  if(loading) return(
+    <div className="ws-results">
+      <div className="ws-results-hdr">Searching all books…</div>
+      <div className="ws-hit-none">Fetching scripture data, please wait…</div>
+    </div>
   );
 
   const books=Object.keys(results);
@@ -2056,10 +2078,9 @@ function WordStudyResults({strongs, isNT, onNavigate, onClose}){
     <div className="ws-results">
       <div className="ws-results-hdr">
         {total>0?`${total} occurrence${total>1?"s":""} across ${books.length} book${books.length>1?"s":""}`:
-          `${strongs} not found in loaded books`}
-        {total>0&&<span style={{marginLeft:".5rem",fontSize:".65rem"}}>(navigate to more books to expand)</span>}
+          `${strongs} not found in any book`}
       </div>
-      {total===0&&<div className="ws-hit-none">Navigate to more books to find more occurrences.</div>}
+      {total===0&&<div className="ws-hit-none">This Strong's number was not found.</div>}
       {books.map(bk=>{
         const {test,refs}=results[bk];
         return(

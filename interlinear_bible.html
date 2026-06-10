@@ -2287,8 +2287,11 @@ function App(){
               onSelect={vn=>{setActiveV(vn);setMobileView("interlinear");}}/>
           ))}
           <div className="footer">
-            Left column: World English Bible (WEB, Public Domain) via bible-api.com<br/>
-            Jammin Interlinear App · BSB · {isNT?"SBL Greek NT":"Westminster Leningrad Codex"} · Strong's (Public Domain)
+            <strong style={{color:"var(--text3)"}}>Jammin Interlinear App</strong><br/>
+            English text: <a href="https://ebible.org/eng-web/copyright.htm" target="_blank" rel="noopener" style={{color:"inherit"}}>World English Bible</a> (Public Domain) ·{" "}
+            Interlinear: <a href="https://interlinearbible.com" target="_blank" rel="noopener" style={{color:"inherit"}}>Berean Interlinear Bible</a> (Public Domain) ·{" "}
+            {isNT?"Greek NT: SBL Greek New Testament":"Hebrew OT: Westminster Leningrad Codex"}<br/>
+            Strong&#39;s Hebrew &amp; Greek: <a href="https://github.com/openscriptures/strongs" target="_blank" rel="noopener" style={{color:"inherit"}}>OpenScriptures</a> (CC&#8209;BY 4.0)
           </div>
         </div>
         <div className={"right-col"+(mobileView==="list"?" mob-hide":"")}>

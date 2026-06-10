@@ -4,6 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Berean Interlinear Bible</title>
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f172a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Interlinear">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="description" content="Greek and Hebrew interlinear Bible with Strong's concordance and Septuagint bridge">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
@@ -136,6 +145,68 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:.
 .footer{padding:1rem 0;color:var(--border);font-size:.7rem;text-align:center;border-top:1px solid var(--border);margin-top:.5rem;line-height:1.7}
 .loading{text-align:center;padding:2rem;color:var(--text3);font-size:.85rem}
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+/* ── Mobile tab bar (hidden on desktop) ─────────────────────────────── */
+.mob-tabs{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);z-index:90}
+.mob-tab{flex:1;padding:.65rem .5rem .55rem;border:none;background:transparent;color:var(--text3);font-family:Georgia,serif;font-size:.72rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:color .12s}
+.mob-tab.mob-on{color:var(--nt)}
+.mob-tab.mob-on.mob-ot{color:var(--ot)}
+.mob-tab-icon{font-size:1.25rem;line-height:1}
+
+/* ── Mobile layout (≤640px) ──────────────────────────────────────────── */
+@media(max-width:640px){
+  /* Header — hide dense desktop-only elements */
+  header{padding:.5rem .9rem}
+  .app-subtitle{display:none}
+  .lxx-legend,.badge{display:none}
+  .header-right{gap:.5rem}
+  .t-btn{padding:5px 10px;font-size:.78rem;min-height:36px}
+  .theme-btn{width:36px;height:36px}
+
+  /* Nav bar — stack the two selects */
+  .nav-bar{flex-wrap:wrap;padding:.4rem .75rem;gap:.4rem}
+  .nav-select{flex:1;min-width:0;font-size:.82rem}
+  .hint{display:none}
+  .fetch-badge{margin-left:0}
+
+  /* Main layout — use 100dvh to respect mobile browser chrome */
+  body{overflow:hidden}
+  .main-layout{height:calc(100dvh - 140px)}
+
+  /* One column at a time — left hidden by default, right always shown */
+  .left-col{width:100%;min-width:0;border-right:none;display:none;padding-bottom:56px}
+  .left-col.mob-show{display:block}
+  .right-col{width:100%;padding-bottom:56px}
+  .right-col.mob-hide{display:none}
+
+  /* Show the bottom tab bar on mobile */
+  .mob-tabs{display:flex}
+
+  /* Bigger touch targets for word cells */
+  .wc{padding:9px 5px;min-width:52px}
+  .w-o{font-size:1.08rem}
+
+  /* Strong's panel — bottom sheet instead of right sidebar */
+  .overlay{align-items:flex-end;justify-content:stretch}
+  .sp{width:100%;max-width:100%;height:82vh;border-left:none;border-top:1px solid var(--border);border-radius:16px 16px 0 0;padding-top:.6rem}
+  /* Drag handle pill */
+  .sp::before{content:"";display:block;width:38px;height:4px;background:var(--border);border-radius:2px;margin:0 auto .9rem}
+
+  /* Note modal */
+  .modal{width:96vw}
+
+  /* Note popover — wider on mobile */
+  .note-pop{width:90vw;max-width:320px}
+
+  /* Verse blocks — slightly more breathing room */
+  .verse-block{padding:.85rem .9rem}
+  .v-bsb{font-size:.82rem}
+}
+
+/* Desktop — never show mob tabs */
+@media(min-width:641px){
+  .mob-tabs{display:none!important}
+}
 </style>
 </head>
 <body>
@@ -1278,11 +1349,15 @@ function VerseBlock({verse,isNT,activeV,selKey,onClick,id}){
   );
 }
 
-function LeftVerse({verse,isNT,isActive,note,onAddNote,onDeleteNote,onNavigate}){
+function LeftVerse({verse,isNT,isActive,note,onAddNote,onDeleteNote,onNavigate,onSelect}){
   const [showPop,setShowPop]=useState(false);
   return(
     <div className={"lv-row"+(isActive?(isNT?" active":" active ot"):"")} style={{position:"relative"}}
-         onClick={()=>{const el=document.getElementById("rv-"+verse.v);if(el)el.scrollIntoView({behavior:"smooth",block:"nearest"});}}>
+         onClick={()=>{
+           onSelect&&onSelect(verse.v);
+           const el=document.getElementById("rv-"+verse.v);
+           if(el)el.scrollIntoView({behavior:"smooth",block:"nearest"});
+         }}>
       <div className="lv-header">
         <span className={"lv-num"+(isNT?"":" ot")}>{verse.v}</span>
         <span className="lv-text">
@@ -1367,6 +1442,7 @@ function App(){
   const [addingNote,setAddingNote]=useState(null);
   const [leftVerses,setLeftVerses]=useState([]);
   const [loading,setLoading]=useState(false);
+  const [mobileView,setMobileView]=useState("interlinear"); // "list" | "interlinear"
 
   const isNT=test==="NT";
   function handleNavigate(refStr){
@@ -1463,18 +1539,19 @@ function App(){
         <span className="hint">Click verse to sync · Click word for Strong's · ✦ = note · hover verse for +</span>
       </div>
       <div className="main-layout">
-        <div className="left-col">
+        <div className={"left-col"+(mobileView==="list"?" mob-show":"")}>
           {loading&&<div className="loading">Loading…</div>}
           {leftVerses.map(v=>(
             <LeftVerse key={v.v} verse={v} isNT={isNT} isActive={activeV===v.v}
-              note={getNote(v.v)} onAddNote={vn=>setAddingNote(vn)} onDeleteNote={handleDeleteNote} onNavigate={handleNavigate}/>
+              note={getNote(v.v)} onAddNote={vn=>setAddingNote(vn)} onDeleteNote={handleDeleteNote} onNavigate={handleNavigate}
+              onSelect={vn=>{setActiveV(vn);setMobileView("interlinear");}}/>
           ))}
           <div className="footer">
             Left column: World English Bible (WEB, Public Domain) via bible-api.com<br/>
             Interlinear: BSB · {isNT?"SBL Greek NT":"Westminster Leningrad Codex"} · Strong's (Public Domain)
           </div>
         </div>
-        <div className="right-col">
+        <div className={"right-col"+(mobileView==="list"?" mob-hide":"")}>
           {interlinearVerses
             ?interlinearVerses.map(v=><VerseBlock key={v.v} id={"rv-"+v.v} verse={v} isNT={isNT} activeV={activeV} selKey={sel?sel.key:null} onClick={handleWord}/>)
             :<div className="no-interlinear">
@@ -1488,6 +1565,19 @@ function App(){
           }
         </div>
       </div>
+      {/* Mobile bottom tab bar */}
+      <div className="mob-tabs">
+        <button className={"mob-tab"+(mobileView==="list"?" mob-on"+(isNT?"":" mob-ot"):"")}
+                onClick={()=>setMobileView("list")}>
+          <span className="mob-tab-icon">☰</span>
+          <span>Verses</span>
+        </button>
+        <button className={"mob-tab"+(mobileView==="interlinear"?" mob-on"+(isNT?"":" mob-ot"):"")}
+                onClick={()=>setMobileView("interlinear")}>
+          <span className="mob-tab-icon">{isNT?"α":"א"}</span>
+          <span>Interlinear</span>
+        </button>
+      </div>
       {sel&&<StrongsPanel entry={entry} strongs={sel.word.s} word={sel.word} isNT={isNT} onClose={()=>setSel(null)}/>}
       {addingNote&&<NoteModal verse={addingNote} onSave={data=>handleSaveNote(addingNote,data)} onClose={()=>setAddingNote(null)}/>}
     </div>
@@ -1495,6 +1585,15 @@ function App(){
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App,null));
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/interlinear-bible/service-worker.js')
+      .then(r => console.log('SW registered:', r.scope))
+      .catch(e => console.log('SW registration failed:', e));
+  });
+}
 </script>
 </body>
 </html>

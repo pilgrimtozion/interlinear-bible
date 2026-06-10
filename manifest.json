@@ -1,7 +1,7 @@
 {
-  "name": "Berean Interlinear Bible",
-  "short_name": "Interlinear",
-  "description": "Greek and Hebrew interlinear Bible with Strong's concordance and Septuagint connections",
+  "name": "Jammin Interlinear App",
+  "short_name": "Jammin",
+  "description": "Greek and Hebrew interlinear Bible with full Strong's concordance and Septuagint bridges",
   "start_url": "/interlinear-bible/interlinear_bible.html",
   "scope": "/interlinear-bible/",
   "display": "standalone",
@@ -23,7 +23,11 @@
       "purpose": "any maskable"
     }
   ],
-  "categories": ["education", "books", "religion"],
+  "categories": [
+    "education",
+    "books",
+    "religion"
+  ],
   "shortcuts": [
     {
       "name": "Genesis",

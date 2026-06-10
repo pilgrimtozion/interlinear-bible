@@ -3,16 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Berean Interlinear Bible</title>
+<title>Jammin Interlinear App</title>
 <!-- PWA -->
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0f172a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Interlinear">
+<meta name="apple-mobile-web-app-title" content="Jammin">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
-<meta name="description" content="Greek and Hebrew interlinear Bible with Strong's concordance and Septuagint bridge">
+<meta name="description" content="Greek and Hebrew interlinear Bible with Strong's concordance and Septuagint bridges">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
@@ -379,6 +379,69 @@ const LXX = {
   H6041:{cp:"G4434",lbl:"\u03c0\u03c4\u03c9\u03c7\u03cc\u03c2",note:"Ani (poor, afflicted, humble) is rendered ptōchos in the LXX. The anawim — the humble poor of Israel — are those who trust entirely in God. Blessed are the ptōchoi/poor in spirit (Matt 5:3) — the anawim tradition is fulfilled."},
   H8064:{cp:"G3772",lbl:"\u03bf\u1f50\u03c1\u03b1\u03bd\u03cc\u03c2",note:"Shamayim (heaven, sky) is rendered ouranos in the LXX. Our Father in the shamayim/ouranos (Matt 6:9). The kingdom of ouranos/shamayim is God's sovereign reign coming to earth as it is in heaven."},
   H6663:{cp:"G1344",lbl:"\u03b4\u03b9\u03ba\u03b1\u03b9\u03cc\u03c9",note:"Tsadaq (to be righteous, be vindicated) is rendered dikaioō in the LXX. The servant shall justify/tsadaq/dikaioō many, bearing their iniquities (Isa 53:11). Paul's justification doctrine is rooted directly in this Servant Song."},
+  // ── Additional vocabulary bridges ─────────────────────────────────────────
+  H4325:{cp:"G5204",lbl:"מַיִם",note:"Mayim (water/waters) is rendered hudōr in the LXX. The Spirit hovered over the waters at creation (Gen 1:2); the Red Sea parted; the Jordan was crossed. Jesus offers living water (John 4:10); baptism transforms the chaos water into new creation. In the new world, clear hudōr/mayim flows from the throne (Rev 22:1)."},
+  H784:{cp:"G4442",lbl:"אֵשׁ",note:"Esh (fire) is rendered pyr in the LXX. God appeared to Moses in fire (Exod 3:2); the pillar of fire led Israel; God is a consuming pyr/esh (Deut 4:24; Heb 12:29). The Spirit descended as tongues of pyr/esh at Pentecost (Acts 2:3). John baptizes with water but Jesus with pyr (Matt 3:11)."},
+  H7307:{cp:"G4151",lbl:"רוּחַ",note:"Ruach (wind, breath, spirit) is rendered pneuma in the LXX — one of the most theologically significant bridges in all of Scripture. The ruach/pneuma of God hovered over the waters at creation (Gen 1:2). Nicodemus's puzzlement about being born of pneuma/ruach (John 3:8) plays on this same word: the pneuma/ruach blows where it will."},
+  H3117:{cp:"G2250",lbl:"יוֹם",note:"Yom (day) is rendered hēmera in the LXX. The seven days of creation, the Sabbath day, the Day of the Lord/yom YHWH — yom/hēmera carries enormous theological freight. The Last Day/hēmera (John 6:39–40) looks back to the prophetic Day of the Lord. On the first day of the week/hēmera, resurrection inaugurates a new creation week."},
+  H2416:{cp:"G2198",lbl:"חַי",note:"Chay (living, alive, life) is rendered zaō in the LXX. The living God (El Chay) is a central OT divine title. Jesus is the living bread (zaō) and the resurrection and the life (John 6:51; 11:25). God is the God of the living/zaō (Matt 22:32). As the Father has zaō in himself, so he has granted the Son to have zaō in himself (John 5:26)."},
+  H4194:{cp:"G2288",lbl:"מָוֶת",note:"Mavet (death) is rendered thanatos in the LXX. Death entered through Adam (Rom 5:12). O death/mavet, where is your sting? (Hos 13:14; 1 Cor 15:55). The last enemy to be destroyed is thanatos/mavet (1 Cor 15:26). Jesus holds the keys of death/thanatos and Hades (Rev 1:18) — the conqueror of mavet."},
+  H3820:{cp:"G2588",lbl:"לֵב",note:"Lev (heart, the inner person — intellect, will, and emotion) is rendered kardia in the LXX. In Hebrew thought the heart/lev is the seat of thought, not just feeling. Love the Lord with all your lev/kardia (Deut 6:5; Matt 22:37). God writes his law on the kardia/lev (Jer 31:33; 2 Cor 3:3). God searches the kardia/lev (Jer 17:10; Rev 2:23)."},
+  H5315:{cp:"G5590",lbl:"נֶפֶשׁ",note:"Nephesh (soul, living being, person, self) is rendered psychē in the LXX. Nephesh is not an immortal soul separate from the body but the whole living self, the person. Man became a living nephesh/psychē (Gen 2:7). What will a man give in exchange for his psychē/nephesh? (Matt 16:26). The Servant pours out his nephesh to death (Isa 53:12)."},
+  H1320:{cp:"G4561",lbl:"בָּשָׂר",note:"Basar (flesh, body, all humanity, mortal existence) is rendered sarx in the LXX. All flesh/basar is grass (Isa 40:6). The Word became sarx/basar (John 1:14) — the Incarnation uses basar/sarx to express the full vulnerability and mortality of human life. The spirit is willing but the sarx/basar is weak (Matt 26:41)."},
+  H5869:{cp:"G3788",lbl:"עַיִן",note:"Ayin (eye, spring/fountain) is rendered ophthalmos in the LXX. The lamp of the body is the ophthalmos/ayin (Matt 6:22) — the eye as the spiritual window of the inner person. The wells of water in the wilderness and the Samaritan woman's well connect ayin/eye with ayin/spring, pointing to the living water Jesus offers (John 4:14)."},
+  H3027:{cp:"G5495",lbl:"יָד",note:"Yad (hand, strength, power, authority) is rendered cheir in the LXX. The mighty yad of God in the Exodus (Exod 3:20). The Son of Man sitting at God's right cheir/yad (Ps 110:1; Matt 22:44). No one can snatch from my cheir/yad (John 10:28). The nail scars in Jesus's cheiras identify the risen Lord (John 20:27)."},
+  H251:{cp:"G80",lbl:"אָח",note:"Ach (brother) is rendered adelphos in the LXX. Abraham called Lot his ach (Gen 13:8). The OT concept of brotherhood within Israel's covenant community is widened in the NT: whoever does the will of my Father is my adelphos/ach (Matt 12:50). Go tell my adelphoi/achim (Matt 28:10) — the resurrection creates a new family."},
+  H1:{cp:"G3962",lbl:"אָב",note:"Av (father, ancestor, source) is rendered patēr in the LXX. The God of your avot/fathers (Exod 3:6). God's fatherhood expressed in the Psalms (Ps 89:26; 103:13) reaches its NT fulfillment in Jesus teaching his disciples to pray Abba/patēr (Mark 14:36; Matt 6:9). Jesus speaks of my Father and your Father (John 20:17)."},
+  H1121:{cp:"G5207",lbl:"בֵּן",note:"Ben (son, descendant, member of a community) is rendered huios in the LXX. Son of God in the OT applies to Israel (Exod 4:22; Hos 11:1; Matt 2:15 applies this to Jesus), to the king (Ps 2:7), and to divine beings (Gen 6:2; Job 1:6). Jesus as huios/ben of God fulfills all three. You are my huios/ben; today I have begotten you (Ps 2:7; Heb 1:5)."},
+  H7453:{cp:"G4139",lbl:"רֵעַ",note:"Rea (neighbor, companion, friend) is rendered plēsion in the LXX. Love your rea/plēsion as yourself (Lev 19:18; Matt 22:39) — the second great commandment. The lawyer's question — who is my plēsion/rea? (Luke 10:29) — provokes the Parable of the Good Samaritan, which expands the neighbor's identity beyond ethnic boundaries."},
+  H802:{cp:"G1135",lbl:"אִשָּׁה",note:"Ishah (woman, wife) is rendered gynē in the LXX. The first ishah was taken from ish/man (Gen 2:23). The woman clothed with the sun (Rev 12:1) and the Bride of the Lamb (Rev 19:7) elevate gynē/ishah to cosmic symbol. Jesus addresses his mother as gynē/woman at Cana and Calvary (John 2:4; 19:26)."},
+  H8451:{cp:"G3551",lbl:"תּוֹרָה",note:"Torah (instruction, teaching, law — God's covenant guidance for life) is rendered nomos in the LXX. Torah is not merely legal code but YHWH's total instruction for covenant life. Do not think I came to abolish the nomos/Torah (Matt 5:17). Paul's complex theology of nomos/Torah in Romans and Galatians assumes the LXX rendering."},
+  H4687:{cp:"G1785",lbl:"מִצְוָה",note:"Mitzvah (commandment, divine directive) is rendered entolē in the LXX. Which entolē/mitzvah is greatest? (Matt 22:36). Jesus gives a new entolē — that you love one another as I have loved you (John 13:34). Keeping the entolai/mitzvot of God is the mark of those who know him (1 John 2:3–4)."},
+  H1285:{cp:"G1242",lbl:"בְּרִית",note:"Berit (covenant, binding agreement, treaty sealed in blood) is rendered diathēkē in the LXX. The Abrahamic covenant (Gen 15, 17), the Mosaic covenant (Exod 19–24), the Davidic covenant (2 Sam 7), and the New Covenant (Jer 31:31–34) — berit/diathēkē is the structural spine of all of Scripture. This cup is the new diathēkē/berit in my blood (Luke 22:20)."},
+  H5769:{cp:"G165",lbl:"עוֹלָם",note:"Olam (forever, the distant past or future, the age to come) is rendered aiōn in the LXX. Olam does not mean 'timeless eternity' but 'the long age, the horizon beyond sight.' Everlasting/olam life = aiōnios/olam life = life of the coming age. This present evil aiōn/olam ends; the aiōn/olam to come begins at resurrection."},
+  H4941:{cp:"G2920",lbl:"מִשְׁפָּט",note:"Mishpat (justice, judgment, legal decision, rights of the poor) is rendered krisis in the LXX. Mishpat is one of the OT's great social-justice words: act justly/mishpat (Mic 6:8). God maintains the mishpat/krisis of the oppressed (Ps 103:6). The eschatological krisis — the Last Judgment — is the ultimate mishpat, the final vindication of justice."},
+  H6944:{cp:"G40",lbl:"קֹדֶשׁ",note:"Qodesh (holiness, sacred, set apart for God) is rendered hagios in the LXX. The Holy of Holies/qodesh haqodashim is the innermost sacred space. Holy, holy, holy is the LORD of hosts (Isa 6:3 — qodesh/hagios). The Holy Spirit/Hagios Pneuma (the Spirit of holiness/qodesh) is the divine agent who makes God's people qodesh/hagioi."},
+  H3548:{cp:"G2409",lbl:"כֹּהֵן",note:"Kohen (priest, one who ministers before God) is rendered hiereus in the LXX. The Aaronic/Levitical kohanim mediated between God and Israel. Melchizedek was a kohen/hiereus of God Most High (Gen 14:18; Heb 7). Jesus is the great High Priest/hiereus after the order of Melchizedek, superseding and fulfilling the Levitical priesthood (Heb 4:14; 7:17)."},
+  H2077:{cp:"G2378",lbl:"זֶבַח",note:"Zevach (sacrifice, offering involving slaughter) is rendered thysia in the LXX. I desire hesed/mercy not zevach/thysia (Hos 6:6; Matt 9:13; 12:7) — Jesus quotes the prophetic critique of mere ritual. Present your bodies as a living thysia/zevach (Rom 12:1) — NT worship transforms animal sacrifice into living surrender."},
+  H2403:{cp:"G266",lbl:"חַטָּאת",note:"Chatat (sin; sin offering — the same Hebrew word for both) is rendered hamartia in the LXX. The identity of sin and sin-offering in one word is profound: the remedy is named after the disease. God made Jesus to be hamartia/chatat for us (2 Cor 5:21). Behold the Lamb who takes away the hamartia/chatat of the world (John 1:29)."},
+  H3519:{cp:"G1391",lbl:"כָּבוֹד",note:"Kavod (glory, weighty visible presence, honor) is rendered doxa in the LXX. The kavod YHWH filled the Tabernacle (Exod 40:34–35) and the Temple (1 Kgs 8:11). The Word became flesh and we beheld his doxa/kavod (John 1:14). The doxa/kavod on Moses's face (Exod 34:29–35; 2 Cor 3:7–11). All have sinned and fall short of the doxa/kavod of God (Rom 3:23)."},
+  H7812:{cp:"G4352",lbl:"שָׁחָה",note:"Shachah (to bow down, prostrate oneself in worship) is rendered proskyneō in the LXX. Abraham bowed/shachah before his heavenly visitors (Gen 18:2). All the earth will shachah/proskyneō (Ps 22:27). The Magi came to proskyneō the newborn king (Matt 2:2). Satan offered proskyneō on false terms (Matt 4:9) — shachah/proskyneō belongs to God alone."},
+  H8416:{cp:"G5215",lbl:"תְּהִלָּה",note:"Tehillah (praise, hymn, song of adoration) is rendered hymnos in the LXX. The Book of Psalms is Sefer Tehillim — the Book of Praises. Out of the mouths of infants you have prepared tehillah/praise (Ps 8:2; Matt 21:16 — the children's acclamation in the Temple). Jesus and his disciples sang a hymnos/tehillah before Gethsemane (Matt 26:30)."},
+  H157:{cp:"G25",lbl:"אָהַב",note:"Ahav (to love, be devoted to) is rendered agapaō in the LXX. YHWH's ahav for Israel is covenantal, persistent love — like the love between husband and wife (Hos 1–3). God so agapaō/ahav the world (John 3:16). The great commandment uses agapaō/ahav for both God and neighbor. Agape love is covenant commitment that acts on behalf of the beloved."},
+  H3372:{cp:"G5399",lbl:"יָרֵא",note:"Yare (to fear, revere, stand in awe of) is rendered phobeomai in the LXX. The fear of the Lord/yirat YHWH is the beginning of wisdom (Prov 9:10; Ps 111:10). NT phobeomai/fear of God retains the OT's sense of reverent awe before the Holy One. Fear God and give him glory (Rev 14:7; 1 Pet 1:17)."},
+  H5414:{cp:"G1325",lbl:"נָתַן",note:"Natan (to give, grant, place, allow) is rendered didōmi in the LXX. God natan/didōmi the Torah (Exod 20); the Father gives/didōmi life to the Son (John 5:26). For God so loved the world that he gave/edōken his only Son (John 3:16) — the supreme act of divine natan/didōmi is the gift of the Son himself."},
+  H3045:{cp:"G1097",lbl:"יָדַע",note:"Yada (to know through experience, relational intimacy) is rendered ginōskō in the LXX. Biblical yada is participatory — to know is to be in relationship with. Adam yada/knew Eve (Gen 4:1). Jesus and the Father ginōskō/yada each other mutually (John 10:15). To know God is eternal life (John 17:3). I never ginōskō/yada you (Matt 7:23)."},
+  H7200:{cp:"G3708",lbl:"רָאָה",note:"Ra'ah (to see, perceive, experience) is rendered horaō in the LXX. God ra'ah/saw that it was good (Gen 1:4). YHWH Yireh — the LORD will provide/see (Gen 22:14). Blessed are the pure in heart, for they shall horaō/ra'ah God (Matt 5:8). The one who has seen/horaō me has seen the Father (John 14:9)."},
+  H1980:{cp:"G4198",lbl:"הָלַךְ",note:"Halak (to walk, go, conduct oneself — the OT's primary ethical metaphor) is rendered poreuomai in the LXX. Walk/halak before me and be blameless (Gen 17:1). To walk in God's ways is the standard OT expression for faithful living. Going/poreuomai into all the world to make disciples (Matt 28:19) carries the full OT weight of halak in the ways of the LORD."},
+  H7971:{cp:"G649",lbl:"שָׁלַח",note:"Shalach (to send, dispatch, commission) is rendered apostellō in the LXX — the direct root of apostolos/apostle. The prophets were sent/shalach (Isa 6:8; Jer 1:7). As the Father sent/apostellō me, so I also apostellō you (John 20:21). The apostolic mission is the continuation of YHWH's sending of his servants through all of history."},
+  H2142:{cp:"G3421",lbl:"זָכַר",note:"Zakar (to remember, invoke, mention) is rendered mimnēskomai in the LXX. God's remembering/zakar in the OT is always active — when God remembers, he acts: God remembered/zakar Noah (Gen 8:1), his covenant (Exod 2:24). Do this in mimnēskomai/zakar of me (Luke 22:19) — the Eucharist as active covenant remembrance."},
+  H1288:{cp:"G2127",lbl:"בָּרַךְ",note:"Barak (to bless, to kneel, to confer God's favor) is rendered eulogeō in the LXX. The Aaronic blessing (Num 6:24–26), the blessing of Abraham (Gen 12:3), the blessings at Sinai — barak/eulogeō is how divine favor flows. Blessed/eulogēmenos is the one who comes in the name of the Lord (Ps 118:26; Matt 21:9). God eulogeō/barak us in Christ with every spiritual blessing (Eph 1:3)."},
+  H6419:{cp:"G4336",lbl:"פָּלַל",note:"Palal (to pray, intercede, mediate) is rendered proseuchomai in the LXX. Solomon palal/prayed at the Temple dedication (1 Kgs 8:28–30). Hannah palal and the LORD remembered her (1 Sam 1:10–20). Jesus teaches proseuchomai/palal in secret to the Father (Matt 6:6). The Spirit himself intercedes for us with groanings too deep for words (Rom 8:26–27)."},
+  H2451:{cp:"G4678",lbl:"חָכְמָה",note:"Chokmah (wisdom — practical, relational, skill-based understanding of God's order) is rendered sophia in the LXX. The fear of the Lord is the beginning of chokmah/sophia (Prov 9:10). Wisdom/chokmah was with God at creation, a master craftsman (Prov 8:22–31). Christ is identified with the sophia/chokmah of God (1 Cor 1:24, 30; Col 2:3) — the embodied Wisdom of creation."},
+  H571:{cp:"G225",lbl:"אֱמֶת",note:"Emet (truth, faithfulness, reliability, dependability) is rendered alētheia in the LXX. Emet is relational — it describes what can be trusted and depended upon. God's emet/alētheia is paired with chesed/lovingkindness (Ps 89:14). Full of grace and alētheia/emet (John 1:14). I am the alētheia (John 14:6) — Jesus embodies YHWH's covenant faithfulness."},
+  H7965:{cp:"G1515",lbl:"שָׁלוֹם",note:"Shalom (peace, wholeness, wellbeing, completeness, right relationships) is rendered eirēnē in the LXX. Shalom is far richer than absence of conflict — it is the positive flourishing of all relationships in their proper order. The Prince of Shalom/eirēnē (Isa 9:6). My eirēnē/shalom I give you — not as the world gives (John 14:27)."},
+  H3444:{cp:"G4991",lbl:"יְשׁוּעָה",note:"Yeshuah (salvation, deliverance, victory) is rendered sōtēria in the LXX. My sōtēria/yeshuah is near (Isa 56:1). Simeon saw the sōtēria/yeshuah of God in the infant Jesus (Luke 2:30). The name Yeshua (Jesus) means YHWH saves/delivers — the bearer of sōtēria/yeshuah embodies salvation in his very name."},
+  H5030:{cp:"G4396",lbl:"נָבִיא",note:"Navi (prophet, spokesman called to speak for God) is rendered prophētēs in the LXX. The navi proclaims divine words, not merely predicts the future. Moses was the prototype navi (Deut 18:15–18; Acts 3:22 applies this to Jesus). John the Baptist was the last of the OT neviim/prophētai — the hinge between the two testaments."},
+  H1697:{cp:"G3056",lbl:"דָּבָר",note:"Davar (word, thing, matter, event — divine speech that creates reality) is rendered logos in the LXX. God's davar/logos goes out and does not return empty (Isa 55:11). The heavens were made by the logos/davar of the LORD (Ps 33:6). John 1:1 — In the beginning was the Logos/davar — applies the creative davar of Genesis 1 to the pre-existent Son."},
+  H4428:{cp:"G935",lbl:"מֶלֶךְ",note:"Melek (king) is rendered basileus in the LXX. YHWH is Melek/basileus over all the earth (Ps 47:7). The messianic king of Ps 2, 72, and 110 is the direct background for Jesus as basileus/melek. Pilate's inscription — Jesus of Nazareth, basileus/melek of the Jews (John 19:19) — identifies the crucified one as the long-awaited Davidic king."},
+  H4467:{cp:"G932",lbl:"מַמְלָכָה",note:"Mamlakah (kingdom, reign, sovereign rule) is rendered basileia in the LXX. The basileia tou Theou/Kingdom of God is the central message of Jesus's ministry, rooted in the OT mamlakah — YHWH's sovereign rule over all nations. The Son of Man receives a mamlakah/basileia that will never end (Dan 7:14; Luke 1:33; Rev 11:15)."},
+  H5650:{cp:"G1401",lbl:"עֶבֶד",note:"Eved (servant, slave, worshiper, devotee of YHWH) is rendered doulos in the LXX. The great Servant Songs of Isaiah (Isa 42, 49, 50, 52–53) use eved/doulos for the coming Servant of YHWH who suffers redemptively. Jesus took the form of a doulos/eved (Phil 2:7), explicitly fulfilling the Servant who pours out his nephesh (Isa 53:12)."},
+  H4397:{cp:"G32",lbl:"מַלְאָךְ",note:"Malak (messenger, angel, envoy) is rendered angelos in the LXX. The Malak YHWH — the Angel of the Lord — appears as a divine-human figure throughout the OT: to Hagar (Gen 16), Abraham (Gen 22), Moses at the burning bush (Exod 3), and Gideon (Judg 6). Many scholars identify the Malak YHWH as a pre-incarnate appearance of the Son."},
+  H2022:{cp:"G3735",lbl:"הַר",note:"Har (mountain, hill, heights) is rendered oros in the LXX. Sinai/Horeb (the mountain of God), Zion (the holy mountain), the Mount of Olives — mountains are places of divine encounter and covenant-making. Jesus taught on a mountain/oros (Matt 5:1), was transfigured on an oros (Matt 17:1), and will return to the Mount of Olives (Zech 14:4; Acts 1:11–12)."},
+  H5892:{cp:"G4172",lbl:"עִיר",note:"Ir (city, inhabited place) is rendered polis in the LXX. The City of David, the Holy City/polis (Jerusalem), the city of God (Ps 46:4) — the OT ir/polis reaches its eschatological fulfillment in the New Jerusalem, the holy polis coming down from heaven (Rev 21:2). We seek the polis/ir to come (Heb 13:14)."},
+  H3220:{cp:"G2281",lbl:"יָם",note:"Yam (sea, the chaotic waters) is rendered thalassa in the LXX. The sea/yam symbolizes chaos and the enemies of God (Ps 74:13–14). God controls the yam/thalassa — he divided the Red Sea, calmed the storm (Ps 107:29; Matt 8:26). In the new creation there is no more thalassa/yam (Rev 21:1) — chaos is finally overcome."},
+  H4057:{cp:"G2048",lbl:"מִדְבָּר",note:"Midbar (desert, wilderness, uninhabited land) is rendered erēmos in the LXX. Israel's 40-year wilderness/midbar wandering, Elijah's erēmos flight, John the Baptist's voice in the erēmos/midbar (Isa 40:3; Matt 3:1–3), and Jesus's 40-day testing in the erēmos (Matt 4:1) — the erēmos/midbar is the archetypal place of divine testing and encounter."},
+  H430:{cp:"G2316",lbl:"אֱלֹהִים",note:"Elohim (God, gods, divine beings) is rendered theos in the LXX. The plural form used with singular verbs points to a plurality-in-unity that the NT identifies as the Trinity. Every NT use of theos inherits the full OT weight of Elohim — Creator of Genesis 1, Covenant God of Sinai, Redeemer of the Exodus."},
+  H3068:{cp:"G2962",lbl:"יְהוָה",note:"YHWH (the LORD, the I AM, the self-existent covenant God) is rendered Kyrios in the LXX — the most consequential single translation decision in the entire Bible. Every NT quotation of 'the Lord' from the OT is YHWH/Kyrios. Paul applies OT Kyrios texts directly to Jesus (Phil 2:9–11; Joel 2:32 in Rom 10:13), making an unmistakable claim about his divine identity."},
+  H8034:{cp:"G3686",lbl:"שֵׁם",note:"Shem (name, renown, character, reputation) is rendered onoma in the LXX. The Name of YHWH is a strong tower (Prov 18:10). Hallowed be your onoma/shem (Matt 6:9). Baptizing in the onoma/shem of the Father, Son, and Holy Spirit (Matt 28:19) — the Name embodies the full divine character and invokes the divine presence."},
+  H4899:{cp:"G5547",lbl:"מָשִׁיחַ",note:"Mashiach (anointed one — kings, priests, and prophets anointed for divine service) is rendered Christos in the LXX. The messianic expectation built on Ps 2:2, Dan 9:25–26, and Isa 61:1 finds its fulfillment in Jesus the Christos/Mashiach. Peter's confession — You are the Christos (Matt 16:16) — is the hinge of the Gospels."},
+  H6726:{cp:"G4622",lbl:"צִיּוֹן",note:"Tsiyon (Zion — the hill of Jerusalem, city of David, eschatological holy mountain) is transliterated Siōn in the LXX. Behold, I lay in Tsiyon/Siōn a cornerstone (Isa 28:16; Rom 9:33; 1 Pet 2:6). You have come to Mount Siōn/Tsiyon, the heavenly Jerusalem (Heb 12:22). The New Jerusalem/Siōn is the final reality (Rev 14:1)."},
+  H3478:{cp:"G2474",lbl:"יִשְׂרָאֵל",note:"Yisrael (Israel — he who strives with God, or God strives) is transliterated Israēl in the LXX. Named at the Jabbok wrestling match (Gen 32:28), Yisrael/Israēl is both patriarch Jacob and the covenant people. Paul's extended reflection in Rom 9–11 wrestles with the relationship between ethnic Israēl and the community of faith."},
+  H6310:{cp:"G4750",lbl:"פֶּה",note:"Peh (mouth, speech, opening) is rendered stoma in the LXX. Man shall not live by bread alone but by every word from the peh/stoma of God (Deut 8:3; Matt 4:4). The two-edged sword coming from the stoma/peh in Revelation (Rev 1:16; 19:15) echoes the sharp word of God's mouth in the prophets."},
+  H5104:{cp:"G4215",lbl:"נָהָר",note:"Nahar (river, stream) is rendered potamos in the LXX. The four rivers of Eden (Gen 2:10–14), the Jordan river crossing, the river of fire before the Ancient of Days (Dan 7:10) — rivers mark key biblical thresholds. The river of the water of life (Rev 22:1) returns to the nahar/potamos of Eden. The Spirit flows like nahar/potamos (John 7:38)."},
+  H5046:{cp:"G312",lbl:"נָגַד",note:"Nagad (to declare, make known, tell, report) is rendered anangellō in the LXX. The heavens declare/nagad the glory of God (Ps 19:1). I have not concealed your chesed/alētheia — I have declared/nagad (Ps 40:10). I have made known/nagad to you everything I heard from my Father (John 15:15)."},
+  H376:{cp:"G435",lbl:"אִישׁ",note:"Ish (man, husband, each one) is rendered anēr in the LXX. Adam called his wife ishah because she was taken from ish/man (Gen 2:23). The ish/anēr as husband (Eph 5:25 inherits the Genesis marriage theology) and as a full human individual. The anēr of one woman — the NT qualification for church leaders (1 Tim 3:2) — assumes the OT covenantal context."},
 
 };
 
@@ -1309,14 +1372,18 @@ function NoteModal({verse,onSave,onClose}){
   );
 }
 
+// Lazy-loaded Strong's dictionary cache
+const _SD = {}; // { G: {G2316:{l,t,d,k},...}|null, H: {...}|null }
+
 function shortGloss(s){
   if(!s)return "";
   if(GLOSS[s])return GLOSS[s].l;
-  if(!S[s])return "";
-  const d=S[s].d;
-  if(!d)return S[s].l||"";
-  const cut=d.split(/[,;]/)[0].trim();
-  return cut.length>22?cut.slice(0,20)+"…":cut;
+  const loc=S[s];
+  if(loc){const d=loc.d;if(!d)return loc.l||"";const cut=d.split(/[,;]/)[0].trim();return cut.length>22?cut.slice(0,20)+"…":cut;}
+  // Use lazy-loaded dict if already cached
+  const kind=s[0];
+  if(_SD[kind]&&_SD[kind][s]){const e=_SD[kind][s];const d=e.d||e.k||"";if(!d)return e.l||"";const cut=d.split(/[,;]/)[0].trim();return cut.length>22?cut.slice(0,20)+"…":cut;}
+  return "";
 }
 
 function WordCell({word,vNum,isNT,selKey,onClick}){
@@ -1372,7 +1439,22 @@ function LeftVerse({verse,isNT,isActive,note,onAddNote,onDeleteNote,onNavigate,o
 }
 
 function StrongsPanel({entry,strongs,word,isNT,onClose}){
-  if(!entry&&!word)return null;
+  const [sdEntry,setSdEntry]=useState(null);
+  const [sdLoading,setSdLoading]=useState(false);
+
+  useEffect(()=>{
+    if(entry||!strongs){setSdEntry(null);return;}
+    const kind=strongs[0]; // 'G' or 'H'
+    if(_SD[kind]){setSdEntry(_SD[kind][strongs]||null);return;}
+    setSdLoading(true);
+    fetch('/interlinear-bible/data/strongs_'+kind.toLowerCase()+'.json')
+      .then(r=>r.json())
+      .then(data=>{_SD[kind]=data;setSdEntry(data[strongs]||null);setSdLoading(false);})
+      .catch(()=>setSdLoading(false));
+  },[strongs,entry]);
+
+  if(!entry&&!word&&!strongs)return null;
+  const eff=entry||sdEntry;
   const heb=strongs&&strongs[0]==="H";
   const bridge=LXX[strongs];
   return(
@@ -1380,15 +1462,18 @@ function StrongsPanel({entry,strongs,word,isNT,onClose}){
       <div className="sp" onClick={e=>e.stopPropagation()}>
         <button className="close-btn" onClick={onClose}>×</button>
         {strongs&&<div className={"sp-num"+(isNT?"":" ot")}>{strongs}</div>}
-        <div className={"sp-lemma"+(heb?" heb":"")}>{entry?entry.l:(word&&word.o)||""}</div>
-        <div className="sp-tr">{entry?entry.t:(word&&word.t)||""}</div>
-        {entry&&<span className="sp-pos">{entry.p}</span>}
-        {entry&&<p className="sp-def">{entry.d}</p>}
-        {!entry&&strongs&&GLOSS[strongs]&&<p className="sp-def">{GLOSS[strongs].l}</p>}
-        {!entry&&(!strongs||!GLOSS[strongs])&&<p className="sp-def" style={{color:"var(--text3)",fontSize:".82rem"}}>No lexical data available for this word.</p>}
+        <div className={"sp-lemma"+(heb?" heb":"")}>{eff?eff.l:(word&&word.o)||""}</div>
+        <div className="sp-tr">{eff?eff.t:(word&&word.t)||""}</div>
+        {eff&&eff.p&&<span className="sp-pos">{eff.p}</span>}
+        {eff&&eff.d&&<p className="sp-def">{eff.d}</p>}
+        {eff&&eff.k&&!eff.p&&<p className="sp-def" style={{fontSize:".82rem",color:"var(--text3)",marginTop:".2rem"}}><em>KJV:</em> {eff.k}</p>}
+        {!eff&&sdLoading&&<p className="sp-def" style={{color:"var(--text3)",fontSize:".82rem",fontStyle:"italic"}}>Loading definition…</p>}
+        {!eff&&!sdLoading&&strongs&&GLOSS[strongs]&&<p className="sp-def">{GLOSS[strongs].l}</p>}
+        {!eff&&!sdLoading&&(!strongs||!GLOSS[strongs])&&<p className="sp-def" style={{color:"var(--text3)",fontSize:".82rem"}}>No lexical data available for this word.</p>}
         {bridge&&<div className="lxx-bridge">
-          <div className="lxx-title">⧁ Septuagint Bridge</div>
-          <div className="lxx-pair"><span className="lxx-word">{bridge.lbl}</span><span className="lxx-code">{bridge.cp}</span></div>
+          <div className="lxx-title">{heb?"⧁ LXX Greek Translation":"⧁ Hebrew Background (LXX)"}</div>
+          {heb&&<p style={{fontSize:".7rem",color:"var(--text3)",margin:"-.2rem 0 .4rem"}}>In the Septuagint, this Hebrew word is translated:</p>}
+          <div className="lxx-pair"><span className={"lxx-word"+(heb?"":" heb")}>{bridge.lbl}</span><span className="lxx-code">{bridge.cp}</span></div>
           <p className="lxx-note">{bridge.note}</p>
         </div>}
       </div>
@@ -1469,6 +1554,16 @@ function App(){
 
   useEffect(()=>{document.body.className=dark?"":"light";},[dark]);
 
+  // Preload Strong's dict in background when testament changes
+  useEffect(()=>{
+    const kind=isNT?"G":"H";
+    if(_SD[kind])return;
+    fetch('/interlinear-bible/data/strongs_'+kind.toLowerCase()+'.json')
+      .then(r=>r.json())
+      .then(data=>{_SD[kind]=data;})
+      .catch(()=>{});
+  },[isNT]);
+
   useEffect(()=>{
     setFetchedVerses(null);
     const iDataCheck=(INTERLINEAR[test]||{})[book]||{};
@@ -1514,7 +1609,7 @@ function App(){
     <div>
       <header>
         <div>
-          <div className="app-title">Berean Interlinear Bible</div>
+          <div className="app-title">Jammin Interlinear App</div>
           <div className="app-subtitle">BSB · Greek NT · Hebrew OT · Strong's · LXX Bridges</div>
         </div>
         <div className="header-right">
@@ -1548,7 +1643,7 @@ function App(){
           ))}
           <div className="footer">
             Left column: World English Bible (WEB, Public Domain) via bible-api.com<br/>
-            Interlinear: BSB · {isNT?"SBL Greek NT":"Westminster Leningrad Codex"} · Strong's (Public Domain)
+            Jammin Interlinear App · BSB · {isNT?"SBL Greek NT":"Westminster Leningrad Codex"} · Strong's (Public Domain)
           </div>
         </div>
         <div className={"right-col"+(mobileView==="list"?" mob-hide":"")}>

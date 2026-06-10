@@ -2072,7 +2072,9 @@ function WordStudyResults({strongs, isNT, onNavigate, onClose}){
     </div>
   );
 
-  const books=Object.keys(results);
+  const _bookOrder=[...Object.keys(BOOKS.NT||{}),...Object.keys(BOOKS.OT||{})];
+  const _bookIdx=Object.fromEntries(_bookOrder.map((b,i)=>[b,i]));
+  const books=Object.keys(results).sort((a,b)=>(_bookIdx[a]??999)-(_bookIdx[b]??999));
   const total=books.reduce((s,b)=>s+results[b].refs.length,0);
   return(
     <div className="ws-results">

@@ -207,6 +207,65 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:.
 @media(min-width:641px){
   .mob-tabs{display:none!important}
 }
+
+/* ── Theological Arc Navigator ────────────────────────────────────── */
+.theo-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:300;display:flex;align-items:flex-end;justify-content:center}
+@media(min-width:641px){.theo-overlay{align-items:center}}
+.theo-panel{background:var(--surface);width:100%;max-width:780px;max-height:92vh;border-radius:16px 16px 0 0;display:flex;flex-direction:column;overflow:hidden}
+@media(min-width:641px){.theo-panel{border-radius:12px;max-height:88vh}}
+.theo-header{display:flex;align-items:center;gap:.7rem;padding:1rem 1.2rem .8rem;border-bottom:1px solid var(--border);flex-shrink:0}
+.theo-back{background:none;border:1px solid var(--border);color:var(--text2);width:30px;height:30px;border-radius:6px;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center}
+.theo-back:hover{background:var(--surface2)}
+.theo-title{font-size:1rem;font-weight:700;flex:1}
+.theo-close{background:none;border:none;color:var(--text3);font-size:1.4rem;cursor:pointer;line-height:1;padding:0 .2rem}
+.theo-body{overflow-y:auto;flex:1;padding:1rem 1.2rem 1.5rem}
+/* Topic grid */
+.topic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.65rem}
+.topic-card{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:.75rem .9rem;cursor:pointer;transition:all .15s;text-align:left}
+.topic-card:hover{border-color:var(--nt);background:var(--nt-bg)}
+.topic-card.ot:hover{border-color:var(--ot);background:var(--ot-bg)}
+.topic-icon{font-size:1.4rem;display:block;margin-bottom:.3rem}
+.topic-name{font-size:.82rem;font-weight:700;color:var(--text);line-height:1.25}
+.topic-count{font-size:.68rem;color:var(--text3);margin-top:.15rem}
+/* Arc view */
+.arc-summary{font-size:.84rem;color:var(--text2);line-height:1.65;margin-bottom:1.1rem;padding:.75rem 1rem;background:var(--surface2);border-radius:8px;border-left:3px solid var(--lxx)}
+.arc-bridge{display:flex;align-items:center;gap:.6rem;margin-bottom:1.1rem;flex-wrap:wrap}
+.arc-bridge-lbl{font-size:.7rem;color:var(--text3);font-style:italic}
+.arc-bridge-pair{display:flex;align-items:center;gap:.4rem;background:var(--lxx-bg);border:1px solid var(--lxx-border);border-radius:6px;padding:.25rem .65rem}
+.arc-bridge-hw{font-size:1rem;color:var(--ot-light);direction:rtl}
+.arc-bridge-gw{font-size:.95rem;color:var(--nt-light)}
+.arc-bridge-arr{color:var(--lxx);font-size:.9rem}
+.arc-section{margin-bottom:1.1rem}
+.arc-phase-label{font-size:.68rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:.25rem .75rem;border-radius:4px;display:inline-block;margin-bottom:.55rem}
+.arc-phase-label.seed{background:var(--ot-bg);color:var(--ot-light)}
+.arc-phase-label.promise{background:var(--lxx-bg);color:var(--lxx)}
+.arc-phase-label.fruit{background:var(--nt-bg);color:var(--nt-light)}
+.arc-verse{display:flex;align-items:flex-start;gap:.55rem;padding:.55rem .7rem;border-radius:7px;cursor:pointer;transition:background .12s;border:1px solid transparent;margin-bottom:.3rem}
+.arc-verse:hover{background:var(--surface2);border-color:var(--border)}
+.arc-verse-ref{font-size:.72rem;font-weight:700;min-width:90px;flex-shrink:0;padding-top:1px}
+.arc-verse-ref.ot{color:var(--ot)}
+.arc-verse-ref.nt{color:var(--nt)}
+.arc-verse-label{font-size:.8rem;color:var(--text2);line-height:1.5}
+.arc-strongs{font-size:.62rem;font-family:"Courier New",monospace;color:var(--text3);margin-top:2px}
+/* Topics button */
+.topics-btn{background:var(--bg);border:1px solid var(--border);color:var(--text2);padding:5px 13px;border-radius:16px;cursor:pointer;font-size:.8rem;font-family:Georgia,serif;transition:all .15s;display:flex;align-items:center;gap:.3rem;white-space:nowrap}
+.topics-btn:hover{border-color:var(--lxx);color:var(--lxx)}
+/* ── Strong's Word Study ────────────────────────────────────────────── */
+.ws-btn{width:100%;margin-top:.8rem;padding:.55rem;background:var(--surface2);border:1px solid var(--border);color:var(--text2);border-radius:7px;cursor:pointer;font-family:Georgia,serif;font-size:.8rem;transition:all .15s}
+.ws-btn:hover{border-color:var(--nt);color:var(--nt)}
+.ws-btn.ot:hover{border-color:var(--ot);color:var(--ot)}
+.ws-results{margin-top:.85rem;border-top:1px solid var(--border);padding-top:.85rem}
+.ws-results-hdr{font-size:.7rem;color:var(--text3);margin-bottom:.65rem}
+.ws-book-group{margin-bottom:.7rem}
+.ws-book-name{font-size:.72rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.3rem}
+.ws-hit{display:flex;align-items:baseline;gap:.5rem;padding:.3rem .5rem;border-radius:5px;cursor:pointer;transition:background .1s}
+.ws-hit:hover{background:var(--surface2)}
+.ws-hit-ref{font-size:.75rem;font-weight:700;min-width:60px;flex-shrink:0}
+.ws-hit-ref.nt{color:var(--nt)}
+.ws-hit-ref.ot{color:var(--ot)}
+.ws-hit-word{font-size:.82rem;color:var(--text)}
+.ws-hit-none{font-size:.8rem;color:var(--text3);font-style:italic;padding:.4rem 0}
+
 </style>
 </head>
 <body>
@@ -443,6 +502,440 @@ const LXX = {
   H5046:{cp:"G312",lbl:"נָגַד",note:"Nagad (to declare, make known, tell, report) is rendered anangellō in the LXX. The heavens declare/nagad the glory of God (Ps 19:1). I have not concealed your chesed/alētheia — I have declared/nagad (Ps 40:10). I have made known/nagad to you everything I heard from my Father (John 15:15)."},
   H376:{cp:"G435",lbl:"אִישׁ",note:"Ish (man, husband, each one) is rendered anēr in the LXX. Adam called his wife ishah because she was taken from ish/man (Gen 2:23). The ish/anēr as husband (Eph 5:25 inherits the Genesis marriage theology) and as a full human individual. The anēr of one woman — the NT qualification for church leaders (1 Tim 3:2) — assumes the OT covenantal context."},
 
+};
+
+const THEO_ARCS = {
+  "Redemption": {
+    icon: "⛓",
+    key_h: "H1350", key_g: "G629",
+    h_word: "גָּאַל", g_word: "ἀπολύτρωσις",
+    h_trans: "ga'al", g_trans: "apolytrōsis",
+    summary: "From the kinsman-redeemer buying back family land to Christ's blood ransoming humanity — the arc of redemption spans every major covenant.",
+    verses: [
+      {test:"OT",book:"Exodus",ch:6,v:6,s:"H1350",phase:"seed",label:"YHWH's first redemption declaration: 'I will redeem you with an outstretched arm'"},
+      {test:"OT",book:"Leviticus",ch:25,v:25,s:"H1350",phase:"seed",label:"The kinsman-redeemer law: a blood relative restores lost family inheritance"},
+      {test:"OT",book:"Ruth",ch:4,v:4,s:"H1350",phase:"seed",label:"Boaz the go'el: the kinsman-redeemer who buys back Naomi's land and marries Ruth"},
+      {test:"OT",book:"Job",ch:19,v:25,s:"H1350",phase:"seed",label:"'I know that my Redeemer lives' — Job's confession of a living go'el"},
+      {test:"OT",book:"Psalms",ch:130,v:7,s:"H6299",phase:"seed",label:"'With him is full redemption; he will redeem Israel from all iniquities'"},
+      {test:"OT",book:"Isaiah",ch:41,v:14,s:"H1350",phase:"promise",label:"'Your Redeemer is the Holy One of Israel' — God himself is the go'el"},
+      {test:"OT",book:"Isaiah",ch:44,v:22,s:"H1350",phase:"promise",label:"'Return to me, for I have redeemed you' — redemption as ground for repentance"},
+      {test:"OT",book:"Isaiah",ch:52,v:3,s:"H1350",phase:"promise",label:"'You were sold for nothing and without money you will be redeemed'"},
+      {test:"OT",book:"Isaiah",ch:59,v:20,s:"H1350",phase:"promise",label:"'The Redeemer will come to Zion' — the messianic go'el"},
+      {test:"NT",book:"Luke",ch:1,v:68,s:"G3084",phase:"fruit",label:"Zechariah: 'Blessed be the Lord God of Israel, for he has visited and redeemed his people'"},
+      {test:"NT",book:"Galatians",ch:3,v:13,s:"G1805",phase:"fruit",label:"'Christ redeemed us from the curse of the law, becoming a curse for us'"},
+      {test:"NT",book:"Ephesians",ch:1,v:7,s:"G629",phase:"fruit",label:"'In him we have redemption through his blood, the forgiveness of trespasses'"},
+      {test:"NT",book:"Hebrews",ch:9,v:12,s:"G3085",phase:"fruit",label:"'He entered once for all into the holy places, securing an eternal redemption'"},
+      {test:"NT",book:"1 Peter",ch:1,v:18,s:"G3084",phase:"fruit",label:"'Redeemed not with silver or gold but with the precious blood of Christ'"},
+      {test:"NT",book:"Revelation",ch:5,v:9,s:"G59",phase:"fruit",label:"'With your blood you purchased people for God from every tribe and language'"},
+    ]
+  },
+  "Atonement": {
+    icon: "🩸",
+    key_h: "H3722", key_g: "G2435",
+    h_word: "כָּפַר", g_word: "ἱλαστήριον",
+    h_trans: "kapar", g_trans: "hilastērion",
+    summary: "Kapar (to cover, atone) and the mercy seat where blood was sprinkled — the OT system points to Christ as the final hilastērion.",
+    verses: [
+      {test:"OT",book:"Exodus",ch:30,v:10,s:"H3722",phase:"seed",label:"Annual atonement on the altar horns with blood on the Day of Atonement"},
+      {test:"OT",book:"Leviticus",ch:16,v:30,s:"H3722",phase:"seed",label:"Yom Kippur: 'On this day atonement will be made for you to cleanse you'"},
+      {test:"OT",book:"Leviticus",ch:17,v:11,s:"H3722",phase:"seed",label:"The principle: 'It is the blood that makes atonement by the life'"},
+      {test:"OT",book:"Psalms",ch:32,v:1,s:"H3722",phase:"seed",label:"'Blessed is the one whose transgression is forgiven, whose sin is covered/kaphar'"},
+      {test:"OT",book:"Psalms",ch:65,v:3,s:"H3722",phase:"seed",label:"'When iniquities prevail against me, you atone/kapar for our transgressions'"},
+      {test:"OT",book:"Isaiah",ch:53,v:10,s:"H817",phase:"promise",label:"'His soul as a guilt offering/asham — he will bear their iniquities'"},
+      {test:"OT",book:"Daniel",ch:9,v:24,s:"H3722",phase:"promise",label:"Seventy weeks decreed 'to make atonement/kapar for iniquity'"},
+      {test:"OT",book:"Zechariah",ch:13,v:1,s:"H2403",phase:"promise",label:"'A fountain opened for the house of David for sin and for uncleanness'"},
+      {test:"NT",book:"Romans",ch:3,v:25,s:"G2435",phase:"fruit",label:"'God put forward Christ as a hilastērion/mercy seat through faith in his blood'"},
+      {test:"NT",book:"Hebrews",ch:2,v:17,s:"G2433",phase:"fruit",label:"'To make propitiation/hilaskomai for the sins of the people'"},
+      {test:"NT",book:"Hebrews",ch:9,v:5,s:"G2435",phase:"fruit",label:"'Above the ark the cherubim of glory overshadowing the hilastērion/mercy seat'"},
+      {test:"NT",book:"1 John",ch:2,v:2,s:"G2434",phase:"fruit",label:"'He is the propitiation/hilasmos for our sins — and for the whole world'"},
+      {test:"NT",book:"1 John",ch:4,v:10,s:"G2434",phase:"fruit",label:"'God loved us and sent his Son to be the hilasmos/propitiation for our sins'"},
+    ]
+  },
+  "Covenant": {
+    icon: "🤝",
+    key_h: "H1285", key_g: "G1242",
+    h_word: "בְּרִית", g_word: "διαθήκη",
+    h_trans: "berit", g_trans: "diathēkē",
+    summary: "The berit/diathēkē is the spine of all Scripture — from Noah's rainbow to the New Covenant sealed in Christ's blood.",
+    verses: [
+      {test:"OT",book:"Genesis",ch:9,v:9,s:"H1285",phase:"seed",label:"The Noahic covenant: God's unconditional promise to all creation with a rainbow sign"},
+      {test:"OT",book:"Genesis",ch:15,v:18,s:"H1285",phase:"seed",label:"The Abrahamic covenant: God passes through the covenant pieces alone — unconditional"},
+      {test:"OT",book:"Exodus",ch:24,v:8,s:"H1285",phase:"seed",label:"'The blood of the covenant/dam habrit' — Moses seals the Sinai covenant with blood"},
+      {test:"OT",book:"2 Samuel",ch:7,v:12,s:"H1285",phase:"seed",label:"The Davidic covenant: 'I will establish the throne of his kingdom forever'"},
+      {test:"OT",book:"Psalms",ch:89,v:3,s:"H1285",phase:"seed",label:"'I have made a covenant with my chosen one; I have sworn to David my servant'"},
+      {test:"OT",book:"Isaiah",ch:42,v:6,s:"H1285",phase:"promise",label:"The Servant is given 'as a covenant to the people, a light to the nations'"},
+      {test:"OT",book:"Jeremiah",ch:31,v:31,s:"H1285",phase:"promise",label:"'I will make a new covenant/berit — not like the covenant I made at Sinai'"},
+      {test:"OT",book:"Ezekiel",ch:36,v:26,s:"H1285",phase:"promise",label:"'I will give you a new heart and a new spirit' — the covenant promise of transformation"},
+      {test:"OT",book:"Malachi",ch:3,v:1,s:"H1285",phase:"promise",label:"'The messenger of the covenant in whom you delight — behold, he is coming'"},
+      {test:"NT",book:"Luke",ch:22,v:20,s:"G1242",phase:"fruit",label:"'This cup is the new diathēkē/covenant in my blood, poured out for you'"},
+      {test:"NT",book:"2 Corinthians",ch:3,v:6,s:"G1242",phase:"fruit",label:"'God made us ministers of a new covenant — not of letter but of Spirit'"},
+      {test:"NT",book:"Hebrews",ch:8,v:6,s:"G1242",phase:"fruit",label:"'The covenant he mediates is better, enacted on better promises'"},
+      {test:"NT",book:"Hebrews",ch:9,v:15,s:"G1242",phase:"fruit",label:"'He is the mediator of a new covenant — those called receive the promised inheritance'"},
+    ]
+  },
+  "Glory": {
+    icon: "✨",
+    key_h: "H3519", key_g: "G1391",
+    h_word: "כָּבוֹד", g_word: "δόξα",
+    h_trans: "kavod", g_trans: "doxa",
+    summary: "Kavod (weighty, visible divine presence) fills the Tabernacle and Temple — then becomes flesh in Jesus, the doxa of the Father made visible.",
+    verses: [
+      {test:"OT",book:"Exodus",ch:33,v:18,s:"H3519",phase:"seed",label:"Moses: 'Please show me your glory/kavod' — the most intimate request in the Torah"},
+      {test:"OT",book:"Exodus",ch:40,v:34,s:"H3519",phase:"seed",label:"The cloud of kavod fills the Tabernacle — the divine presence takes up residence"},
+      {test:"OT",book:"1 Kings",ch:8,v:11,s:"H3519",phase:"seed",label:"'The glory/kavod of the LORD filled the house of God' — the Temple dedication"},
+      {test:"OT",book:"Psalms",ch:19,v:1,s:"H3519",phase:"seed",label:"'The heavens declare the glory/kavod of God' — creation's perpetual doxology"},
+      {test:"OT",book:"Isaiah",ch:6,v:3,s:"H3519",phase:"promise",label:"'Holy, holy, holy — the whole earth is full of his kavod/glory' — the throne room"},
+      {test:"OT",book:"Isaiah",ch:40,v:5,s:"H3519",phase:"promise",label:"'The kavod of the LORD will be revealed and all flesh will see it together'"},
+      {test:"OT",book:"Ezekiel",ch:1,v:28,s:"H3519",phase:"promise",label:"'The appearance of the likeness of the kavod of the LORD' — the chariot vision"},
+      {test:"OT",book:"Habakkuk",ch:2,v:14,s:"H3519",phase:"promise",label:"'The earth will be filled with the knowledge of the kavod of the LORD as the waters cover the sea'"},
+      {test:"NT",book:"John",ch:1,v:14,s:"G1391",phase:"fruit",label:"'We have seen his doxa/glory, glory as of the Father's only Son'"},
+      {test:"NT",book:"John",ch:17,v:5,s:"G1391",phase:"fruit",label:"'Father, glorify me with the doxa/glory I had with you before the world existed'"},
+      {test:"NT",book:"2 Corinthians",ch:3,v:18,s:"G1391",phase:"fruit",label:"'We behold the doxa of the Lord and are transformed into the same image from glory to glory'"},
+      {test:"NT",book:"Hebrews",ch:1,v:3,s:"G1391",phase:"fruit",label:"'He is the radiance of the doxa/glory of God and the exact imprint of his nature'"},
+      {test:"NT",book:"Revelation",ch:21,v:23,s:"G1391",phase:"fruit",label:"'The city has no need of sun, for the doxa/glory of God gives it light'"},
+    ]
+  },
+  "Day of the Lord": {
+    icon: "⚡",
+    key_h: "H3117", key_g: "G2250",
+    h_word: "יוֹם יְהוָה", g_word: "ἡμέρα Κυρίου",
+    h_trans: "yom YHWH", g_trans: "hēmera Kyriou",
+    summary: "The Yom YHWH — a day of both terrifying judgment and glorious salvation — finds its ultimate fulfillment in Christ's return.",
+    verses: [
+      {test:"OT",book:"Amos",ch:5,v:18,s:"H3117",phase:"seed",label:"'Woe to you who desire the Day of the LORD — it is darkness and not light'"},
+      {test:"OT",book:"Joel",ch:1,v:15,s:"H3117",phase:"seed",label:"'Alas for the day! The Day of the LORD is near — as destruction from the Almighty'"},
+      {test:"OT",book:"Isaiah",ch:13,v:6,s:"H3117",phase:"seed",label:"'Wail, for the Day of the LORD is near — like destruction from the Almighty'"},
+      {test:"OT",book:"Zephaniah",ch:1,v:14,s:"H3117",phase:"seed",label:"'The great Day of the LORD is near — the sound of the day of the LORD is bitter'"},
+      {test:"OT",book:"Joel",ch:2,v:11,s:"H3117",phase:"promise",label:"'The Day of the LORD is great and very awesome — who can endure it?'"},
+      {test:"OT",book:"Joel",ch:2,v:31,s:"H3117",phase:"promise",label:"'The sun to darkness and moon to blood before the great and awesome Day of the LORD'"},
+      {test:"OT",book:"Zechariah",ch:14,v:1,s:"H3117",phase:"promise",label:"'A day is coming for the LORD, when the spoil taken from you will be divided'"},
+      {test:"OT",book:"Malachi",ch:4,v:5,s:"H3117",phase:"promise",label:"'I will send Elijah before the great and awesome Day of the LORD comes'"},
+      {test:"NT",book:"Acts",ch:2,v:20,s:"G2250",phase:"fruit",label:"Peter quotes Joel: 'The sun to darkness before the great and glorious Day of the Lord'"},
+      {test:"NT",book:"1 Thessalonians",ch:5,v:2,s:"G2250",phase:"fruit",label:"'The Day of the Lord will come like a thief in the night'"},
+      {test:"NT",book:"2 Peter",ch:3,v:10,s:"G2250",phase:"fruit",label:"'The Day of the Lord will come like a thief — the heavens will pass away with a roar'"},
+      {test:"NT",book:"Revelation",ch:6,v:17,s:"G2250",phase:"fruit",label:"'The great Day of their wrath has come — who can stand?'"},
+    ]
+  },
+  "Sacrifice": {
+    icon: "🔥",
+    key_h: "H2077", key_g: "G2378",
+    h_word: "זֶבַח", g_word: "θυσία",
+    h_trans: "zevach", g_trans: "thysia",
+    summary: "Every animal sacrifice in the OT was a shadow of the one thysia — Christ offering himself once for all.",
+    verses: [
+      {test:"OT",book:"Genesis",ch:22,v:13,s:"H5930",phase:"seed",label:"The ram caught in the thicket — God provides the olah/burnt offering on Moriah"},
+      {test:"OT",book:"Exodus",ch:12,v:3,s:"H2077",phase:"seed",label:"The Passover lamb: one lamb per household, its blood on the doorposts"},
+      {test:"OT",book:"Leviticus",ch:1,v:4,s:"H5930",phase:"seed",label:"The worshiper lays his hand on the olah — transferring identity to the offering"},
+      {test:"OT",book:"Leviticus",ch:16,v:15,s:"H2077",phase:"seed",label:"The Day of Atonement: the goat's blood brought inside the Holy of Holies"},
+      {test:"OT",book:"Psalms",ch:40,v:6,s:"H2077",phase:"promise",label:"'Sacrifice and offering you did not desire — but ears you have opened for me'"},
+      {test:"OT",book:"Psalms",ch:51,v:17,s:"H2077",phase:"promise",label:"'The sacrifices of God are a broken spirit — a contrite heart you will not despise'"},
+      {test:"OT",book:"Isaiah",ch:53,v:7,s:"H2077",phase:"promise",label:"'Like a lamb led to slaughter, like a sheep before its shearers — silent'"},
+      {test:"OT",book:"Micah",ch:6,v:6,s:"H5930",phase:"promise",label:"'With what shall I come before the LORD — with burnt offerings/olah?'"},
+      {test:"NT",book:"John",ch:1,v:29,s:"G286",phase:"fruit",label:"'Behold the Lamb of God who takes away the sin of the world'"},
+      {test:"NT",book:"1 Corinthians",ch:5,v:7,s:"G3957",phase:"fruit",label:"'Christ our Passover lamb has been sacrificed'"},
+      {test:"NT",book:"Hebrews",ch:10,v:5,s:"G2378",phase:"fruit",label:"'Sacrifices and offerings you did not desire, but a body you have prepared for me'"},
+      {test:"NT",book:"Hebrews",ch:10,v:14,s:"G2378",phase:"fruit",label:"'By a single offering he has perfected for all time those who are being sanctified'"},
+      {test:"NT",book:"Hebrews",ch:13,v:15,s:"G2378",phase:"fruit",label:"'Let us offer to God a sacrifice of praise — the fruit of lips that acknowledge his name'"},
+    ]
+  },
+  "The Suffering Servant": {
+    icon: "🫴",
+    key_h: "H5650", key_g: "G3816",
+    h_word: "עֶבֶד יְהוָה", g_word: "παῖς Κυρίου",
+    h_trans: "eved YHWH", g_trans: "pais Kyriou",
+    summary: "The four Servant Songs of Isaiah build toward an eved who bears the sins of the many — fulfilled in Christ who took the form of a doulos.",
+    verses: [
+      {test:"OT",book:"Psalms",ch:22,v:1,s:"H5650",phase:"seed",label:"'My God, my God, why have you forsaken me?' — the cry Jesus quotes from the cross"},
+      {test:"OT",book:"Psalms",ch:22,v:16,s:"H5650",phase:"seed",label:"'They pierce my hands and feet; I can count all my bones'"},
+      {test:"OT",book:"Psalms",ch:69,v:9,s:"H5650",phase:"seed",label:"'Zeal for your house has consumed me' — quoted of Jesus cleansing the Temple"},
+      {test:"OT",book:"Isaiah",ch:42,v:1,s:"H5650",phase:"seed",label:"'Behold my Servant/eved whom I uphold, my chosen in whom my soul delights'"},
+      {test:"OT",book:"Isaiah",ch:49,v:6,s:"H5650",phase:"promise",label:"'I will make you a light to the nations, that my salvation may reach the ends of the earth'"},
+      {test:"OT",book:"Isaiah",ch:50,v:6,s:"H5650",phase:"promise",label:"'I gave my back to those who strike, my cheeks to those who pull out the beard'"},
+      {test:"OT",book:"Isaiah",ch:52,v:13,s:"H5650",phase:"promise",label:"'Behold, my Servant shall act wisely; he shall be high and lifted up and exalted'"},
+      {test:"OT",book:"Isaiah",ch:53,v:3,s:"H5650",phase:"promise",label:"'He was despised and rejected by men, a man of sorrows acquainted with grief'"},
+      {test:"OT",book:"Isaiah",ch:53,v:12,s:"H5650",phase:"promise",label:"'He poured out his soul to death and was numbered with the transgressors'"},
+      {test:"NT",book:"Matthew",ch:12,v:18,s:"G3816",phase:"fruit",label:"Matthew quotes Isaiah 42:1 directly: 'Behold my Servant whom I have chosen'"},
+      {test:"NT",book:"Luke",ch:22,v:37,s:"G459",phase:"fruit",label:"'This scripture must be fulfilled: he was numbered with the transgressors' (Isa 53:12)"},
+      {test:"NT",book:"Acts",ch:8,v:32,s:"G4263",phase:"fruit",label:"Philip explains to the Ethiopian: the Servant led to slaughter is Jesus"},
+      {test:"NT",book:"Philippians",ch:2,v:7,s:"G1401",phase:"fruit",label:"'He emptied himself, taking the form of a servant/doulos, born in the likeness of men'"},
+      {test:"NT",book:"1 Peter",ch:2,v:24,s:"G266",phase:"fruit",label:"'He himself bore our sins in his body on the tree' — 1 Peter quotes Isaiah 53 directly"},
+    ]
+  },
+  "Faith": {
+    icon: "⚓",
+    key_h: "H539", key_g: "G4102",
+    h_word: "אָמַן", g_word: "πίστις",
+    h_trans: "aman/emunah", g_trans: "pistis",
+    summary: "From Abraham's aman (firm, unwavering trust) to Paul's pistis — faith has always been the means by which God reckons righteousness.",
+    verses: [
+      {test:"OT",book:"Genesis",ch:15,v:6,s:"H539",phase:"seed",label:"'Abraham believed/aman God and he counted it to him as righteousness' — the foundation"},
+      {test:"OT",book:"Exodus",ch:14,v:31,s:"H539",phase:"seed",label:"'Israel saw the great work and the people feared the LORD and believed/aman in Moses'"},
+      {test:"OT",book:"Numbers",ch:14,v:11,s:"H539",phase:"seed",label:"'How long will they not believe/aman in me despite all the signs?'"},
+      {test:"OT",book:"Psalms",ch:27,v:13,s:"H539",phase:"seed",label:"'I believe/aman I shall see the goodness of the LORD in the land of the living'"},
+      {test:"OT",book:"Isaiah",ch:7,v:9,s:"H539",phase:"promise",label:"'If you are not firm/aman in faith, you will not be firm at all' — Ahaz's challenge"},
+      {test:"OT",book:"Isaiah",ch:28,v:16,s:"H539",phase:"promise",label:"'Whoever believes/aman will not be in haste' — the tested cornerstone in Zion"},
+      {test:"OT",book:"Habakkuk",ch:2,v:4,s:"H530",phase:"promise",label:"'The righteous shall live by his emunah/faithfulness' — the verse Paul quotes three times"},
+      {test:"NT",book:"Romans",ch:1,v:17,s:"G4102",phase:"fruit",label:"'The righteous shall live by pistis/faith' — Paul's programmatic quote of Habakkuk 2:4"},
+      {test:"NT",book:"Romans",ch:4,v:3,s:"G4100",phase:"fruit",label:"'Abraham believed/pisteuo and it was counted to him as righteousness'"},
+      {test:"NT",book:"Galatians",ch:2,v:20,s:"G4102",phase:"fruit",label:"'The life I now live in the flesh I live by pistis/faith in the Son of God'"},
+      {test:"NT",book:"Hebrews",ch:11,v:1,s:"G4102",phase:"fruit",label:"'Pistis/faith is the assurance of things hoped for, the conviction of things not seen'"},
+      {test:"NT",book:"Hebrews",ch:11,v:6,s:"G4100",phase:"fruit",label:"'Without pistis/faith it is impossible to please God'"},
+    ]
+  },
+  "Lovingkindness": {
+    icon: "💛",
+    key_h: "H2617", key_g: "G1656",
+    h_word: "חֶסֶד", g_word: "ἔλεος",
+    h_trans: "chesed", g_trans: "eleos",
+    summary: "Chesed — covenant loyalty, steadfast love, faithful mercy — is the heartbeat of YHWH's character. It becomes incarnate in Christ and poured out through agapē.",
+    verses: [
+      {test:"OT",book:"Exodus",ch:34,v:6,s:"H2617",phase:"seed",label:"The LORD's self-declaration: 'abounding in chesed and emet' — the 13 attributes of mercy"},
+      {test:"OT",book:"Psalms",ch:36,v:7,s:"H2617",phase:"seed",label:"'How precious is your chesed, O God! The children of men take refuge in the shadow of your wings'"},
+      {test:"OT",book:"Psalms",ch:103,v:8,s:"H2617",phase:"seed",label:"'The LORD is merciful and gracious, slow to anger and abounding in chesed'"},
+      {test:"OT",book:"Psalms",ch:136,v:1,s:"H2617",phase:"seed",label:"'Give thanks to the LORD for his chesed endures forever' — the refrain of the Great Hallel"},
+      {test:"OT",book:"Lamentations",ch:3,v:22,s:"H2617",phase:"seed",label:"'The steadfast love/chesed of the LORD never ceases; his mercies never come to an end'"},
+      {test:"OT",book:"Hosea",ch:2,v:19,s:"H2617",phase:"promise",label:"'I will betroth you to me in chesed and in mercy — you shall know the LORD'"},
+      {test:"OT",book:"Micah",ch:7,v:18,s:"H2617",phase:"promise",label:"'Who is a God like you, pardoning iniquity and passing over transgression — who delights in chesed'"},
+      {test:"OT",book:"Jeremiah",ch:31,v:3,s:"H2617",phase:"promise",label:"'I have loved you with an everlasting love; I have drawn you with chesed/lovingkindness'"},
+      {test:"NT",book:"John",ch:1,v:14,s:"G5485",phase:"fruit",label:"'Full of grace/charis and truth' — the NT rendering of chesed/emet in the Incarnation"},
+      {test:"NT",book:"John",ch:3,v:16,s:"G25",phase:"fruit",label:"'For God so loved/agapao the world' — chesed expressed as sacrificial giving"},
+      {test:"NT",book:"Romans",ch:5,v:8,s:"G26",phase:"fruit",label:"'God shows his agape/love for us in that while we were still sinners Christ died'"},
+      {test:"NT",book:"Ephesians",ch:2,v:4,s:"G1656",phase:"fruit",label:"'God, rich in eleos/mercy, because of the great agape with which he loved us'"},
+      {test:"NT",book:"1 John",ch:4,v:8,s:"G26",phase:"fruit",label:"'God is agape/love' — the ultimate distillation of chesed into a divine attribute"},
+    ]
+  },
+  "Righteousness": {
+    icon: "⚖️",
+    key_h: "H6664", key_g: "G1343",
+    h_word: "צֶדֶק", g_word: "δικαιοσύνη",
+    h_trans: "tsedeq", g_trans: "dikaiosynē",
+    summary: "Tsedeq is not merely personal morality but the right ordering of all relationships — fulfilled when God's dikaiosynē is credited to believers through Christ.",
+    verses: [
+      {test:"OT",book:"Genesis",ch:15,v:6,s:"H6666",phase:"seed",label:"'He believed God and it was counted to him as righteousness/tsedaqah'"},
+      {test:"OT",book:"Psalms",ch:24,v:5,s:"H6666",phase:"seed",label:"'He will receive blessing from the LORD and tsedaqah/righteousness from the God of his salvation'"},
+      {test:"OT",book:"Psalms",ch:119,v:172,s:"H6664",phase:"seed",label:"'My tongue will sing of your word, for all your commandments are tsedeq/righteousness'"},
+      {test:"OT",book:"Proverbs",ch:21,v:3,s:"H6666",phase:"seed",label:"'To do righteousness/tsedaqah and justice is more acceptable to the LORD than sacrifice'"},
+      {test:"OT",book:"Isaiah",ch:53,v:11,s:"H6663",phase:"promise",label:"'By his knowledge the righteous One shall justify many — he shall bear their iniquities'"},
+      {test:"OT",book:"Isaiah",ch:61,v:10,s:"H6666",phase:"promise",label:"'He has clothed me with garments of salvation, wrapped me in a robe of tsedaqah'"},
+      {test:"OT",book:"Jeremiah",ch:23,v:6,s:"H6664",phase:"promise",label:"'This is the name by which he will be called: The LORD is our Righteousness/Tsedeq'"},
+      {test:"OT",book:"Daniel",ch:9,v:24,s:"H6664",phase:"promise",label:"'To bring in everlasting righteousness/tsedeq' — one purpose of the seventy weeks"},
+      {test:"NT",book:"Matthew",ch:5,v:6,s:"G1343",phase:"fruit",label:"'Blessed are those who hunger and thirst for dikaiosynē/righteousness'"},
+      {test:"NT",book:"Romans",ch:1,v:17,s:"G1343",phase:"fruit",label:"'The dikaiosynē/righteousness of God is revealed from faith to faith'"},
+      {test:"NT",book:"Romans",ch:3,v:22,s:"G1343",phase:"fruit",label:"'The dikaiosynē of God through faith in Jesus Christ for all who believe'"},
+      {test:"NT",book:"2 Corinthians",ch:5,v:21,s:"G1343",phase:"fruit",label:"'So that in him we might become the dikaiosynē/righteousness of God'"},
+      {test:"NT",book:"Philippians",ch:3,v:9,s:"G1343",phase:"fruit",label:"'Not having a righteousness of my own but that which comes through faith in Christ'"},
+    ]
+  },
+  "The Word of God": {
+    icon: "📖",
+    key_h: "H1697", key_g: "G3056",
+    h_word: "דָּבָר", g_word: "λόγος",
+    h_trans: "davar", g_trans: "logos",
+    summary: "The davar of YHWH creates, commands, and accomplishes — in the fullness of time, the Logos himself enters creation.",
+    verses: [
+      {test:"OT",book:"Genesis",ch:1,v:3,s:"H1697",phase:"seed",label:"'And God said/davar — let there be light' — the davar as the agent of creation"},
+      {test:"OT",book:"Psalms",ch:33,v:6,s:"H1697",phase:"seed",label:"'By the davar/word of the LORD the heavens were made' — creation through speech"},
+      {test:"OT",book:"Psalms",ch:119,v:89,s:"H1697",phase:"seed",label:"'Forever, O LORD, your davar/word is firmly fixed in the heavens'"},
+      {test:"OT",book:"Psalms",ch:119,v:105,s:"H1697",phase:"seed",label:"'Your davar/word is a lamp to my feet and a light to my path'"},
+      {test:"OT",book:"Isaiah",ch:40,v:8,s:"H1697",phase:"promise",label:"'The grass withers, the flower fades — but the davar of our God will stand forever'"},
+      {test:"OT",book:"Isaiah",ch:55,v:11,s:"H1697",phase:"promise",label:"'My davar that goes out from my mouth will not return empty — it accomplishes my purpose'"},
+      {test:"OT",book:"Jeremiah",ch:23,v:29,s:"H1697",phase:"promise",label:"'Is not my davar/word like fire and like a hammer that breaks rock in pieces?'"},
+      {test:"OT",book:"Amos",ch:8,v:11,s:"H1697",phase:"promise",label:"'A famine of hearing the words/davar of the LORD' — foreshadowing the silence before the Logos"},
+      {test:"NT",book:"John",ch:1,v:1,s:"G3056",phase:"fruit",label:"'In the beginning was the Logos/davar and the Logos was with God and the Logos was God'"},
+      {test:"NT",book:"John",ch:1,v:14,s:"G3056",phase:"fruit",label:"'The Logos became flesh and dwelt among us' — the incarnation of the davar"},
+      {test:"NT",book:"Hebrews",ch:4,v:12,s:"G3056",phase:"fruit",label:"'The logos of God is living and active, sharper than any two-edged sword'"},
+      {test:"NT",book:"Revelation",ch:19,v:13,s:"G3056",phase:"fruit",label:"'He is clothed in a robe dipped in blood and his name is called The Logos of God'"},
+    ]
+  },
+  "The Holy Spirit": {
+    icon: "🕊",
+    key_h: "H7307", key_g: "G4151",
+    h_word: "רוּחַ יְהוָה", g_word: "πνεῦμα ἅγιον",
+    h_trans: "ruach YHWH", g_trans: "pneuma hagion",
+    summary: "The ruach/pneuma of God is the creative, empowering, prophetic presence of God — promised for all flesh in the latter days and poured out at Pentecost.",
+    verses: [
+      {test:"OT",book:"Genesis",ch:1,v:2,s:"H7307",phase:"seed",label:"'The ruach/Spirit of God was hovering over the face of the waters' — the first mention"},
+      {test:"OT",book:"Numbers",ch:11,v:29,s:"H7307",phase:"seed",label:"Moses: 'Would that all the LORD's people were prophets and the LORD put his ruach on them'"},
+      {test:"OT",book:"Psalms",ch:51,v:11,s:"H7307",phase:"seed",label:"'Take not your Holy Spirit/ruach qodesh from me' — David's plea after his sin"},
+      {test:"OT",book:"Isaiah",ch:61,v:1,s:"H7307",phase:"promise",label:"'The ruach of the LORD is upon me because he has anointed me to proclaim good news'"},
+      {test:"OT",book:"Joel",ch:2,v:28,s:"H7307",phase:"promise",label:"'I will pour out my ruach on all flesh — your sons and daughters will prophesy'"},
+      {test:"OT",book:"Ezekiel",ch:36,v:27,s:"H7307",phase:"promise",label:"'I will put my ruach within you and cause you to walk in my statutes'"},
+      {test:"OT",book:"Ezekiel",ch:37,v:14,s:"H7307",phase:"promise",label:"'I will put my ruach in you and you shall live — the valley of dry bones revived'"},
+      {test:"OT",book:"Zechariah",ch:4,v:6,s:"H7307",phase:"promise",label:"'Not by might nor by power but by my ruach, says the LORD of hosts'"},
+      {test:"NT",book:"Luke",ch:3,v:22,s:"G4151",phase:"fruit",label:"'The pneuma/Spirit descended on him in bodily form like a dove'"},
+      {test:"NT",book:"John",ch:14,v:17,s:"G4151",phase:"fruit",label:"'The Spirit of truth — the world cannot receive him, but you know him'"},
+      {test:"NT",book:"Acts",ch:2,v:4,s:"G4151",phase:"fruit",label:"'They were all filled with the pneuma hagion and began to speak' — Pentecost"},
+      {test:"NT",book:"Romans",ch:8,v:9,s:"G4151",phase:"fruit",label:"'Anyone who does not have the pneuma of Christ does not belong to him'"},
+    ]
+  },
+  "The Kingdom": {
+    icon: "👑",
+    key_h: "H4467", key_g: "G932",
+    h_word: "מַמְלָכָה", g_word: "βασιλεία",
+    h_trans: "mamlakah", g_trans: "basileia",
+    summary: "The basileia tou Theou — God's sovereign reign over all creation — is the central message of Jesus, rooted in YHWH's eternal mamlakah.",
+    verses: [
+      {test:"OT",book:"2 Samuel",ch:7,v:12,s:"H4467",phase:"seed",label:"'I will establish the throne of his kingdom/mamlakah forever' — the Davidic covenant"},
+      {test:"OT",book:"Psalms",ch:2,v:6,s:"H4428",phase:"seed",label:"'I have set my king on Zion, my holy hill' — the divine installation of the Davidic king"},
+      {test:"OT",book:"Psalms",ch:103,v:19,s:"H4438",phase:"seed",label:"'The LORD has established his throne in the heavens and his mamlakah/kingdom rules over all'"},
+      {test:"OT",book:"Daniel",ch:2,v:44,s:"H4437",phase:"seed",label:"'The God of heaven will set up a kingdom that shall never be destroyed'"},
+      {test:"OT",book:"Isaiah",ch:9,v:7,s:"H4467",phase:"promise",label:"'Of the increase of his government there will be no end, on David's throne'"},
+      {test:"OT",book:"Daniel",ch:7,v:14,s:"H4437",phase:"promise",label:"'To him was given dominion and glory and a kingdom/mamlakah that shall not pass away'"},
+      {test:"OT",book:"Micah",ch:4,v:7,s:"H4427",phase:"promise",label:"'The LORD will reign over them in Mount Zion from this time forth and forevermore'"},
+      {test:"OT",book:"Zechariah",ch:9,v:9,s:"H4428",phase:"promise",label:"'Your king is coming — righteous and having salvation, humble and mounted on a donkey'"},
+      {test:"NT",book:"Matthew",ch:4,v:17,s:"G932",phase:"fruit",label:"'Repent, for the kingdom/basileia of heaven is at hand' — Jesus's opening proclamation"},
+      {test:"NT",book:"Luke",ch:17,v:21,s:"G932",phase:"fruit",label:"'The kingdom/basileia of God is in your midst/within you'"},
+      {test:"NT",book:"1 Corinthians",ch:15,v:24,s:"G932",phase:"fruit",label:"'Then comes the end when he delivers the kingdom/basileia to God the Father'"},
+      {test:"NT",book:"Revelation",ch:11,v:15,s:"G932",phase:"fruit",label:"'The kingdom/basileia of the world has become the kingdom of our Lord and of his Christ'"},
+    ]
+  },
+  "Salvation": {
+    icon: "🛡",
+    key_h: "H3444", key_g: "G4991",
+    h_word: "יְשׁוּעָה", g_word: "σωτηρία",
+    h_trans: "yeshuah", g_trans: "sōtēria",
+    summary: "Yeshuah (salvation, deliverance) is embedded in the name Yeshua/Jesus — the bearer of sōtēria embodies it in his very name.",
+    verses: [
+      {test:"OT",book:"Exodus",ch:14,v:13,s:"H3444",phase:"seed",label:"'Stand firm and see the yeshuah/salvation of the LORD' — the Exodus as the first great salvation"},
+      {test:"OT",book:"Psalms",ch:98,v:2,s:"H3444",phase:"seed",label:"'The LORD has made known his yeshuah; his righteousness he has revealed in the sight of the nations'"},
+      {test:"OT",book:"Isaiah",ch:12,v:2,s:"H3444",phase:"seed",label:"'Behold, God is my yeshuah/salvation — I will trust and not be afraid'"},
+      {test:"OT",book:"Habakkuk",ch:3,v:18,s:"H3444",phase:"seed",label:"'I will rejoice in the LORD; I will take joy in the God of my yeshuah/salvation'"},
+      {test:"OT",book:"Isaiah",ch:49,v:6,s:"H3444",phase:"promise",label:"'I will make you a light to the nations, that my yeshuah may reach the ends of the earth'"},
+      {test:"OT",book:"Isaiah",ch:52,v:10,s:"H3444",phase:"promise",label:"'All the ends of the earth shall see the yeshuah/salvation of our God'"},
+      {test:"OT",book:"Isaiah",ch:56,v:1,s:"H3444",phase:"promise",label:"'My sōtēria/yeshuah is about to come and my righteousness to be revealed'"},
+      {test:"OT",book:"Jonah",ch:2,v:9,s:"H3444",phase:"promise",label:"'Salvation/yeshuah belongs to the LORD' — from the belly of the great fish"},
+      {test:"NT",book:"Luke",ch:2,v:30,s:"G4992",phase:"fruit",label:"Simeon: 'My eyes have seen your sōtēria/salvation' — holding the infant Jesus"},
+      {test:"NT",book:"John",ch:4,v:22,s:"G4991",phase:"fruit",label:"'Sōtēria/salvation is from the Jews' — Jesus to the Samaritan woman"},
+      {test:"NT",book:"Acts",ch:4,v:12,s:"G4991",phase:"fruit",label:"'There is salvation/sōtēria in no one else — no other name under heaven'"},
+      {test:"NT",book:"Ephesians",ch:2,v:8,s:"G4991",phase:"fruit",label:"'By grace you have been saved through faith — this is not your own doing'"},
+    ]
+  },
+  "The Messiah": {
+    icon: "🌟",
+    key_h: "H4899", key_g: "G5547",
+    h_word: "מָשִׁיחַ", g_word: "Χριστός",
+    h_trans: "mashiach", g_trans: "Christos",
+    summary: "From the anointed kings and priests of Israel to the promised mashiach who would rule forever — every anointing pointed to the one Christos.",
+    verses: [
+      {test:"OT",book:"Genesis",ch:49,v:10,s:"H7886",phase:"seed",label:"'The scepter shall not depart from Judah until Shiloh comes' — the first messianic prophecy"},
+      {test:"OT",book:"1 Samuel",ch:2,v:10,s:"H4899",phase:"seed",label:"Hannah's song: 'He will give strength to his king and exalt the horn of his mashiach'"},
+      {test:"OT",book:"Psalms",ch:2,v:2,s:"H4899",phase:"seed",label:"'The kings of the earth set themselves against the LORD and against his Mashiach'"},
+      {test:"OT",book:"Psalms",ch:110,v:1,s:"H4899",phase:"seed",label:"'The LORD says to my Lord: sit at my right hand until I make your enemies your footstool'"},
+      {test:"OT",book:"Isaiah",ch:9,v:6,s:"H4899",phase:"promise",label:"'A child is born — Wonderful Counselor, Mighty God, Prince of Shalom'"},
+      {test:"OT",book:"Daniel",ch:9,v:25,s:"H4899",phase:"promise",label:"'From the going out of the word until Mashiach the Prince: seven weeks and sixty-two weeks'"},
+      {test:"OT",book:"Micah",ch:5,v:2,s:"H4910",phase:"promise",label:"'From Bethlehem shall come forth for me one who is to be ruler in Israel — from of old'"},
+      {test:"OT",book:"Zechariah",ch:9,v:9,s:"H4428",phase:"promise",label:"'Behold your king comes — righteous and having salvation, humble on a donkey'"},
+      {test:"NT",book:"Matthew",ch:16,v:16,s:"G5547",phase:"fruit",label:"Peter's confession: 'You are the Christos/Messiah, the Son of the living God'"},
+      {test:"NT",book:"Luke",ch:4,v:18,s:"G5548",phase:"fruit",label:"Jesus reads Isaiah 61:1 in Nazareth: 'The Spirit is upon me because he anointed/christō me'"},
+      {test:"NT",book:"John",ch:20,v:31,s:"G5547",phase:"fruit",label:"'These things are written so that you may believe that Jesus is the Christos, the Son of God'"},
+      {test:"NT",book:"Acts",ch:2,v:36,s:"G5547",phase:"fruit",label:"'God has made him both Lord and Christos — this Jesus whom you crucified'"},
+    ]
+  },
+  "Sin & Forgiveness": {
+    icon: "🕊",
+    key_h: "H2403", key_g: "G266",
+    h_word: "חַטָּאת / סְלִיחָה", g_word: "ἁμαρτία / ἄφεσις",
+    h_trans: "chatat / selichah", g_trans: "hamartia / aphesis",
+    summary: "The same Hebrew word (chatat) means both sin and sin offering — the remedy is named after the disease. God's forgiveness is as radical as his holiness.",
+    verses: [
+      {test:"OT",book:"Genesis",ch:3,v:6,s:"H2403",phase:"seed",label:"The fall: Eve saw the fruit was good for wisdom — the first chatat/sin"},
+      {test:"OT",book:"Psalms",ch:32,v:1,s:"H5771",phase:"seed",label:"'Blessed is the one whose transgression is forgiven, whose sin is covered'"},
+      {test:"OT",book:"Psalms",ch:51,v:1,s:"H2403",phase:"seed",label:"David's great confession: 'Have mercy on me, O God — blot out my transgressions'"},
+      {test:"OT",book:"Psalms",ch:103,v:12,s:"H6588",phase:"seed",label:"'As far as the east is from the west, so far has he removed our transgressions'"},
+      {test:"OT",book:"Isaiah",ch:1,v:18,s:"H2399",phase:"promise",label:"'Though your sins are like scarlet, they shall be as white as snow'"},
+      {test:"OT",book:"Isaiah",ch:43,v:25,s:"H2403",phase:"promise",label:"'I, I am he who blots out your transgressions for my own sake — I will not remember your sins'"},
+      {test:"OT",book:"Jeremiah",ch:31,v:34,s:"H5771",phase:"promise",label:"'I will forgive their iniquity and I will remember their sin no more' — the New Covenant"},
+      {test:"OT",book:"Micah",ch:7,v:19,s:"H2403",phase:"promise",label:"'He will again have compassion on us — he will tread our sins underfoot'"},
+      {test:"NT",book:"John",ch:1,v:29,s:"G266",phase:"fruit",label:"'Behold the Lamb of God who takes away/airō the hamartia/sin of the world'"},
+      {test:"NT",book:"Romans",ch:6,v:23,s:"G266",phase:"fruit",label:"'The wages of hamartia/sin is death, but the gift of God is eternal life'"},
+      {test:"NT",book:"Acts",ch:10,v:43,s:"G859",phase:"fruit",label:"'Everyone who believes in him receives aphesis/forgiveness of sins through his name'"},
+      {test:"NT",book:"1 John",ch:1,v:9,s:"G266",phase:"fruit",label:"'If we confess our sins, he is faithful to forgive our sins and cleanse us from all unrighteousness'"},
+    ]
+  },
+  "Wisdom": {
+    icon: "🦉",
+    key_h: "H2451", key_g: "G4678",
+    h_word: "חָכְמָה", g_word: "σοφία",
+    h_trans: "chokmah", g_trans: "sophia",
+    summary: "Chokmah — God's ordering principle in creation — was present with him before the world began and becomes incarnate in Christ, in whom all treasures of sophia are hidden.",
+    verses: [
+      {test:"OT",book:"Job",ch:28,v:28,s:"H2451",phase:"seed",label:"'Behold, the fear of the Lord is chokmah/wisdom and to depart from evil is understanding'"},
+      {test:"OT",book:"Proverbs",ch:3,v:19,s:"H2451",phase:"seed",label:"'The LORD by chokmah/wisdom founded the earth — by understanding he established the heavens'"},
+      {test:"OT",book:"Proverbs",ch:8,v:1,s:"H2451",phase:"seed",label:"'Does not chokmah/wisdom call out? Does not understanding raise her voice?'"},
+      {test:"OT",book:"Proverbs",ch:9,v:10,s:"H2451",phase:"seed",label:"'The fear of the LORD is the beginning of chokmah/wisdom'"},
+      {test:"OT",book:"Proverbs",ch:8,v:22,s:"H2451",phase:"promise",label:"'The LORD possessed me at the beginning of his work — the first of his acts of old'"},
+      {test:"OT",book:"Isaiah",ch:11,v:2,s:"H2451",phase:"promise",label:"'The Spirit of the LORD — the Spirit of chokmah/wisdom and understanding — will rest on him'"},
+      {test:"OT",book:"Isaiah",ch:33,v:6,s:"H2451",phase:"promise",label:"'He will be the stability of your times — chokmah/wisdom and knowledge shall be the riches of your salvation'"},
+      {test:"OT",book:"Daniel",ch:2,v:20,s:"H2452",phase:"promise",label:"'Blessed be the name of God — for chokmah/wisdom and might are his'"},
+      {test:"NT",book:"Matthew",ch:11,v:19,s:"G4678",phase:"fruit",label:"'Sophia/wisdom is justified by her deeds' — Jesus identifies himself with personified Wisdom"},
+      {test:"NT",book:"1 Corinthians",ch:1,v:24,s:"G4678",phase:"fruit",label:"'Christ the power of God and the sophia/wisdom of God'"},
+      {test:"NT",book:"1 Corinthians",ch:1,v:30,s:"G4678",phase:"fruit",label:"'He is the source of your life in Christ Jesus, who became sophia/wisdom for us'"},
+      {test:"NT",book:"Colossians",ch:2,v:3,s:"G4678",phase:"fruit",label:"'In Christ are hidden all the treasures of sophia/wisdom and knowledge'"},
+    ]
+  },
+  "Divine Presence": {
+    icon: "🔥",
+    key_h: "H7931", key_g: "G4637",
+    h_word: "שָׁכַן / שְׁכִינָה", g_word: "σκηνόω",
+    h_trans: "shakan / Shekinah", g_trans: "skēnoō",
+    summary: "Shakan — the divine dwelling/settling among his people — gives us Shekinah glory, the Tabernacle, the Temple, and ultimately John 1:14.",
+    verses: [
+      {test:"OT",book:"Exodus",ch:25,v:8,s:"H7931",phase:"seed",label:"'Let them make me a sanctuary that I may shakan/dwell among them'"},
+      {test:"OT",book:"Exodus",ch:40,v:34,s:"H7931",phase:"seed",label:"'The cloud covered the Tent of Meeting and the glory of the LORD filled the tabernacle'"},
+      {test:"OT",book:"Leviticus",ch:26,v:11,s:"H7931",phase:"seed",label:"'I will make my shakan/dwelling among you and will not abhor you'"},
+      {test:"OT",book:"Psalms",ch:132,v:14,s:"H7931",phase:"seed",label:"'This is my resting place forever; here I will shakan for I have desired it'"},
+      {test:"OT",book:"Isaiah",ch:7,v:14,s:"H7931",phase:"promise",label:"'Behold the virgin shall conceive and bear a son — Immanuel: God is with us'"},
+      {test:"OT",book:"Ezekiel",ch:37,v:27,s:"H4908",phase:"promise",label:"'My tabernacle/mishkan will be with them — I will be their God and they will be my people'"},
+      {test:"OT",book:"Zechariah",ch:2,v:10,s:"H7931",phase:"promise",label:"'Sing and rejoice, O daughter of Zion, for behold I come and I will shakan in your midst'"},
+      {test:"OT",book:"Zechariah",ch:8,v:3,s:"H7931",phase:"promise",label:"'I will return to Zion and shakan in the midst of Jerusalem — the faithful city'"},
+      {test:"NT",book:"John",ch:1,v:14,s:"G4637",phase:"fruit",label:"'The Logos became flesh and eskēnōsen/tabernacled among us' — Shekinah in flesh"},
+      {test:"NT",book:"2 Corinthians",ch:6,v:16,s:"G1774",phase:"fruit",label:"'I will dwell in them and walk among them — I will be their God and they my people'"},
+      {test:"NT",book:"Revelation",ch:7,v:15,s:"G4637",phase:"fruit",label:"'He who sits on the throne will skēnoō/shelter them with his presence'"},
+      {test:"NT",book:"Revelation",ch:21,v:3,s:"G4637",phase:"fruit",label:"'The skēnē/tabernacle of God is with man — he will skēnoō with them'"},
+    ]
+  },
+  "New Creation": {
+    icon: "🌱",
+    key_h: "H1254", key_g: "G2537",
+    h_word: "בָּרָא חָדָשׁ", g_word: "καινὸς κτίσις",
+    h_trans: "bara chadash", g_trans: "kainē ktisis",
+    summary: "The God who bara/created ex nihilo will bara again — a new heavens and earth. In Christ the kainē ktisis has already begun.",
+    verses: [
+      {test:"OT",book:"Genesis",ch:1,v:1,s:"H1254",phase:"seed",label:"'In the beginning God bara/created the heavens and the earth' — creation out of nothing"},
+      {test:"OT",book:"Isaiah",ch:40,v:28,s:"H1254",phase:"seed",label:"'The everlasting God, the Creator/bara of the ends of the earth, does not faint or grow weary'"},
+      {test:"OT",book:"Psalms",ch:51,v:10,s:"H1254",phase:"seed",label:"'Create/bara in me a clean heart, O God — put a new/chadash and right spirit within me'"},
+      {test:"OT",book:"Isaiah",ch:43,v:19,s:"H2319",phase:"promise",label:"'Behold I am doing a new/chadash thing — now it springs forth, do you not perceive it?'"},
+      {test:"OT",book:"Isaiah",ch:65,v:17,s:"H1254",phase:"promise",label:"'I create/bara new heavens and a new earth — the former things shall not be remembered'"},
+      {test:"OT",book:"Ezekiel",ch:36,v:26,s:"H2319",phase:"promise",label:"'A new/chadash heart I will give you and a new spirit I will put within you'"},
+      {test:"OT",book:"Jeremiah",ch:31,v:22,s:"H1254",phase:"promise",label:"'The LORD has created/bara a new thing on earth'"},
+      {test:"OT",book:"Isaiah",ch:66,v:22,s:"H1254",phase:"promise",label:"'The new heavens and the new earth that I make shall remain before me'"},
+      {test:"NT",book:"2 Corinthians",ch:5,v:17,s:"G2537",phase:"fruit",label:"'If anyone is in Christ he is a kainē/new creation — the old has passed, behold the new has come'"},
+      {test:"NT",book:"Galatians",ch:6,v:15,s:"G2537",phase:"fruit",label:"'Neither circumcision nor uncircumcision counts for anything — only the kainē ktisis/new creation'"},
+      {test:"NT",book:"Ephesians",ch:2,v:10,s:"G4162",phase:"fruit",label:"'We are his workmanship/poiēma created/ktizō in Christ Jesus for good works'"},
+      {test:"NT",book:"Revelation",ch:21,v:5,s:"G2537",phase:"fruit",label:"'Behold I am making all things new/kainē' — the final fulfillment of Isaiah 65:17"},
+    ]
+  },
+  "The Remnant": {
+    icon: "🌾",
+    key_h: "H7611", key_g: "G3005",
+    h_word: "שְׁאֵרִית", g_word: "λεῖμμα",
+    h_trans: "she'erit", g_trans: "leimma",
+    summary: "Through every judgment YHWH preserves a she'erit/remnant — not all Israel is Israel, but the leimma chosen by grace is the seed of renewal.",
+    verses: [
+      {test:"OT",book:"1 Kings",ch:19,v:18,s:"H7604",phase:"seed",label:"'I have reserved/sha'ar seven thousand in Israel who have not bowed to Baal'"},
+      {test:"OT",book:"Isaiah",ch:10,v:20,s:"H7611",phase:"seed",label:"'In that day the remnant/she'erit of Israel will lean on the LORD, the Holy One of Israel'"},
+      {test:"OT",book:"Isaiah",ch:11,v:11,s:"H7605",phase:"seed",label:"'The Lord will recover the remnant/she'ar of his people a second time'"},
+      {test:"OT",book:"Micah",ch:2,v:12,s:"H7611",phase:"seed",label:"'I will surely gather all of you, O Jacob — the she'erit/remnant of Israel'"},
+      {test:"OT",book:"Isaiah",ch:37,v:31,s:"H7611",phase:"promise",label:"'The surviving she'erit of Judah shall again take root downward and bear fruit upward'"},
+      {test:"OT",book:"Jeremiah",ch:23,v:3,s:"H7611",phase:"promise",label:"'I will gather the she'erit/remnant of my flock out of all countries and bring them home'"},
+      {test:"OT",book:"Ezekiel",ch:6,v:8,s:"H7611",phase:"promise",label:"'Yet I will leave a remnant/she'erit — some who escape the sword among the nations'"},
+      {test:"OT",book:"Zephaniah",ch:3,v:13,s:"H7611",phase:"promise",label:"'The she'erit/remnant of Israel shall do no injustice and speak no lies'"},
+      {test:"NT",book:"Matthew",ch:7,v:14,s:"G3641",phase:"fruit",label:"'The gate is narrow and the way is hard that leads to life — and those who find it are few'"},
+      {test:"NT",book:"Romans",ch:9,v:27,s:"G5259",phase:"fruit",label:"Paul quotes Isaiah: 'Though Israel's number be as the sand, only the leimma/remnant will be saved'"},
+      {test:"NT",book:"Romans",ch:11,v:5,s:"G3005",phase:"fruit",label:"'At the present time there is a leimma/remnant chosen by grace'"},
+      {test:"NT",book:"Revelation",ch:7,v:9,s:"G3793",phase:"fruit",label:"'A great multitude that no one could number from every nation' — the remnant multiplied"},
+    ]
+  },
 };
 
 const S = {
@@ -1438,7 +1931,156 @@ function LeftVerse({verse,isNT,isActive,note,onAddNote,onDeleteNote,onNavigate,o
   );
 }
 
-function StrongsPanel({entry,strongs,word,isNT,onClose}){
+
+// ── Theological Arc Navigator ──────────────────────────────────────────────
+const PHASE_LABELS = {seed:"🌱 The Seed — OT Foundation", promise:"🔥 The Promise — Prophetic", fruit:"🌿 The Fulfillment — NT"};
+function TheologyPanel({onClose, onNavigate}){
+  const [topic,setTopic]=useState(null);
+  const topics=Object.keys(THEO_ARCS);
+  const arc=topic?THEO_ARCS[topic]:null;
+  const phases=arc?["seed","promise","fruit"]:[];
+
+  function goVerse(v){
+    onNavigate&&onNavigate(v.book+" "+v.ch+":"+v.v);
+    onClose();
+  }
+
+  return(
+    <div className="theo-overlay" onClick={onClose}>
+      <div className="theo-panel" onClick={e=>e.stopPropagation()}>
+        <div className="theo-header">
+          {topic&&<button className="theo-back" onClick={()=>setTopic(null)}>←</button>}
+          <span className="theo-title">{topic?topic+"  "+arc.icon:"⧁ Theological Arc Navigator"}</span>
+          <button className="theo-close" onClick={onClose}>×</button>
+        </div>
+        <div className="theo-body">
+          {!topic&&(
+            <>
+              <p style={{fontSize:".8rem",color:"var(--text3)",marginBottom:"1rem",lineHeight:"1.6"}}>
+                Each topic traces a theological concept from its OT seed through the prophetic promise to NT fulfillment — connected by the LXX bridge.
+              </p>
+              <div className="topic-grid">
+                {topics.map(t=>{
+                  const d=THEO_ARCS[t];
+                  const hasOt=d.verses.some(v=>v.test==="OT");
+                  return(
+                    <div key={t} className={"topic-card"+(hasOt?" ot":"")} onClick={()=>setTopic(t)}>
+                      <span className="topic-icon">{d.icon}</span>
+                      <div className="topic-name">{t}</div>
+                      <div className="topic-count">{d.verses.length} verses · {d.h_trans} / {d.g_trans}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
+          {arc&&(
+            <>
+              <div className="arc-summary">{arc.summary}</div>
+              <div className="arc-bridge">
+                <span className="arc-bridge-lbl">LXX Bridge:</span>
+                <div className="arc-bridge-pair">
+                  <span className="arc-bridge-hw">{arc.h_word}</span>
+                  <span className="arc-bridge-arr">⟶</span>
+                  <span className="arc-bridge-gw">{arc.g_word}</span>
+                </div>
+                <span style={{fontSize:".72rem",color:"var(--text3)"}}>{arc.key_h} → {arc.key_g}</span>
+              </div>
+              {phases.map(phase=>{
+                const pvs=arc.verses.filter(v=>v.phase===phase);
+                if(!pvs.length)return null;
+                return(
+                  <div key={phase} className="arc-section">
+                    <div className={"arc-phase-label "+phase}>{PHASE_LABELS[phase]}</div>
+                    {pvs.map((v,i)=>(
+                      <div key={i} className="arc-verse" onClick={()=>goVerse(v)} title="Click to open in interlinear">
+                        <span className={"arc-verse-ref "+v.test.toLowerCase()}>{v.book} {v.ch}:{v.v}</span>
+                        <div>
+                          <div className="arc-verse-label">{v.label}</div>
+                          <div className="arc-strongs">{v.s}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })}
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Strong's Word Study search ─────────────────────────────────────────────
+function WordStudyResults({strongs, isNT, onNavigate, onClose}){
+  const [results,setResults]=useState(null);
+
+  function runSearch(){
+    const hits={};
+    const testaments = isNT ? ["NT"] : ["OT"];
+    // Also search both if word shows up in both
+    ["NT","OT"].forEach(t=>{
+      const books=INTERLINEAR[t]||{};
+      Object.entries(books).forEach(([bk,chaps])=>{
+        Object.entries(chaps).forEach(([ch,verses])=>{
+          const vArr=Array.isArray(verses)?verses:Object.values(verses);
+          vArr.forEach(verse=>{
+            (verse.words||[]).forEach(w=>{
+              if(w.s===strongs){
+                if(!hits[bk])hits[bk]={test:t,refs:[]};
+                hits[bk].refs.push({ch:parseInt(ch),v:verse.v,o:w.o,t:w.t});
+              }
+            });
+          });
+        });
+      });
+    });
+    // Deduplicate refs
+    Object.values(hits).forEach(h=>{
+      const seen=new Set();
+      h.refs=h.refs.filter(r=>{const k=r.ch+":"+r.v;if(seen.has(k))return false;seen.add(k);return true;});
+    });
+    setResults(hits);
+  }
+
+  if(!results) return(
+    <button className={"ws-btn"+(isNT?"":" ot")} onClick={runSearch}>
+      📖 Find {strongs} across loaded books
+    </button>
+  );
+
+  const books=Object.keys(results);
+  const total=books.reduce((s,b)=>s+results[b].refs.length,0);
+  return(
+    <div className="ws-results">
+      <div className="ws-results-hdr">
+        {total>0?`${total} occurrence${total>1?"s":""} across ${books.length} book${books.length>1?"s":""}`:
+          `${strongs} not found in loaded books`}
+        {total>0&&<span style={{marginLeft:".5rem",fontSize:".65rem"}}>(navigate to more books to expand)</span>}
+      </div>
+      {total===0&&<div className="ws-hit-none">Navigate to more books to find more occurrences.</div>}
+      {books.map(bk=>{
+        const {test,refs}=results[bk];
+        return(
+          <div key={bk} className="ws-book-group">
+            <div className="ws-book-name">{bk}</div>
+            {refs.slice(0,30).map((r,i)=>(
+              <div key={i} className="ws-hit" onClick={()=>{onNavigate&&onNavigate(bk+" "+r.ch+":"+r.v);onClose&&onClose();}}>
+                <span className={"ws-hit-ref "+(test==="NT"?"nt":"ot")}>{r.ch}:{r.v}</span>
+                <span className="ws-hit-word">{r.o}</span>
+                <span style={{fontSize:".7rem",color:"var(--text3)",fontStyle:"italic",marginLeft:".2rem"}}>{r.t}</span>
+              </div>
+            ))}
+            {refs.length>30&&<div className="ws-hit-none">+ {refs.length-30} more…</div>}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function StrongsPanel({entry,strongs,word,isNT,onClose,onNavigate}){
   const [sdEntry,setSdEntry]=useState(null);
   const [sdLoading,setSdLoading]=useState(false);
 
@@ -1476,6 +2118,7 @@ function StrongsPanel({entry,strongs,word,isNT,onClose}){
           <div className="lxx-pair"><span className={"lxx-word"+(heb?"":" heb")}>{bridge.lbl}</span><span className="lxx-code">{bridge.cp}</span></div>
           <p className="lxx-note">{bridge.note}</p>
         </div>}
+        {strongs&&<WordStudyResults strongs={strongs} isNT={isNT} onNavigate={onNavigate} onClose={onClose}/>}
       </div>
     </div>
   );
@@ -1528,6 +2171,7 @@ function App(){
   const [leftVerses,setLeftVerses]=useState([]);
   const [loading,setLoading]=useState(false);
   const [mobileView,setMobileView]=useState("interlinear"); // "list" | "interlinear"
+  const [showTheo,setShowTheo]=useState(false);
 
   const isNT=test==="NT";
   function handleNavigate(refStr){
@@ -1631,6 +2275,7 @@ function App(){
         </select>
         {loading&&<span className="fetch-badge">Loading…</span>}
         {!interlinearVerses&&!loading&&<span className="badge">Interlinear: John 1 · Genesis 1</span>}
+        <button className="topics-btn" onClick={()=>setShowTheo(true)}>⧁ Topics</button>
         <span className="hint">Click verse to sync · Click word for Strong's · ✦ = note · hover verse for +</span>
       </div>
       <div className="main-layout">
@@ -1673,8 +2318,9 @@ function App(){
           <span>Interlinear</span>
         </button>
       </div>
-      {sel&&<StrongsPanel entry={entry} strongs={sel.word.s} word={sel.word} isNT={isNT} onClose={()=>setSel(null)}/>}
+      {sel&&<StrongsPanel entry={entry} strongs={sel.word.s} word={sel.word} isNT={isNT} onClose={()=>setSel(null)} onNavigate={ref=>{handleNavigate(ref);setSel(null);}}/>}
       {addingNote&&<NoteModal verse={addingNote} onSave={data=>handleSaveNote(addingNote,data)} onClose={()=>setAddingNote(null)}/>}
+      {showTheo&&<TheologyPanel onClose={()=>setShowTheo(false)} onNavigate={ref=>{handleNavigate(ref);setShowTheo(false);}}/>}}
     </div>
   );
 }

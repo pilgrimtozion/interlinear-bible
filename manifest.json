@@ -1,0 +1,44 @@
+{
+  "name": "Berean Interlinear Bible",
+  "short_name": "Interlinear",
+  "description": "Greek and Hebrew interlinear Bible with Strong's concordance and Septuagint connections",
+  "start_url": "/interlinear-bible/interlinear_bible.html",
+  "scope": "/interlinear-bible/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "books", "religion"],
+  "shortcuts": [
+    {
+      "name": "Genesis",
+      "url": "/interlinear-bible/interlinear_bible.html#Genesis",
+      "description": "Open to Genesis"
+    },
+    {
+      "name": "John",
+      "url": "/interlinear-bible/interlinear_bible.html#John",
+      "description": "Open to the Gospel of John"
+    },
+    {
+      "name": "Psalms",
+      "url": "/interlinear-bible/interlinear_bible.html#Psalms",
+      "description": "Open to Psalms"
+    }
+  ]
+}

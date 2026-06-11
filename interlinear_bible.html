@@ -1862,7 +1862,16 @@ function parseApiBibleJson(nodes) {
   }
   walk(nodes);
   return Object.entries(verses)
-    .map(([v,t]) => ({v:parseInt(v), text:t.trim().replace(/\s+/g," ")}))
+    .map(([v,t]) => {
+      const num = parseInt(v);
+      let text = t.trim().replace(/\s+/g," ");
+      // Strip leading verse number if API.Bible included it as a text node
+      const ns = String(num);
+      if (text.startsWith(ns) && (text.length === ns.length || !/\d/.test(text[ns.length]))) {
+        text = text.slice(ns.length).trim();
+      }
+      return {v:num, text};
+    })
     .sort((a,b) => a.v - b.v)
     .filter(x => x.text);
 }

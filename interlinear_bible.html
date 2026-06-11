@@ -1851,6 +1851,8 @@ function parseApiBibleJson(nodes) {
         cur = parseInt(n.attrs.number);
         if (!verses[cur]) verses[cur] = "";
         walk(n.items || []);
+      } else if (n && (n.name === "versenum" || (n.attrs && n.attrs.style === "v"))) {
+        // skip verse-number display nodes
       } else if (n && n.text !== undefined && cur !== null) {
         verses[cur] = (verses[cur] || "") + n.text;
       } else if (n && n.items) {

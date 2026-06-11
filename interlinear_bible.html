@@ -267,6 +267,11 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:.
 .ws-hit-none{font-size:.8rem;color:var(--text3);font-style:italic;padding:.4rem 0}
 
 </style>
+<script type="text/javascript" src="https://pkg.api.bible/fumsV3.min.js"></script>
+<script>
+  window.fumsData = window.fumsData || [];
+  window.fums = window.fums || function() { window.fumsData.push(arguments); };
+</script>
 </head>
 <body>
 <div id="root"></div>
@@ -1830,14 +1835,17 @@ async function fetchChapterFromApiBible(bibleId, book, ch) {
   const chapterId = osisId+"."+ch;
   try {
     const r = await fetch(
-      `https://rest.api.bible/v1/bibles/${bibleId}/chapters/${chapterId}?content-type=json&include-titles=false&include-chapter-numbers=false&include-notes=false`,
+      `https://rest.api.bible/v1/bibles/${bibleId}/chapters/${chapterId}?content-type=json&include-titles=false&include-chapter-numbers=false&include-notes=false&fums-version=3`,
       {headers:{"api-key":API_BIBLE_KEY}}
     );
     if (!r.ok) return null;
     const data = await r.json();
     const verses = parseApiBibleJson(data.data && data.data.content ? data.data.content : []);
-    if (verses.length) translationCache[key] = verses;
-    return verses.length ? verses : null;
+    const copyright = (data.data && data.data.copyright) || "";
+    const fumsToken = data.meta && data.meta.fumsToken;
+    if (fumsToken && typeof window.fums === "function") window.fums("trackView", fumsToken);
+    if (verses.length) translationCache[key] = {verses, copyright};
+    return verses.length ? {verses, copyright} : null;
   } catch(e) { return null; }
 }
 
@@ -2350,6 +2358,7 @@ function App(){
   const [showTheo,setShowTheo]=useState(false);
   const [showNotes,setShowNotes]=useState(false);
   const [translation,setTranslation]=useState("WEB");
+  const [translationCopyright,setTranslationCopyright]=useState("");
 
   const isNT=test==="NT";
   function handleNavigate(refStr){
@@ -2406,6 +2415,7 @@ function App(){
     setLoading(true);
     setLeftVerses([]);
     if(translation==="WEB"){
+      setTranslationCopyright("");
       fetch("https://bible-api.com/"+bookUrl(book,ch)+"?translation=web")
         .then(r=>r.json())
         .then(data=>{
@@ -2421,9 +2431,10 @@ function App(){
           setLoading(false);
         });
     }else{
-      fetchChapterFromApiBible(translation,book,ch).then(verses=>{
-        if(verses&&verses.length){
-          setLeftVerses(verses);
+      fetchChapterFromApiBible(translation,book,ch).then(result=>{
+        if(result&&result.verses&&result.verses.length){
+          setLeftVerses(result.verses);
+          if(result.copyright) setTranslationCopyright(result.copyright);
         }else if(interlinearVerses){
           setLeftVerses(interlinearVerses.map(v=>({v:v.v,text:v.bsb})));
         }
@@ -2496,7 +2507,11 @@ function App(){
           ))}
           <div className="footer">
             <strong style={{color:"var(--text3)"}}>Jammin Interlinear App</strong><br/>
-            English text: <a href="https://ebible.org/eng-web/copyright.htm" target="_blank" rel="noopener" style={{color:"inherit"}}>World English Bible</a> (Public Domain) ·{" "}
+            English text:{" "}
+            {translation==="WEB"
+              ?<><a href="https://ebible.org/eng-web/copyright.htm" target="_blank" rel="noopener" style={{color:"inherit"}}>World English Bible</a> (Public Domain)</>
+              :<span>{translationCopyright||TRANSLATIONS.find(t=>t.id===translation)?.label||""}</span>
+            } ·{" "}
             Interlinear: <a href="https://interlinearbible.com" target="_blank" rel="noopener" style={{color:"inherit"}}>Berean Interlinear Bible</a> (Public Domain) ·{" "}
             {isNT?"Greek NT: SBL Greek New Testament":"Hebrew OT: Westminster Leningrad Codex"}<br/>
             Strong&#39;s Hebrew &amp; Greek: <a href="https://github.com/openscriptures/strongs" target="_blank" rel="noopener" style={{color:"inherit"}}>OpenScriptures</a> (CC&#8209;BY 4.0)

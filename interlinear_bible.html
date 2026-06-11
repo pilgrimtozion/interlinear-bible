@@ -2073,108 +2073,80 @@ function GeoPanel({book, ch, onClose}){
     paul2:"#2980b9", paul3:"#e74c3c", jesus_ministry:"#c0392b"
   };
 
-  // Init map
   useEffect(()=>{
     if(!mapContainerRef.current || mapRef.current) return;
     const L = window.L;
     if(!L) return;
-
     const isDark = !document.body.classList.contains("light");
     const tileUrl = isDark
       ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
       : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
     const tileAttrib = isDark
-      ? '&copy; <a href="https://carto.com/">CARTO</a> &copy; OSM contributors'
-      : '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors';
-
+      ? "© CARTO © OSM contributors"
+      : "© OpenStreetMap contributors";
     const map = L.map(mapContainerRef.current,{
       center:[31.5,35.2], zoom:7, zoomControl:true, preferCanvas:true
     });
     L.tileLayer(tileUrl,{attribution:tileAttrib,maxZoom:18}).addTo(map);
     mapRef.current = map;
-    return ()=>{
-      if(mapRef.current){mapRef.current.remove();mapRef.current=null;}
-    };
+    return ()=>{ if(mapRef.current){mapRef.current.remove();mapRef.current=null;} };
   },[]);
 
-  // Update place markers when chapter/book changes
   useEffect(()=>{
     const L = window.L;
     const map = mapRef.current;
     if(!L || !map) return;
-
     markersRef.current.forEach(m=>map.removeLayer(m));
     markersRef.current = [];
-
     const bounds = [];
     chPlaces.forEach(place=>{
       const c = place.c;
       const colors = {k:"#3b82f6", a:"#f59e0b", d:"#ef4444", r:"#10b981"};
       const color = colors[c]||"#3b82f6";
-      const isRegion = c==="r";
-      const isDisputed = c==="d";
-      const isApprox = c==="a";
-
+      const isRegion = c==="r", isDisputed = c==="d", isApprox = c==="a";
       const m = L.circleMarker([place.la,place.lo],{
         radius: isRegion?14:8,
-        fillColor: color,
-        color:"#fff",
-        weight: isDisputed?2:1.5,
-        opacity:1,
+        fillColor: color, color:"#fff",
+        weight: isDisputed?2:1.5, opacity:1,
         fillOpacity: isRegion?0.25 : isApprox?0.55 : 0.88,
-        dashArray: isDisputed?"6,4":null,
-        className:"geo-place-marker"
+        dashArray: isDisputed?"6,4":null
       });
-
       let badge = "";
-      if(isApprox) badge = `<div style="color:#b8860b;font-size:11px;margin-top:4px">\u{1F4CD} Location approximate</div>`;
-      if(isDisputed) badge = `<div style="background:#fef2f2;border:1px solid #fca5a5;border-radius:4px;padding:4px 6px;margin-top:5px;font-size:11px;color:#991b1b"><strong>\u26A0\uFE0F Disputed Location</strong><br/>Scholars disagree on the exact site for this place. No consensus exists.</div>`;
-      if(isRegion) badge = `<div style="color:#047857;font-size:11px;margin-top:4px">\u{1F5FA}\uFE0F General region, not a specific city</div>`;
-
-      const noteHtml = place.nt ? `<div style="color:#666;font-style:italic;font-size:11px;margin-top:3px">${place.nt}</div>` : "";
-
-      m.bindPopup(`<div style="font-family:Georgia,serif;min-width:160px"><strong style="font-size:13px">${place.n}</strong>${badge}${noteHtml}</div>`,{maxWidth:240});
+      if(isApprox) badge = "<div style=\"color:#b8860b;font-size:11px;margin-top:4px\">Location approximate</div>";
+      if(isDisputed) badge = "<div style=\"background:#fef2f2;border:1px solid #fca5a5;border-radius:4px;padding:4px 6px;margin-top:5px;font-size:11px;color:#991b1b\"><strong>&#9888; Disputed Location</strong><br/>Scholars disagree on the exact site. No consensus exists.</div>";
+      if(isRegion) badge = "<div style=\"color:#047857;font-size:11px;margin-top:4px\">General region, not a specific city</div>";
+      const noteHtml = place.nt ? "<div style=\"color:#666;font-style:italic;font-size:11px;margin-top:3px\">"+place.nt+"</div>" : "";
+      m.bindPopup("<div style=\"font-family:Georgia,serif;min-width:160px\"><strong style=\"font-size:13px\">"+place.n+"</strong>"+badge+noteHtml+"</div>",{maxWidth:240});
       m.addTo(map);
       markersRef.current.push(m);
       bounds.push([place.la,place.lo]);
     });
-
-    if(bounds.length===1){
-      map.setView(bounds[0],9);
-    } else if(bounds.length>1){
-      map.fitBounds(bounds,{padding:[50,50],maxZoom:10});
-    }
+    if(bounds.length===1) map.setView(bounds[0],9);
+    else if(bounds.length>1) map.fitBounds(bounds,{padding:[50,50],maxZoom:10});
     setTimeout(()=>map.invalidateSize(),120);
   },[chPlaces]);
 
-  // Render/remove trail polylines
   useEffect(()=>{
     const L = window.L;
     const map = mapRef.current;
     if(!L || !map) return;
-
     trailLayersRef.current.forEach(l=>map.removeLayer(l));
     trailLayersRef.current = [];
-
     if(!showTrails) return;
-
     Object.entries(TRAILS_DATA).forEach(([key,trail])=>{
       if(activeTrail && activeTrail!==key) return;
       const color = TRAIL_COLORS[key]||"#888";
-      const latlngs = trail.waypoints.map(w=>[w.la,w.lo]);
-      const line = L.polyline(latlngs,{
+      const line = L.polyline(trail.waypoints.map(w=>[w.la,w.lo]),{
         color, weight:2.5, opacity:0.7, dashArray:"6,5"
       });
       line.addTo(map);
       trailLayersRef.current.push(line);
-
-      trail.waypoints.forEach((w,i)=>{
+      trail.waypoints.forEach(w=>{
         const dot = L.circleMarker([w.la,w.lo],{
-          radius:5, fillColor:color, color:"#fff",
-          weight:1.5, opacity:1, fillOpacity:0.9
+          radius:5, fillColor:color, color:"#fff", weight:1.5, opacity:1, fillOpacity:0.9
         });
-        const noteHtml = w.note ? `<div style="font-style:italic;color:#666;font-size:11px;margin-top:3px">${w.note}</div>` : "";
-        dot.bindPopup(`<div style="font-family:Georgia,serif"><strong>${w.label}</strong>${noteHtml}<div style="font-size:11px;color:#888;margin-top:2px">${trail.label}</div></div>`,{maxWidth:220});
+        const nt = w.note ? "<div style=\"font-style:italic;color:#666;font-size:11px;margin-top:3px\">"+w.note+"</div>" : "";
+        dot.bindPopup("<div style=\"font-family:Georgia,serif\"><strong>"+w.label+"</strong>"+nt+"<div style=\"font-size:11px;color:#888;margin-top:2px\">"+trail.label+"</div></div>",{maxWidth:220});
         dot.addTo(map);
         trailLayersRef.current.push(dot);
       });
@@ -2189,11 +2161,10 @@ function GeoPanel({book, ch, onClose}){
     <div className="geo-overlay" onClick={e=>{if(e.target===e.currentTarget)onClose();}}>
       <div className="geo-panel">
         <div className="geo-header">
-          <span>\u{1F5FA}\uFE0F</span>
-          <span className="geo-title">Geography \u2014 {book} {ch}</span>
-          <button className="geo-close" onClick={onClose}>\u2715</button>
+          <span role="img" aria-label="map">&#128506;</span>
+          <span className="geo-title">Geography &#8212; {book} {ch}</span>
+          <button className="geo-close" onClick={onClose}>&#x2715;</button>
         </div>
-
         {relevantTrails.length>0&&(
           <div className="geo-controls">
             <button
@@ -2212,20 +2183,17 @@ function GeoPanel({book, ch, onClose}){
             ))}
           </div>
         )}
-
         <div className="geo-map-wrap" ref={mapContainerRef}/>
-
         {chPlaces.length===0&&(
-          <div className="geo-no-places" style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",background:"var(--surface)",border:"1px solid var(--border)",borderRadius:8,padding:"1.2rem 2rem",pointerEvents:"none",zIndex:1000,textAlign:"center"}}>
+          <div style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",background:"var(--surface)",border:"1px solid var(--border)",borderRadius:8,padding:"1.2rem 2rem",pointerEvents:"none",zIndex:1000,textAlign:"center",color:"var(--text3)",fontSize:".85rem",lineHeight:1.8}}>
             No mapped locations for {book} {ch}.<br/>
-            <span style={{fontSize:".75rem"}}>Many chapters\u2014especially laws, psalms, and letters\u2014don't reference specific geographic locations.</span>
+            <span style={{fontSize:".75rem"}}>Many chapters don&#39;t reference specific geographic locations.</span>
           </div>
         )}
-
         <div className="geo-legend">
           <span className="geo-legend-item"><span className="geo-dot known"></span>Known</span>
           <span className="geo-legend-item"><span className="geo-dot approx"></span>Approximate</span>
-          <span className="geo-legend-item"><span className="geo-dot disputed"></span>\u26A0 Disputed</span>
+          <span className="geo-legend-item"><span className="geo-dot disputed"></span>&#9888; Disputed</span>
           <span className="geo-legend-item"><span className="geo-dot region"></span>Region</span>
           <span className="geo-legend-item" style={{marginLeft:"auto",fontSize:".62rem",opacity:.6}}>Geocoding: OpenBible.info (CC BY)</span>
         </div>

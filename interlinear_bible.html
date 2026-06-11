@@ -1794,6 +1794,76 @@ const INTERLINEAR = {
 const GITHUB_RAW = "https://raw.githubusercontent.com/pilgrimtozion/interlinear-bible/main/data";
 const bookCache = {};
 
+// ── API.Bible translation support ─────────────────────────────────────────────
+const API_BIBLE_KEY = "Ft9Dc_gI1W8v0kXuwcvdL";
+const TRANSLATIONS = [
+  {id:"WEB",  label:"WEB — World English Bible"},
+  {id:"de4e12af7f28f599-02", label:"KJV — King James Version"},
+  {id:"06125adad2d5898a-01", label:"ASV — American Standard"},
+];
+const OSIS_ID = {
+  Matthew:"MAT",Mark:"MRK",Luke:"LUK",John:"JHN",Acts:"ACT",
+  Romans:"ROM","1 Corinthians":"1CO","2 Corinthians":"2CO",
+  Galatians:"GAL",Ephesians:"EPH",Philippians:"PHP",Colossians:"COL",
+  "1 Thessalonians":"1TH","2 Thessalonians":"2TH",
+  "1 Timothy":"1TI","2 Timothy":"2TI",Titus:"TIT",Philemon:"PHM",
+  Hebrews:"HEB",James:"JAS","1 Peter":"1PE","2 Peter":"2PE",
+  "1 John":"1JN","2 John":"2JN","3 John":"3JN",Jude:"JUD",Revelation:"REV",
+  Genesis:"GEN",Exodus:"EXO",Leviticus:"LEV",Numbers:"NUM",Deuteronomy:"DEU",
+  Joshua:"JOS",Judges:"JDG",Ruth:"RUT","1 Samuel":"1SA","2 Samuel":"2SA",
+  "1 Kings":"1KI","2 Kings":"2KI","1 Chronicles":"1CH","2 Chronicles":"2CH",
+  Ezra:"EZR",Nehemiah:"NEH",Esther:"EST",Job:"JOB",Psalms:"PSA",
+  Proverbs:"PRO",Ecclesiastes:"ECC","Song of Solomon":"SNG",Isaiah:"ISA",
+  Jeremiah:"JER",Lamentations:"LAM",Ezekiel:"EZK",Daniel:"DAN",
+  Hosea:"HOS",Joel:"JOL",Amos:"AMO",Obadiah:"OBA",Jonah:"JON",
+  Micah:"MIC",Nahum:"NAH",Habakkuk:"HAB",Zephaniah:"ZEP",Haggai:"HAG",
+  Zechariah:"ZEC",Malachi:"MAL"
+};
+const translationCache = {};
+
+async function fetchChapterFromApiBible(bibleId, book, ch) {
+  const key = bibleId+"|"+book+"|"+ch;
+  if (translationCache[key]) return translationCache[key];
+  const osisId = OSIS_ID[book];
+  if (!osisId) return null;
+  const chapterId = osisId+"."+ch;
+  try {
+    const r = await fetch(
+      `https://api.scripture.api.bible/v1/bibles/${bibleId}/chapters/${chapterId}?content-type=json&include-titles=false&include-chapter-numbers=false&include-notes=false`,
+      {headers:{"api-key":API_BIBLE_KEY}}
+    );
+    if (!r.ok) return null;
+    const data = await r.json();
+    const verses = parseApiBibleJson(data.data && data.data.content ? data.data.content : []);
+    if (verses.length) translationCache[key] = verses;
+    return verses.length ? verses : null;
+  } catch(e) { return null; }
+}
+
+function parseApiBibleJson(nodes) {
+  const verses = {};
+  let cur = null;
+  function walk(arr) {
+    if (!Array.isArray(arr)) return;
+    for (const n of arr) {
+      if (n && n.name === "verse" && n.attrs && n.attrs.number) {
+        cur = parseInt(n.attrs.number);
+        if (!verses[cur]) verses[cur] = "";
+        walk(n.items || []);
+      } else if (n && n.text !== undefined && cur !== null) {
+        verses[cur] = (verses[cur] || "") + n.text;
+      } else if (n && n.items) {
+        walk(n.items);
+      }
+    }
+  }
+  walk(nodes);
+  return Object.entries(verses)
+    .map(([v,t]) => ({v:parseInt(v), text:t.trim().replace(/\s+/g," ")}))
+    .sort((a,b) => a.v - b.v)
+    .filter(x => x.text);
+}
+
 async function fetchInterlinearBook(testament, book) {
   const key = testament + "|" + book;
   if (bookCache[key]) return bookCache[key];
@@ -1816,7 +1886,7 @@ function saveNotes(n){localStorage.setItem(NOTES_KEY,JSON.stringify(n))}
 function nk(t,b,c,v){return t+"|"+b+"|"+c+"|"+v}
 function bookUrl(book,ch){return book.toLowerCase().replace(/ /g,"+")+"+"+ch}
 
-function NotePopover({note,isNT,onDelete,onClose,onNavigate}){
+function NotePopover({items,isNT,onDeleteItem,onClose,onNavigate}){
   const ref=useRef();
   useEffect(()=>{
     const h=e=>{if(ref.current&&!ref.current.contains(e.target))onClose();};
@@ -1825,13 +1895,18 @@ function NotePopover({note,isNT,onDelete,onClose,onNavigate}){
   },[onClose]);
   return(
     <div className={"note-pop"+(isNT?"":" ot")} ref={ref} onClick={e=>e.stopPropagation()}>
-      <div className={"note-pop-label"+(isNT?"":" ot")}>{note.type==="link"?"🔗 Verse Link":"📝 Note"}</div>
-      <div className="note-pop-text">{note.type==="link"
-        ?<span style={{color:"var(--nt)",cursor:"pointer",textDecoration:"underline"}} onClick={()=>{if(onNavigate)onNavigate(note.ref);}}>{note.ref}</span>
-        :note.text}</div>
-      <div className="note-pop-actions">
-        <button className="btn btn-danger" style={{fontSize:".7rem",padding:"3px 10px"}} onClick={onDelete}>Remove</button>
-      </div>
+      {items.map((item,i)=>(
+        <div key={i}>
+          {i>0&&<hr style={{border:"none",borderTop:"1px solid var(--border)",margin:".4rem 0"}}/>}
+          <div className={"note-pop-label"+(isNT?"":" ot")}>{item.type==="link"?"🔗 Verse Link":"📝 Note"}</div>
+          <div className="note-pop-text">{item.type==="link"
+            ?<span style={{color:"var(--nt)",cursor:"pointer",textDecoration:"underline"}} onClick={()=>{if(onNavigate)onNavigate(item.ref);}}>{item.ref}</span>
+            :item.text}</div>
+          <div className="note-pop-actions">
+            <button className="btn btn-danger" style={{fontSize:".7rem",padding:"3px 10px"}} onClick={()=>onDeleteItem(i)}>Remove</button>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
@@ -1909,8 +1984,9 @@ function VerseBlock({verse,isNT,activeV,selKey,onClick,id}){
   );
 }
 
-function LeftVerse({verse,isNT,isActive,note,onAddNote,onDeleteNote,onNavigate,onSelect}){
+function LeftVerse({verse,isNT,isActive,noteItems,onAddNote,onDeleteNoteItem,onNavigate,onSelect}){
   const [showPop,setShowPop]=useState(false);
+  const hasNote=noteItems&&noteItems.length>0;
   return(
     <div className={"lv-row"+(isActive?(isNT?" active":" active ot"):"")} style={{position:"relative"}}
          onClick={()=>{
@@ -1922,11 +1998,11 @@ function LeftVerse({verse,isNT,isActive,note,onAddNote,onDeleteNote,onNavigate,o
         <span className={"lv-num"+(isNT?"":" ot")}>{verse.v}</span>
         <span className="lv-text">
           {verse.text}
-          {note&&<span className="note-star" title="View note" onClick={e=>{e.stopPropagation();setShowPop(p=>!p);}}>&#x2726;</span>}
+          {hasNote&&<span className="note-star" title="View notes" onClick={e=>{e.stopPropagation();setShowPop(p=>!p);}}>&#x2726;</span>}
         </span>
         <button className="lv-note-btn" title="Add note or link" onClick={e=>{e.stopPropagation();onAddNote(verse.v);}}>+</button>
       </div>
-      {showPop&&note&&<NotePopover note={note} isNT={isNT} onDelete={()=>{onDeleteNote(verse.v);setShowPop(false);}} onClose={()=>setShowPop(false)} onNavigate={ref=>{onNavigate&&onNavigate(ref);setShowPop(false);}}/>}
+      {showPop&&hasNote&&<NotePopover items={noteItems} isNT={isNT} onDeleteItem={i=>{onDeleteNoteItem(verse.v,i);if(noteItems.length<=1)setShowPop(false);}} onClose={()=>setShowPop(false)} onNavigate={ref=>{onNavigate&&onNavigate(ref);setShowPop(false);}}/>}
     </div>
   );
 }
@@ -2182,6 +2258,71 @@ function parseRef(ref){
   return{test,book,ch,v};
 }
 
+// ── All Notes Panel ────────────────────────────────────────────────────────────
+function NotesPanel({notes, onClose, onNavigate}){
+  const migrateNote=raw=>Array.isArray(raw)?raw:(raw?[raw]:[]);
+  const NT_ORDER=Object.keys(BOOKS.NT||{});
+  const OT_ORDER=Object.keys(BOOKS.OT||{});
+  const BOOK_ORDER=[...NT_ORDER,...OT_ORDER];
+  const bkIdx=Object.fromEntries(BOOK_ORDER.map((b,i)=>[b,i]));
+
+  // Build grouped structure: { "NT|John|3" : {test,book,ch,isNT, verses:[{v, items:[]}]} }
+  const grouped={};
+  Object.entries(notes).forEach(([key,raw])=>{
+    const items=migrateNote(raw);
+    if(!items.length)return;
+    const parts=key.split("|");
+    if(parts.length<4)return;
+    const [t,bk,chStr,vStr]=parts;
+    const gk=t+"|"+bk+"|"+chStr;
+    if(!grouped[gk])grouped[gk]={test:t,book:bk,ch:parseInt(chStr),isNT:t==="NT",verses:[]};
+    grouped[gk].verses.push({v:parseInt(vStr),items});
+  });
+
+  const sortedGroups=Object.entries(grouped).sort(([,a],[,b])=>{
+    const bi=(bkIdx[a.book]??999)-(bkIdx[b.book]??999);
+    return bi!==0?bi:a.ch-b.ch;
+  });
+
+  return(
+    <div className="theo-overlay" onClick={onClose}>
+      <div className="theo-panel" onClick={e=>e.stopPropagation()}>
+        <div className="theo-header">
+          <span className="theo-title">📝 My Notes</span>
+          <button className="theo-close" onClick={onClose}>×</button>
+        </div>
+        <div className="theo-body">
+          {sortedGroups.length===0
+            ?<div style={{padding:"2rem 1rem",color:"var(--text3)",textAlign:"center",fontSize:".85rem",lineHeight:1.7}}>No notes yet.<br/>Hover over any verse and tap <strong>+</strong> to add one.</div>
+            :sortedGroups.map(([gk,grp])=>(
+              <div key={gk} style={{marginBottom:"1.1rem"}}>
+                <div style={{fontSize:".72rem",fontWeight:700,color:grp.isNT?"var(--nt)":"var(--ot)",marginBottom:".4rem",textTransform:"uppercase",letterSpacing:".06em"}}>
+                  {grp.book} {grp.ch}
+                </div>
+                {grp.verses.sort((a,b)=>a.v-b.v).map(({v,items})=>(
+                  <div key={v} className={"arc-verse"+(grp.isNT?"":" ot")} style={{cursor:"pointer"}}
+                    onClick={()=>{onNavigate&&onNavigate(`${grp.book} ${grp.ch}:${v}`);onClose();}}>
+                    <span className={"arc-verse-ref "+(grp.isNT?"nt":"ot")}>v.{v}</span>
+                    <div style={{flex:1}}>
+                      {items.map((item,i)=>(
+                        <div key={i} style={{fontSize:".8rem",color:"var(--text)",lineHeight:1.55}}>
+                          {item.type==="link"
+                            ?<span>🔗 <em style={{color:"var(--text2)"}}>{item.ref}</em></span>
+                            :<span>📝 {item.text&&item.text.length>90?item.text.slice(0,87)+"…":item.text}</span>}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function App(){
   const [test,setTest]=useState("NT");
   const [book,setBook]=useState("John");
@@ -2195,6 +2336,8 @@ function App(){
   const [loading,setLoading]=useState(false);
   const [mobileView,setMobileView]=useState("interlinear"); // "list" | "interlinear"
   const [showTheo,setShowTheo]=useState(false);
+  const [showNotes,setShowNotes]=useState(false);
+  const [translation,setTranslation]=useState("WEB");
 
   const isNT=test==="NT";
   function handleNavigate(refStr){
@@ -2250,28 +2393,49 @@ function App(){
   useEffect(()=>{
     setLoading(true);
     setLeftVerses([]);
-    fetch("https://bible-api.com/"+bookUrl(book,ch)+"?translation=web")
-      .then(r=>r.json())
-      .then(data=>{
-        if(data.verses){
-          setLeftVerses(data.verses.map(v=>({v:v.verse,text:v.text.trim()})));
-        }
-        setLoading(false);
-      })
-      .catch(()=>{
-        // fallback to interlinear BSB data if available
-        if(interlinearVerses){
+    if(translation==="WEB"){
+      fetch("https://bible-api.com/"+bookUrl(book,ch)+"?translation=web")
+        .then(r=>r.json())
+        .then(data=>{
+          if(data.verses){
+            setLeftVerses(data.verses.map(v=>({v:v.verse,text:v.text.trim()})));
+          }
+          setLoading(false);
+        })
+        .catch(()=>{
+          if(interlinearVerses){
+            setLeftVerses(interlinearVerses.map(v=>({v:v.v,text:v.bsb})));
+          }
+          setLoading(false);
+        });
+    }else{
+      fetchChapterFromApiBible(translation,book,ch).then(verses=>{
+        if(verses&&verses.length){
+          setLeftVerses(verses);
+        }else if(interlinearVerses){
           setLeftVerses(interlinearVerses.map(v=>({v:v.v,text:v.bsb})));
         }
         setLoading(false);
       });
-  },[book,ch,test]);
+    }
+  },[book,ch,test,translation]);
 
   const switchTest=t=>{setTest(t);const b=Object.keys(BOOKS[t])[0];setBook(b);setCh(1);setSel(null);setActiveV(null);};
   const handleWord=(key,word)=>setSel(s=>s&&s.key===key?null:{key,word});
-  const getNote=v=>notes[nk(test,book,ch,v)];
-  const handleSaveNote=(v,data)=>{const n={...notes,[nk(test,book,ch,v)]:data};setNotes(n);saveNotes(n);setAddingNote(null);};
-  const handleDeleteNote=v=>{const n={...notes};delete n[nk(test,book,ch,v)];setNotes(n);saveNotes(n);};
+  const migrateNote=raw=>Array.isArray(raw)?raw:(raw?[raw]:[]);
+  const getNote=v=>migrateNote(notes[nk(test,book,ch,v)]);
+  const handleSaveNote=(v,item)=>{
+    const key=nk(test,book,ch,v);
+    const updated=[...migrateNote(notes[key]),item];
+    const n={...notes,[key]:updated};setNotes(n);saveNotes(n);setAddingNote(null);
+  };
+  const handleDeleteNoteItem=(v,idx)=>{
+    const key=nk(test,book,ch,v);
+    const updated=migrateNote(notes[key]).filter((_,i)=>i!==idx);
+    const n={...notes};
+    if(updated.length===0)delete n[key]; else n[key]=updated;
+    setNotes(n);saveNotes(n);
+  };
   const entry=sel?S[sel.word.s]:null;
 
   return(
@@ -2298,8 +2462,12 @@ function App(){
         <select className={"nav-select"+(isNT?"":" ot")} value={ch} onChange={e=>{setCh(+e.target.value);setSel(null);setActiveV(null);}}>
           {chapters.map(c=><option key={c} value={c}>Chapter {c}</option>)}
         </select>
+        <select className={"nav-select"+(isNT?"":" ot")} value={translation} onChange={e=>setTranslation(e.target.value)} title="Switch translation">
+          {TRANSLATIONS.map(t=><option key={t.id} value={t.id}>{t.label}</option>)}
+        </select>
         {loading&&<span className="fetch-badge">Loading…</span>}
         {!interlinearVerses&&!loading&&<span className="badge">Interlinear: John 1 · Genesis 1</span>}
+        <button className="topics-btn" onClick={()=>setShowNotes(true)}>📝 Notes</button>
         <button className="topics-btn" onClick={()=>setShowTheo(true)}>⧁ Topics</button>
         <span className="hint">Click verse to sync · Click word for Strong's · ✦ = note · hover verse for +</span>
       </div>
@@ -2308,7 +2476,7 @@ function App(){
           {loading&&<div className="loading">Loading…</div>}
           {leftVerses.map(v=>(
             <LeftVerse key={v.v} verse={v} isNT={isNT} isActive={activeV===v.v}
-              note={getNote(v.v)} onAddNote={vn=>setAddingNote(vn)} onDeleteNote={handleDeleteNote} onNavigate={handleNavigate}
+              noteItems={getNote(v.v)} onAddNote={vn=>setAddingNote(vn)} onDeleteNoteItem={handleDeleteNoteItem} onNavigate={handleNavigate}
               onSelect={vn=>{setActiveV(vn);setMobileView("interlinear");}}/>
           ))}
           <div className="footer">
@@ -2348,6 +2516,7 @@ function App(){
       </div>
       {sel&&<StrongsPanel entry={entry} strongs={sel.word.s} word={sel.word} isNT={isNT} onClose={()=>setSel(null)} onNavigate={ref=>{handleNavigate(ref);setSel(null);}}/>}
       {addingNote&&<NoteModal verse={addingNote} onSave={data=>handleSaveNote(addingNote,data)} onClose={()=>setAddingNote(null)}/>}
+      {showNotes&&<NotesPanel notes={notes} onClose={()=>setShowNotes(false)} onNavigate={handleNavigate}/>}
       {showTheo&&<TheologyPanel onClose={()=>setShowTheo(false)} onNavigate={ref=>{handleNavigate(ref);setShowTheo(false);}}/>}
     </div>
   );

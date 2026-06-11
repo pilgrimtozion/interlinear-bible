@@ -152,7 +152,7 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:.
 
 /* ── Mobile tab bar (hidden on desktop) ─────────────────────────────── */
 .mob-tabs{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);z-index:90}
-.mob-tab{flex:1;padding:.65rem .5rem .55rem;border:none;background:transparent;color:var(--text3);font-family:Georgia,serif;font-size:.72rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:color .12s}
+.mob-tab{flex:1;padding:.55rem .3rem .45rem;border:none;background:transparent;color:var(--text3);font-family:Georgia,serif;font-size:.64rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;transition:color .12s}
 .mob-tab.mob-on{color:var(--nt)}
 .mob-tab.mob-on.mob-ot{color:var(--ot)}
 .mob-tab-icon{font-size:1.25rem;line-height:1}
@@ -2890,6 +2890,21 @@ function App(){
                 onClick={()=>setMobileView("interlinear")}>
           <span className="mob-tab-icon">{isNT?"α":"א"}</span>
           <span>Interlinear</span>
+        </button>
+        <button className={"mob-tab"+(showNotes?" mob-on"+(isNT?"":" mob-ot"):"")}
+                onClick={()=>setShowNotes(true)}>
+          <span className="mob-tab-icon">📝</span>
+          <span>Notes</span>
+        </button>
+        <button className={"mob-tab"+(showPlaces?" mob-on"+(isNT?"":" mob-ot"):"")}
+                onClick={()=>setShowPlaces(true)}>
+          <span className="mob-tab-icon">📍</span>
+          <span>Places</span>
+        </button>
+        <button className={"mob-tab"+(showTheo?" mob-on"+(isNT?"":" mob-ot"):"")}
+                onClick={()=>setShowTheo(true)}>
+          <span className="mob-tab-icon">⧁</span>
+          <span>Topics</span>
         </button>
       </div>
       {showNotes&&<NotesPanel notes={notes} onClose={()=>setShowNotes(false)} onNavigate={handleNavigate}/>}

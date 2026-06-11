@@ -2770,20 +2770,29 @@ function App(){
     localStorage.setItem('jm-ch',String(ch));
   },[test,book,ch]);
 
-  // Swipe navigation
-  const swipeRef=useRef({});
-  function onTouchStart(e){
-    swipeRef.current={x:e.touches[0].clientX,y:e.touches[0].clientY};
-  }
-  function onTouchEnd(e){
-    if(!swipeRef.current.x)return;
-    const dx=e.changedTouches[0].clientX-swipeRef.current.x;
-    const dy=e.changedTouches[0].clientY-swipeRef.current.y;
-    swipeRef.current={};
-    if(Math.abs(dx)<55||Math.abs(dx)<Math.abs(dy)*1.5)return;
-    if(dx<0){if(ch<chCount){setCh(ch+1);setSel(null);setActiveV(null);}}
-    else{if(ch>1){setCh(ch-1);setSel(null);setActiveV(null);}}
-  }
+  // Swipe navigation — use refs to avoid stale closures
+  const mainLayoutRef=useRef(null);
+  const chRef=useRef(ch);
+  const chCountRef=useRef(chCount);
+  useEffect(()=>{chRef.current=ch; chCountRef.current=chCount;},[ch,chCount]);
+  useEffect(()=>{
+    const el=mainLayoutRef.current;
+    if(!el)return;
+    let sx=null,sy=null;
+    function ts(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY;}
+    function te(e){
+      if(sx===null)return;
+      const dx=e.changedTouches[0].clientX-sx;
+      const dy=e.changedTouches[0].clientY-sy;
+      sx=null;sy=null;
+      if(Math.abs(dx)<50||Math.abs(dx)<Math.abs(dy)*1.3)return;
+      if(dx<0){if(chRef.current<chCountRef.current){setCh(c=>c+1);setSel(null);setActiveV(null);}}
+      else{if(chRef.current>1){setCh(c=>c-1);setSel(null);setActiveV(null);}}
+    }
+    el.addEventListener('touchstart',ts,{passive:true});
+    el.addEventListener('touchend',te,{passive:true});
+    return()=>{el.removeEventListener('touchstart',ts);el.removeEventListener('touchend',te);};
+  },[]);
 
   const bookNames=Object.keys(BOOKS[test]);
   const chCount=BOOKS[test][book]||1;
@@ -2900,7 +2909,7 @@ function App(){
 
         <span className="hint">Click verse to sync · Click word for Strong's · ✦ = note · hover verse for +</span>
       </div>
-      <div className="main-layout" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+      <div className="main-layout" ref={mainLayoutRef}>
         <div className={"left-col"+(mobileView==="list"?" mob-show":"")}>
           <div style={{padding:".4rem .6rem .2rem",display:"flex",alignItems:"center",gap:".5rem",borderBottom:"1px solid var(--border)",flexShrink:0,position:"sticky",top:0,background:"var(--surface)",zIndex:5}}>
             <span style={{fontSize:".72rem",color:"var(--text3)",whiteSpace:"nowrap"}}>Translation:</span>

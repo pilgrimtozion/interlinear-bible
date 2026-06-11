@@ -55,7 +55,12 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:.
 /* Layout */
 .main-layout{display:flex;height:calc(100vh - 102px);overflow:hidden}
 .left-col{width:320px;min-width:260px;flex-shrink:0;overflow-y:auto;border-right:1px solid var(--border);padding:1rem 1.15rem}
-.right-col{flex:1;overflow-y:auto;padding:1rem 1.15rem}
+.right-tab-strip{display:flex;border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0;overflow-x:auto}
+.rtab{padding:.48rem .85rem;font-size:.76rem;background:none;border:none;border-bottom:2px solid transparent;color:var(--text2);cursor:pointer;white-space:nowrap;font-family:Georgia,serif;transition:color .12s}
+.rtab:hover{color:var(--text)}
+.rtab.rtab-on{color:var(--nt);border-bottom-color:var(--nt);font-weight:600}
+.right-tab-content{flex:1;overflow-y:auto;padding:1rem 1.15rem;display:flex;flex-direction:column;gap:.4rem}
+.right-col{flex:1;display:flex;flex-direction:column;overflow:hidden}
 /* Left col verse rows */
 .lv-row{padding:.55rem .45rem;border-radius:7px;cursor:pointer;transition:background .12s;position:relative;margin-bottom:2px}
 .lv-row:hover{background:var(--surface2)}
@@ -176,7 +181,7 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:.
   /* One column at a time — left hidden by default, right always shown */
   .left-col{width:100%;min-width:0;border-right:none;display:none;padding-bottom:56px}
   .left-col.mob-show{display:block}
-  .right-col{width:100%;padding-bottom:56px}
+  .right-col{width:100%;}
   .right-col.mob-hide{display:none}
 
   /* Show the bottom tab bar on mobile */
@@ -2072,7 +2077,7 @@ function LeftVerse({verse,isNT,isActive,noteItems,onAddNote,onDeleteNoteItem,onN
 // Which trails are contextually relevant to each book
 
 // ── Places Panel ───────────────────────────────────────────────────────────
-function PlacesPanel({book, ch, onClose, onNavigate}){
+function PlacesPanel({book, ch, onClose, onNavigate, inline}){
   var chNum = parseInt(ch, 10);
   var [expanded, setExpanded] = useState(null);
   var [query, setQuery] = useState('');
@@ -2110,6 +2115,84 @@ function PlacesPanel({book, ch, onClose, onNavigate}){
 
   var displayList = tab==='chapter' ? chapterPlaces : browsePlaces;
 
+  if(inline) return (
+    <div style={{flex:1,display:'flex',flexDirection:'column',overflow:'hidden'}}>
+      <div style={{padding:'.75rem 1rem .6rem',borderBottom:'1px solid var(--border)',display:'flex',alignItems:'center',gap:'.5rem',flexShrink:0}}>
+          <span style={{fontWeight:700,fontSize:'.95rem',flex:1}}>
+            {'📍 Places'}{tab==='chapter' ? ' · '+book+' '+ch : ' · Browse All'}
+          </span>
+          <button className={'geo-trail-btn'+(tab==='chapter'?' active':'')}
+            style={tab==='chapter'?{background:'#1d6b4a',color:'#fff',borderColor:'transparent'}:{}}
+            onClick={function(){setTab('chapter');setQuery('');}}>This Chapter</button>
+          <button className={'geo-trail-btn'+(tab==='browse'?' active':'')}
+            style={tab==='browse'?{background:'#1d6b4a',color:'#fff',borderColor:'transparent'}:{}}
+            onClick={function(){setTab('browse');}}>Browse All</button>
+          <button className="close-btn" onClick={onClose}>&#x2715;</button>
+        </div>
+
+        {tab==='browse' && (
+          <div style={{padding:'.5rem 1rem .25rem',flexShrink:0}}>
+            <input value={query} onChange={function(e){setQuery(e.target.value);}}
+              placeholder="Search places..."
+              style={{width:'100%',padding:'.35rem .6rem',borderRadius:6,
+                border:'1px solid var(--border)',background:'var(--bg2)',
+                color:'var(--text)',fontSize:'.8rem',boxSizing:'border-box'}}/>
+          </div>
+        )}
+
+        <div style={{flex:1,overflowY:'auto',padding:'.5rem .75rem'}}>
+          {displayList.length===0 && (
+            <div style={{padding:'1.5rem 1rem',color:'var(--text2)',fontSize:'.82rem',textAlign:'center'}}>
+              {tab==='chapter'
+                ? 'No indexed places for this chapter. Try Browse All.'
+                : 'No places match.'}
+            </div>
+          )}
+          {displayList.map(function(place){
+            var isOpen = expanded===place.name;
+            return (
+              <div key={place.name} style={{border:'1px solid var(--border)',borderRadius:8,marginBottom:'.45rem',overflow:'hidden'}}>
+                <div onClick={function(){setExpanded(isOpen?null:place.name);}}
+                  style={{display:'flex',alignItems:'flex-start',padding:'.55rem .75rem',
+                    cursor:'pointer',background:'var(--bg2)',userSelect:'none'}}>
+                  <div style={{flex:1}}>
+                    <div style={{fontWeight:600,fontSize:'.88rem'}}>{place.name}</div>
+                    <div style={{fontSize:'.68rem',color:'var(--text2)',marginTop:'.1rem'}}>{place.type} &middot; {place.region}</div>
+                  </div>
+                  <span style={{fontSize:'.7rem',color:'var(--text3)'}}>{isOpen?'▲':'▼'}</span>
+                </div>
+                {isOpen && (
+                  <div style={{padding:'.65rem .75rem',borderTop:'1px solid var(--border)'}}>
+                    {place.also && place.also.length>0 && (
+                      <div style={{fontSize:'.68rem',color:'var(--text3)',marginBottom:'.4rem',fontStyle:'italic'}}>
+                        Also called: {place.also.join(', ')}
+                      </div>
+                    )}
+                    <p style={{fontSize:'.78rem',lineHeight:1.55,color:'var(--text2)',margin:'0 0 .6rem'}}>{place.desc}</p>
+                    <div style={{fontSize:'.65rem',textTransform:'uppercase',letterSpacing:'.05em',color:'var(--text3)',marginBottom:'.4rem'}}>Key Biblical Events</div>
+                    {place.events.map(function(ev, i){
+                      var isHL = tab==='chapter' && ev===place.highlight;
+                      return (
+                        <div key={i} style={{display:'flex',gap:'.5rem',alignItems:'flex-start',
+                          padding:'.3rem '+(isHL?'.75rem':0),margin:isHL?'0 -.75rem':0,
+                          background:isHL?'rgba(46,204,113,.08)':'transparent',
+                          borderTop:'1px solid var(--border)'}}>
+                          <button className="geo-event-ref"
+                            onClick={function(){onNavigate(ev.book+' '+ev.ch+':1');}}>
+                            {ev.book} {ev.ch}
+                          </button>
+                          <span style={{fontSize:'.74rem',lineHeight:1.5,color:'var(--text2)'}}>{ev.text}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+    </div>
+  );
   return (
     <div className="geo-overlay" onClick={function(e){if(e.target===e.currentTarget)onClose();}}>
       <div className="geo-panel">
@@ -2195,7 +2278,7 @@ function PlacesPanel({book, ch, onClose, onNavigate}){
 
 // ── Theological Arc Navigator ──────────────────────────────────────────────
 const PHASE_LABELS = {seed:"🌱 The Seed — OT Foundation", promise:"🔥 The Promise — Prophetic", fruit:"🌿 The Fulfillment — NT"};
-function TheologyPanel({onClose, onNavigate}){
+function TheologyPanel({onClose, onNavigate, inline}){
   const [topic,setTopic]=useState(null);
   const topics=Object.keys(THEO_ARCS);
   const arc=topic?THEO_ARCS[topic]:null;
@@ -2203,9 +2286,71 @@ function TheologyPanel({onClose, onNavigate}){
 
   function goVerse(v){
     onNavigate&&onNavigate(v.book+" "+v.ch+":"+v.v);
-    onClose();
+    if(!inline) onClose();
   }
 
+  if(inline) return(
+    <div style={{flex:1,display:'flex',flexDirection:'column',overflow:'hidden'}}>
+      <div className="theo-header" style={{flexShrink:0}}>
+        {topic&&<button className="theo-back" onClick={()=>setTopic(null)}>←</button>}
+        <span className="theo-title">{topic?topic+"  "+arc.icon:"⧁ Theological Arc Navigator"}</span>
+      </div>
+      <div className="theo-body">
+        {!topic&&(
+            <>
+              <p style={{fontSize:".8rem",color:"var(--text3)",marginBottom:"1rem",lineHeight:"1.6"}}>
+                Each topic traces a theological concept from its OT seed through the prophetic promise to NT fulfillment — connected by the LXX bridge.
+              </p>
+              <div className="topic-grid">
+                {topics.map(t=>{
+                  const d=THEO_ARCS[t];
+                  const hasOt=d.verses.some(v=>v.test==="OT");
+                  return(
+                    <div key={t} className={"topic-card"+(hasOt?" ot":"")} onClick={()=>setTopic(t)}>
+                      <span className="topic-icon">{d.icon}</span>
+                      <div className="topic-name">{t}</div>
+                      <div className="topic-count">{d.verses.length} verses · {d.h_trans} / {d.g_trans}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            </>
+          )}
+          {arc&&(
+            <>
+              <div className="arc-summary">{arc.summary}</div>
+              <div className="arc-bridge">
+                <span className="arc-bridge-lbl">LXX Bridge:</span>
+                <div className="arc-bridge-pair">
+                  <span className="arc-bridge-hw">{arc.h_word}</span>
+                  <span className="arc-bridge-arr">⟶</span>
+                  <span className="arc-bridge-gw">{arc.g_word}</span>
+                </div>
+                <span style={{fontSize:".72rem",color:"var(--text3)"}}>{arc.key_h} → {arc.key_g}</span>
+              </div>
+              {phases.map(phase=>{
+                const pvs=arc.verses.filter(v=>v.phase===phase);
+                if(!pvs.length)return null;
+                return(
+                  <div key={phase} className="arc-section">
+                    <div className={"arc-phase-label "+phase}>{PHASE_LABELS[phase]}</div>
+                    {pvs.map((v,i)=>(
+                      <div key={i} className="arc-verse" onClick={()=>goVerse(v)} title="Click to open in interlinear">
+                        <span className={"arc-verse-ref "+v.test.toLowerCase()}>{v.book} {v.ch}:{v.v}</span>
+                        <div>
+                          <div className="arc-verse-label">{v.label}</div>
+                          <div className="arc-strongs">{v.s}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                );
+              })}
+            </>
+          )}
+      </div>
+    </div>
+  );
   return(
     <div className="theo-overlay" onClick={onClose}>
       <div className="theo-panel" onClick={e=>e.stopPropagation()}>
@@ -2444,7 +2589,7 @@ function parseRef(ref){
 }
 
 // ── All Notes Panel ────────────────────────────────────────────────────────────
-function NotesPanel({notes, onClose, onNavigate}){
+function NotesPanel({notes, onClose, onNavigate, inline}){
   const migrateNote=raw=>Array.isArray(raw)?raw:(raw?[raw]:[]);
   const NT_ORDER=Object.keys(BOOKS.NT||{});
   const OT_ORDER=Object.keys(BOOKS.OT||{});
@@ -2469,6 +2614,37 @@ function NotesPanel({notes, onClose, onNavigate}){
     return bi!==0?bi:a.ch-b.ch;
   });
 
+  if(inline) return(
+    <div style={{flex:1,display:'flex',flexDirection:'column',overflow:'hidden'}}>
+      <div className="theo-body">
+        {sortedGroups.length===0
+            ?<div style={{padding:"2rem 1rem",color:"var(--text3)",textAlign:"center",fontSize:".85rem",lineHeight:1.7}}>No notes yet.<br/>Hover over any verse and tap <strong>+</strong> to add one.</div>
+            :sortedGroups.map(([gk,grp])=>(
+              <div key={gk} style={{marginBottom:"1.1rem"}}>
+                <div style={{fontSize:".72rem",fontWeight:700,color:grp.isNT?"var(--nt)":"var(--ot)",marginBottom:".4rem",textTransform:"uppercase",letterSpacing:".06em"}}>
+                  {grp.book} {grp.ch}
+                </div>
+                {grp.verses.sort((a,b)=>a.v-b.v).map(({v,items})=>(
+                  <div key={v} className={"arc-verse"+(grp.isNT?"":" ot")} style={{cursor:"pointer"}}
+                    onClick={()=>{onNavigate&&onNavigate(`${grp.book} ${grp.ch}:${v}`);onClose();}}>
+                    <span className={"arc-verse-ref "+(grp.isNT?"nt":"ot")}>v.{v}</span>
+                    <div style={{flex:1}}>
+                      {items.map((item,i)=>(
+                        <div key={i} style={{fontSize:".8rem",color:"var(--text)",lineHeight:1.55}}>
+                          {item.type==="link"
+                            ?<span>🔗 <em style={{color:"var(--text2)"}}>{item.ref}</em></span>
+                            :<span>📝 {item.text&&item.text.length>90?item.text.slice(0,87)+"…":item.text}</span>}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ))
+          }
+      </div>
+    </div>
+  );
   return(
     <div className="theo-overlay" onClick={onClose}>
       <div className="theo-panel" onClick={e=>e.stopPropagation()}>
@@ -2520,9 +2696,7 @@ function App(){
   const [leftVerses,setLeftVerses]=useState([]);
   const [loading,setLoading]=useState(false);
   const [mobileView,setMobileView]=useState("interlinear"); // "list" | "interlinear"
-  const [showTheo,setShowTheo]=useState(false);
-  const [showNotes,setShowNotes]=useState(false);
-  const [showPlaces,setShowPlaces]=useState(false);
+  const [rightTab,setRightTab]=useState('interlinear');
   const [translation,setTranslation]=useState("WEB");
   const [translationCopyright,setTranslationCopyright]=useState("");
 
@@ -2653,9 +2827,7 @@ function App(){
         </select>
         {loading&&<span className="fetch-badge">Loading…</span>}
         {!interlinearVerses&&!loading&&<span className="badge">Interlinear: John 1 · Genesis 1</span>}
-        <button className="topics-btn" onClick={()=>setShowNotes(true)}>📝 Notes</button>
-        <button className="topics-btn" onClick={()=>setShowPlaces(true)}>📍 Places</button>
-        <button className="topics-btn" onClick={()=>setShowTheo(true)}>⧁ Topics</button>
+
         <span className="hint">Click verse to sync · Click word for Strong's · ✦ = note · hover verse for +</span>
       </div>
       <div className="main-layout">
@@ -2685,17 +2857,30 @@ function App(){
           </div>
         </div>
         <div className={"right-col"+(mobileView==="list"?" mob-hide":"")}>
-          {interlinearVerses
-            ?interlinearVerses.map(v=><VerseBlock key={v.v} id={"rv-"+v.v} verse={v} isNT={isNT} activeV={activeV} selKey={sel?sel.key:null} onClick={handleWord}/>)
-            :<div className="no-interlinear">
-              {fetchingInterlinear
-                ?"Loading interlinear data…"
-                :<span>No interlinear data found for {book} {ch}.<br/>
-                  <span style={{fontSize:".78rem"}}>Add data files to your GitHub repo by running <code>generate_interlinear_data.py</code>.</span>
-                </span>
+          <div className="right-tab-strip">
+            <button className={"rtab"+(rightTab==="interlinear"?" rtab-on":"")} onClick={()=>setRightTab("interlinear")}>{isNT?"α":"א"} Interlinear</button>
+            <button className={"rtab"+(rightTab==="notes"?" rtab-on":"")} onClick={()=>setRightTab("notes")}>📝 Notes</button>
+            <button className={"rtab"+(rightTab==="places"?" rtab-on":"")} onClick={()=>setRightTab("places")}>📍 Places</button>
+            <button className={"rtab"+(rightTab==="topics"?" rtab-on":"")} onClick={()=>setRightTab("topics")}>⧁ Topics</button>
+          </div>
+          {rightTab==="interlinear"&&(
+            <div className="right-tab-content">
+              {interlinearVerses
+                ?interlinearVerses.map(v=><VerseBlock key={v.v} id={"rv-"+v.v} verse={v} isNT={isNT} activeV={activeV} selKey={sel?sel.key:null} onClick={handleWord}/>)
+                :<div className="no-interlinear">
+                  {fetchingInterlinear
+                    ?"Loading interlinear data…"
+                    :<span>No interlinear data found for {book} {ch}.<br/>
+                      <span style={{fontSize:".78rem"}}>Add data files to your GitHub repo by running <code>generate_interlinear_data.py</code>.</span>
+                    </span>
+                  }
+                </div>
               }
             </div>
-          }
+          )}
+          {rightTab==="notes"&&<NotesPanel inline notes={notes} onClose={()=>setRightTab("interlinear")} onNavigate={ref=>{handleNavigate(ref);setRightTab("interlinear");}}/>}
+          {rightTab==="places"&&<PlacesPanel inline book={book} ch={ch} onClose={()=>setRightTab("interlinear")} onNavigate={ref=>{handleNavigate(ref);setRightTab("interlinear");}}/>}
+          {rightTab==="topics"&&<TheologyPanel inline onClose={()=>setRightTab("interlinear")} onNavigate={ref=>{handleNavigate(ref);setRightTab("interlinear");}}/>}
         </div>
       </div>
       {/* Mobile bottom tab bar */}
@@ -2713,9 +2898,7 @@ function App(){
       </div>
       {sel&&<StrongsPanel entry={entry} strongs={sel.word.s} word={sel.word} isNT={isNT} onClose={()=>setSel(null)} onNavigate={ref=>{handleNavigate(ref);setSel(null);}}/>}
       {addingNote&&<NoteModal verse={addingNote} onSave={data=>handleSaveNote(addingNote,data)} onClose={()=>setAddingNote(null)}/>}
-      {showNotes&&<NotesPanel notes={notes} onClose={()=>setShowNotes(false)} onNavigate={handleNavigate}/>}
-      {showPlaces&&<PlacesPanel book={book} ch={ch} onClose={()=>setShowPlaces(false)} onNavigate={ref=>{handleNavigate(ref);setShowPlaces(false);}}/>}
-      {showTheo&&<TheologyPanel onClose={()=>setShowTheo(false)} onNavigate={ref=>{handleNavigate(ref);setShowTheo(false);}}/>}
+
     </div>
   );
 }

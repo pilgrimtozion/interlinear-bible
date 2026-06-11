@@ -1797,9 +1797,10 @@ const bookCache = {};
 // ── API.Bible translation support ─────────────────────────────────────────────
 const API_BIBLE_KEY = "Ft9Dc_gI1W8v0kXuwcvdL";
 const TRANSLATIONS = [
-  {id:"WEB",  label:"WEB — World English Bible"},
-  {id:"de4e12af7f28f599-02", label:"KJV — King James Version"},
-  {id:"06125adad2d5898a-01", label:"ASV — American Standard"},
+  {id:"WEB",                  label:"WEB — World English Bible"},
+  {id:"a761ca71e0b3ddcf-01",  label:"NASB 2020"},
+  {id:"63097d2a0a2f7db3-01",  label:"NKJV — New King James"},
+  {id:"61fd76eafa1577c2-02",  label:"GNT — Good News Translation"},
 ];
 const OSIS_ID = {
   Matthew:"MAT",Mark:"MRK",Luke:"LUK",John:"JHN",Acts:"ACT",
@@ -1829,7 +1830,7 @@ async function fetchChapterFromApiBible(bibleId, book, ch) {
   const chapterId = osisId+"."+ch;
   try {
     const r = await fetch(
-      `https://api.scripture.api.bible/v1/bibles/${bibleId}/chapters/${chapterId}?content-type=json&include-titles=false&include-chapter-numbers=false&include-notes=false`,
+      `https://rest.api.bible/v1/bibles/${bibleId}/chapters/${chapterId}?content-type=json&include-titles=false&include-chapter-numbers=false&include-notes=false`,
       {headers:{"api-key":API_BIBLE_KEY}}
     );
     if (!r.ok) return null;
@@ -2462,9 +2463,6 @@ function App(){
         <select className={"nav-select"+(isNT?"":" ot")} value={ch} onChange={e=>{setCh(+e.target.value);setSel(null);setActiveV(null);}}>
           {chapters.map(c=><option key={c} value={c}>Chapter {c}</option>)}
         </select>
-        <select className={"nav-select"+(isNT?"":" ot")} value={translation} onChange={e=>setTranslation(e.target.value)} title="Switch translation">
-          {TRANSLATIONS.map(t=><option key={t.id} value={t.id}>{t.label}</option>)}
-        </select>
         {loading&&<span className="fetch-badge">Loading…</span>}
         {!interlinearVerses&&!loading&&<span className="badge">Interlinear: John 1 · Genesis 1</span>}
         <button className="topics-btn" onClick={()=>setShowNotes(true)}>📝 Notes</button>
@@ -2473,6 +2471,12 @@ function App(){
       </div>
       <div className="main-layout">
         <div className={"left-col"+(mobileView==="list"?" mob-show":"")}>
+          <div style={{padding:".4rem .6rem .2rem",display:"flex",alignItems:"center",gap:".5rem",borderBottom:"1px solid var(--border)",flexShrink:0}}>
+            <span style={{fontSize:".72rem",color:"var(--text3)",whiteSpace:"nowrap"}}>Translation:</span>
+            <select className={"nav-select"+(isNT?"":" ot")} style={{fontSize:".78rem",padding:"3px 8px",flex:1,minWidth:0}} value={translation} onChange={e=>setTranslation(e.target.value)}>
+              {TRANSLATIONS.map(t=><option key={t.id} value={t.id}>{t.label}</option>)}
+            </select>
+          </div>
           {loading&&<div className="loading">Loading…</div>}
           {leftVerses.map(v=>(
             <LeftVerse key={v.v} verse={v} isNT={isNT} isActive={activeV===v.v}

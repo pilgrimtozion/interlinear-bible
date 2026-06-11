@@ -36,7 +36,7 @@ body.light{
 }
 body{background:var(--bg);color:var(--text);font-family:Georgia,"Times New Roman",serif;height:100vh;overflow:hidden;transition:background .2s,color .2s}
 header{background:var(--surface);border-bottom:1px solid var(--border);padding:.8rem 1.4rem;display:flex;align-items:center;justify-content:space-between}
-.app-title{font-size:1.1rem;font-weight:700;letter-spacing:.03em}
+.app-title{font-size:1.1rem;font-weight:700;letter-spacing:.03em;background:linear-gradient(90deg,#f97316 0%,#f59e0b 42%,#60a5fa 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .app-subtitle{font-size:.7rem;color:var(--text3);margin-top:2px}
 .header-right{display:flex;align-items:center;gap:.75rem}
 .testament-toggle{display:flex;background:var(--bg);border-radius:20px;padding:3px;gap:3px}
@@ -2206,7 +2206,7 @@ function PlacesPanel({book, ch, onClose, onNavigate, inline}){
           <button className={'geo-trail-btn'+(tab==='browse'?' active':'')}
             style={tab==='browse'?{background:'#1d6b4a',color:'#fff',borderColor:'transparent'}:{}}
             onClick={function(){setTab('browse');}}>Browse All</button>
-          <button className="close-btn" onClick={onClose}>&#x2715;</button>
+          <button className="close-btn" onClick={onClose} style={{position:'static',flexShrink:0,marginLeft:'.25rem'}}>&#x2715;</button>
         </div>
 
         {tab==='browse' && (
@@ -2834,7 +2834,7 @@ function App(){
       </div>
       <div className="main-layout">
         <div className={"left-col"+(mobileView==="list"?" mob-show":"")}>
-          <div style={{padding:".4rem .6rem .2rem",display:"flex",alignItems:"center",gap:".5rem",borderBottom:"1px solid var(--border)",flexShrink:0}}>
+          <div style={{padding:".4rem .6rem .2rem",display:"flex",alignItems:"center",gap:".5rem",borderBottom:"1px solid var(--border)",flexShrink:0,position:"sticky",top:0,background:"var(--surface)",zIndex:5}}>
             <span style={{fontSize:".72rem",color:"var(--text3)",whiteSpace:"nowrap"}}>Translation:</span>
             <select className={"nav-select"+(isNT?"":" ot")} style={{fontSize:".78rem",padding:"3px 8px",flex:1,minWidth:0}} value={translation} onChange={e=>setTranslation(e.target.value)}>
               {TRANSLATIONS.map(t=><option key={t.id} value={t.id}>{t.label}</option>)}

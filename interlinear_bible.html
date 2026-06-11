@@ -2714,7 +2714,7 @@ function App(){
       {sel&&<StrongsPanel entry={entry} strongs={sel.word.s} word={sel.word} isNT={isNT} onClose={()=>setSel(null)} onNavigate={ref=>{handleNavigate(ref);setSel(null);}}/>}
       {addingNote&&<NoteModal verse={addingNote} onSave={data=>handleSaveNote(addingNote,data)} onClose={()=>setAddingNote(null)}/>}
       {showNotes&&<NotesPanel notes={notes} onClose={()=>setShowNotes(false)} onNavigate={handleNavigate}/>}
-      {showPlaces&&<PlacesPanel book={book} ch={ch} verse={verse} onClose={()=>setShowPlaces(false)} onNavigate={ref=>{handleNavigate(ref);setShowPlaces(false);}}/>}
+      {showPlaces&&<PlacesPanel book={book} ch={ch} onClose={()=>setShowPlaces(false)} onNavigate={ref=>{handleNavigate(ref);setShowPlaces(false);}}/>}
       {showTheo&&<TheologyPanel onClose={()=>setShowTheo(false)} onNavigate={ref=>{handleNavigate(ref);setShowTheo(false);}}/>}
     </div>
   );

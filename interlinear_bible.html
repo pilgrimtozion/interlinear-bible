@@ -2058,6 +2058,45 @@ function LeftVerse({verse,isNT,isActive,noteItems,onAddNote,onDeleteNoteItem,onN
 
 
 // ── Geography Map Panel ──────────────────────────────────────────────────────
+// Which trails are contextually relevant to each book
+const TRAIL_BOOK_RELEVANCE = {
+  // Patriarchs → Exodus context
+  "Genesis":["exodus"], "Exodus":["exodus"], "Leviticus":["exodus"],
+  "Numbers":["exodus"], "Deuteronomy":["exodus"],
+  // Joshua: Exodus as immediate backstory + current conquest
+  "Joshua":["exodus","conquest"],
+  // Judges through Samuel: conquest provides backdrop
+  "Judges":["conquest"], "Ruth":["conquest"],
+  "1 Samuel":["conquest"], "2 Samuel":["conquest"],
+  "1 Kings":["conquest"], "2 Kings":["conquest"],
+  "1 Chronicles":["conquest"], "2 Chronicles":["conquest"],
+  // Ezra/Neh: return from exile — conquest still relevant geography
+  "Ezra":["conquest"], "Nehemiah":["conquest"],
+  // Prophets
+  "Isaiah":["conquest"], "Jeremiah":["conquest"], "Lamentations":["conquest"],
+  "Ezekiel":["exodus","conquest"], "Daniel":["conquest"],
+  "Hosea":["conquest"], "Joel":["conquest"], "Amos":["conquest"],
+  "Obadiah":["conquest"], "Jonah":["paul1"], "Micah":["conquest"],
+  "Nahum":["conquest"], "Habakkuk":["conquest"], "Zephaniah":["conquest"],
+  "Haggai":["conquest"], "Zechariah":["conquest"], "Malachi":["conquest"],
+  // Gospels & Acts
+  "Matthew":["jesus_ministry"], "Mark":["jesus_ministry"],
+  "Luke":["jesus_ministry"], "John":["jesus_ministry"],
+  "Acts":["jesus_ministry","paul1","paul2","paul3"],
+  // Pauline epistles — relevant journey(s) only
+  "Romans":["paul3"], "1 Corinthians":["paul2","paul3"],
+  "2 Corinthians":["paul2","paul3"], "Galatians":["paul1","paul2"],
+  "Ephesians":["paul3"], "Philippians":["paul2"],
+  "Colossians":["paul3"], "1 Thessalonians":["paul2"],
+  "2 Thessalonians":["paul2"], "1 Timothy":["paul3"],
+  "2 Timothy":["paul3"], "Titus":["paul3"], "Philemon":["paul3"],
+  "Hebrews":["jesus_ministry"],
+  "James":["jesus_ministry"], "1 Peter":["paul3"],
+  "2 Peter":["paul3"], "1 John":["jesus_ministry"],
+  "2 John":["jesus_ministry"], "3 John":["jesus_ministry"],
+  "Jude":["jesus_ministry"], "Revelation":["paul3","jesus_ministry"],
+};
+
 function GeoPanel({book, ch, onClose}){
   const mapContainerRef = useRef(null);
   const mapRef = useRef(null);
@@ -2067,6 +2106,10 @@ function GeoPanel({book, ch, onClose}){
   const [activeTrail, setActiveTrail] = useState(null);
 
   const chPlaces = (GEO_DATA[book]||{})[String(ch)]||[];
+
+  // Only contextually relevant trails for this book
+  const relevantTrailKeys = TRAIL_BOOK_RELEVANCE[book]||[];
+  const relevantTrails = Object.entries(TRAILS_DATA).filter(([key])=>relevantTrailKeys.includes(key));
 
   const TRAIL_COLORS = {
     exodus:"#e67e22", conquest:"#27ae60", paul1:"#8e44ad",
@@ -2081,9 +2124,7 @@ function GeoPanel({book, ch, onClose}){
     const tileUrl = isDark
       ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
       : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
-    const tileAttrib = isDark
-      ? "© CARTO © OSM contributors"
-      : "© OpenStreetMap contributors";
+    const tileAttrib = isDark ? "© CARTO © OSM contributors" : "© OpenStreetMap contributors";
     const map = L.map(mapContainerRef.current,{
       center:[31.5,35.2], zoom:7, zoomControl:true, preferCanvas:true
     });
@@ -2126,6 +2167,7 @@ function GeoPanel({book, ch, onClose}){
     setTimeout(()=>map.invalidateSize(),120);
   },[chPlaces]);
 
+  // Render only relevant trails (filtered by TRAIL_BOOK_RELEVANCE)
   useEffect(()=>{
     const L = window.L;
     const map = mapRef.current;
@@ -2133,7 +2175,7 @@ function GeoPanel({book, ch, onClose}){
     trailLayersRef.current.forEach(l=>map.removeLayer(l));
     trailLayersRef.current = [];
     if(!showTrails) return;
-    Object.entries(TRAILS_DATA).forEach(([key,trail])=>{
+    relevantTrails.forEach(([key,trail])=>{
       if(activeTrail && activeTrail!==key) return;
       const color = TRAIL_COLORS[key]||"#888";
       const line = L.polyline(trail.waypoints.map(w=>[w.la,w.lo]),{
@@ -2151,11 +2193,7 @@ function GeoPanel({book, ch, onClose}){
         trailLayersRef.current.push(dot);
       });
     });
-  },[showTrails,activeTrail]);
-
-  const relevantTrails = Object.entries(TRAILS_DATA).filter(([key,trail])=>
-    trail.waypoints.some(w=>w.bk===book && w.chs.includes(ch))
-  );
+  },[showTrails,activeTrail,relevantTrails]);
 
   return (
     <div className="geo-overlay" onClick={e=>{if(e.target===e.currentTarget)onClose();}}>

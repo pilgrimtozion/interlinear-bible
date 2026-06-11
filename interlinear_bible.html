@@ -55,12 +55,11 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:.
 /* Layout */
 .main-layout{display:flex;height:calc(100vh - 102px);overflow:hidden}
 .left-col{width:320px;min-width:260px;flex-shrink:0;overflow-y:auto;border-right:1px solid var(--border);padding:1rem 1.15rem}
-.right-tab-strip{display:flex;border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0;overflow-x:auto}
-.rtab{padding:.48rem .85rem;font-size:.76rem;background:none;border:none;border-bottom:2px solid transparent;color:var(--text2);cursor:pointer;white-space:nowrap;font-family:Georgia,serif;transition:color .12s}
-.rtab:hover{color:var(--text)}
-.rtab.rtab-on{color:var(--nt);border-bottom-color:var(--nt);font-weight:600}
-.right-tab-content{flex:1;overflow-y:auto;padding:1rem 1.15rem;display:flex;flex-direction:column;gap:.4rem}
-.right-col{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.right-col{flex:1;overflow-y:auto;padding:1rem 1.15rem}
+.side-toolbar{display:flex;flex-direction:column;align-items:center;padding:.5rem 0;gap:.3rem;background:var(--surface);border-left:1px solid var(--border);width:36px;flex-shrink:0}
+.side-tool-btn{width:28px;height:28px;background:none;border:none;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;border-radius:.3rem;color:var(--text2);transition:background .12s,color .12s;padding:0;line-height:1}
+.side-tool-btn:hover,.side-tool-btn.active{background:rgba(0,0,0,.07);color:var(--text)}
+.side-tool-sep{width:20px;height:1px;background:var(--border);margin:.15rem 0}
 /* Left col verse rows */
 .lv-row{padding:.55rem .45rem;border-radius:7px;cursor:pointer;transition:background .12s;position:relative;margin-bottom:2px}
 .lv-row:hover{background:var(--surface2)}
@@ -182,6 +181,7 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:.
   .left-col{width:100%;min-width:0;border-right:none;display:none;padding-bottom:56px}
   .left-col.mob-show{display:block}
   .right-col{width:100%;}
+  .side-toolbar{display:none}
   .right-col.mob-hide{display:none}
 
   /* Show the bottom tab bar on mobile */
@@ -2696,7 +2696,9 @@ function App(){
   const [leftVerses,setLeftVerses]=useState([]);
   const [loading,setLoading]=useState(false);
   const [mobileView,setMobileView]=useState("interlinear"); // "list" | "interlinear"
-  const [rightTab,setRightTab]=useState('interlinear');
+  const [showTheo,setShowTheo]=useState(false);
+  const [showNotes,setShowNotes]=useState(false);
+  const [showPlaces,setShowPlaces]=useState(false);
   const [translation,setTranslation]=useState("WEB");
   const [translationCopyright,setTranslationCopyright]=useState("");
 
@@ -2857,30 +2859,24 @@ function App(){
           </div>
         </div>
         <div className={"right-col"+(mobileView==="list"?" mob-hide":"")}>
-          <div className="right-tab-strip">
-            <button className={"rtab"+(rightTab==="interlinear"?" rtab-on":"")} onClick={()=>setRightTab("interlinear")}>{isNT?"α":"א"} Interlinear</button>
-            <button className={"rtab"+(rightTab==="notes"?" rtab-on":"")} onClick={()=>setRightTab("notes")}>📝 Notes</button>
-            <button className={"rtab"+(rightTab==="places"?" rtab-on":"")} onClick={()=>setRightTab("places")}>📍 Places</button>
-            <button className={"rtab"+(rightTab==="topics"?" rtab-on":"")} onClick={()=>setRightTab("topics")}>⧁ Topics</button>
-          </div>
-          {rightTab==="interlinear"&&(
-            <div className="right-tab-content">
-              {interlinearVerses
-                ?interlinearVerses.map(v=><VerseBlock key={v.v} id={"rv-"+v.v} verse={v} isNT={isNT} activeV={activeV} selKey={sel?sel.key:null} onClick={handleWord}/>)
-                :<div className="no-interlinear">
-                  {fetchingInterlinear
-                    ?"Loading interlinear data…"
-                    :<span>No interlinear data found for {book} {ch}.<br/>
-                      <span style={{fontSize:".78rem"}}>Add data files to your GitHub repo by running <code>generate_interlinear_data.py</code>.</span>
-                    </span>
-                  }
-                </div>
+          {interlinearVerses
+            ?interlinearVerses.map(v=><VerseBlock key={v.v} id={"rv-"+v.v} verse={v} isNT={isNT} activeV={activeV} selKey={sel?sel.key:null} onClick={handleWord}/>)
+            :<div className="no-interlinear">
+              {fetchingInterlinear
+                ?"Loading interlinear data…"
+                :<span>No interlinear data found for {book} {ch}.<br/>
+                  <span style={{fontSize:".78rem"}}>Add data files to your GitHub repo by running <code>generate_interlinear_data.py</code>.</span>
+                </span>
               }
             </div>
-          )}
-          {rightTab==="notes"&&<NotesPanel inline notes={notes} onClose={()=>setRightTab("interlinear")} onNavigate={ref=>{handleNavigate(ref);setRightTab("interlinear");}}/>}
-          {rightTab==="places"&&<PlacesPanel inline book={book} ch={ch} onClose={()=>setRightTab("interlinear")} onNavigate={ref=>{handleNavigate(ref);setRightTab("interlinear");}}/>}
-          {rightTab==="topics"&&<TheologyPanel inline onClose={()=>setRightTab("interlinear")} onNavigate={ref=>{handleNavigate(ref);setRightTab("interlinear");}}/>}
+          }
+        </div>
+        <div className="side-toolbar">
+          <button className={"side-tool-btn"+(showNotes?" active":"")} title="Notes" onClick={()=>{setShowNotes(true);}}>📝</button>
+          <div className="side-tool-sep"/>
+          <button className={"side-tool-btn"+(showPlaces?" active":"")} title="Places" onClick={()=>{setShowPlaces(true);}}>📍</button>
+          <div className="side-tool-sep"/>
+          <button className={"side-tool-btn"+(showTheo?" active":"")} title="Topics" onClick={()=>{setShowTheo(true);}}>⧁</button>
         </div>
       </div>
       {/* Mobile bottom tab bar */}
@@ -2896,6 +2892,9 @@ function App(){
           <span>Interlinear</span>
         </button>
       </div>
+      {showNotes&&<NotesPanel notes={notes} onClose={()=>setShowNotes(false)} onNavigate={handleNavigate}/>}
+      {showPlaces&&<PlacesPanel book={book} ch={ch} onClose={()=>setShowPlaces(false)} onNavigate={ref=>{handleNavigate(ref);setShowPlaces(false);}}/>}
+      {showTheo&&<TheologyPanel onClose={()=>setShowTheo(false)} onNavigate={ref=>{handleNavigate(ref);setShowTheo(false);}}/>}
       {sel&&<StrongsPanel entry={entry} strongs={sel.word.s} word={sel.word} isNT={isNT} onClose={()=>setSel(null)} onNavigate={ref=>{handleNavigate(ref);setSel(null);}}/>}
       {addingNote&&<NoteModal verse={addingNote} onSave={data=>handleSaveNote(addingNote,data)} onClose={()=>setAddingNote(null)}/>}
 

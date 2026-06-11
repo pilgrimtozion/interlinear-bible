@@ -127,6 +127,11 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:.
 .modal textarea,.modal input[type=text]{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:.6rem .75rem;font-family:Georgia,serif;font-size:.85rem;resize:vertical}
 .modal textarea{min-height:80px}
 .modal textarea:focus,.modal input[type=text]:focus{outline:none;border-color:var(--nt)}
+.mic-btn{position:absolute;right:.45rem;bottom:.45rem;background:none;border:none;font-size:1.1rem;cursor:pointer;opacity:.55;padding:.25rem;border-radius:50%;line-height:1;transition:opacity .15s,background .15s}
+.mic-btn:hover{opacity:1}
+.mic-btn.mic-on{opacity:1;animation:mic-pulse .9s ease-in-out infinite}
+.mic-indicator{font-size:.7rem;color:#e55;text-align:right;margin-top:.15rem;letter-spacing:.02em;animation:mic-pulse .9s ease-in-out infinite}
+@keyframes mic-pulse{0%,100%{opacity:1}50%{opacity:.3}}
 .modal-actions{display:flex;gap:.5rem;justify-content:flex-end}
 .btn{padding:6px 16px;border-radius:6px;border:none;cursor:pointer;font-size:.82rem;font-family:Georgia,serif;transition:all .12s}
 .btn-primary{background:var(--nt);color:#fff}
@@ -1980,11 +1985,43 @@ function NoteModal({verse,onSave,onClose}){
   const [type,setType]=useState("note");
   const [text,setText]=useState("");
   const [ref,setRef]=useState("");
+  const [listening,setListening]=useState(false);
+  const recogRef=useRef(null);
+  const SpeechRecog=window.SpeechRecognition||window.webkitSpeechRecognition;
+  const micSupported=!!SpeechRecog;
+
+  function toggleListen(){
+    if(!micSupported)return;
+    if(listening){
+      recogRef.current&&recogRef.current.stop();
+      setListening(false);
+      return;
+    }
+    var recog=new SpeechRecog();
+    recog.continuous=true;
+    recog.interimResults=false;
+    recog.lang='en-US';
+    recog.onresult=function(e){
+      var t='';
+      for(var i=e.resultIndex;i<e.results.length;i++){
+        if(e.results[i].isFinal)t+=e.results[i][0].transcript;
+      }
+      if(t)setText(function(prev){return prev+(prev&&!prev.endsWith(' ')?' ':'')+t;});
+    };
+    recog.onend=function(){setListening(false);};
+    recog.onerror=function(){setListening(false);};
+    recogRef.current=recog;
+    recog.start();
+    setListening(true);
+  }
+
   function save(){
+    if(recogRef.current)recogRef.current.stop();
     if(type==="note"&&!text.trim())return;
     if(type==="link"&&!ref.trim())return;
     onSave({type,text:text.trim(),ref:ref.trim()});
   }
+
   return(
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal" onClick={e=>e.stopPropagation()}>
@@ -1994,7 +2031,16 @@ function NoteModal({verse,onSave,onClose}){
           <button className={"type-btn"+(type==="link"?" on":"")} onClick={()=>setType("link")}>🔗 Verse Link</button>
         </div>
         {type==="note"
-          ?<textarea placeholder="Your note…" value={text} onChange={e=>setText(e.target.value)} autoFocus/>
+          ?<div style={{position:'relative'}}>
+            <textarea placeholder="Your note…" value={text} onChange={e=>setText(e.target.value)} autoFocus style={{paddingRight:micSupported?'2.5rem':undefined}}/>
+            {micSupported&&(
+              <button className={"mic-btn"+(listening?" mic-on":"")} onClick={toggleListen}
+                title={listening?"Stop recording":"Tap to dictate"}>
+                {listening?'⏹':'🎙'}
+              </button>
+            )}
+            {listening&&<div className="mic-indicator">● Listening…</div>}
+          </div>
           :<input type="text" placeholder="e.g. Gen 1:1 or John 3:16" value={ref} onChange={e=>setRef(e.target.value)} autoFocus/>}
         <div className="modal-actions">
           <button className="btn btn-ghost" onClick={onClose}>Cancel</button>
@@ -2685,9 +2731,9 @@ function NotesPanel({notes, onClose, onNavigate, inline}){
 }
 
 function App(){
-  const [test,setTest]=useState("NT");
-  const [book,setBook]=useState("John");
-  const [ch,setCh]=useState(1);
+  const [test,setTest]=useState(()=>localStorage.getItem('jm-test')||"NT");
+  const [book,setBook]=useState(()=>localStorage.getItem('jm-book')||"John");
+  const [ch,setCh]=useState(()=>parseInt(localStorage.getItem('jm-ch')||'1',10));
   const [dark,setDark]=useState(true);
   const [sel,setSel]=useState(null);
   const [activeV,setActiveV]=useState(null);
@@ -2715,6 +2761,28 @@ function App(){
       const el=document.getElementById("rv-"+p.v);
       if(el)el.scrollIntoView({behavior:"smooth",block:"nearest"});
     },600);
+  }
+
+  // Persist position
+  useEffect(()=>{
+    localStorage.setItem('jm-test',test);
+    localStorage.setItem('jm-book',book);
+    localStorage.setItem('jm-ch',String(ch));
+  },[test,book,ch]);
+
+  // Swipe navigation
+  const swipeRef=useRef({});
+  function onTouchStart(e){
+    swipeRef.current={x:e.touches[0].clientX,y:e.touches[0].clientY};
+  }
+  function onTouchEnd(e){
+    if(!swipeRef.current.x)return;
+    const dx=e.changedTouches[0].clientX-swipeRef.current.x;
+    const dy=e.changedTouches[0].clientY-swipeRef.current.y;
+    swipeRef.current={};
+    if(Math.abs(dx)<55||Math.abs(dx)<Math.abs(dy)*1.5)return;
+    if(dx<0){if(ch<chCount){setCh(ch+1);setSel(null);setActiveV(null);}}
+    else{if(ch>1){setCh(ch-1);setSel(null);setActiveV(null);}}
   }
 
   const bookNames=Object.keys(BOOKS[test]);
@@ -2832,7 +2900,7 @@ function App(){
 
         <span className="hint">Click verse to sync · Click word for Strong's · ✦ = note · hover verse for +</span>
       </div>
-      <div className="main-layout">
+      <div className="main-layout" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
         <div className={"left-col"+(mobileView==="list"?" mob-show":"")}>
           <div style={{padding:".4rem .6rem .2rem",display:"flex",alignItems:"center",gap:".5rem",borderBottom:"1px solid var(--border)",flexShrink:0,position:"sticky",top:0,background:"var(--surface)",zIndex:5}}>
             <span style={{fontSize:".72rem",color:"var(--text3)",whiteSpace:"nowrap"}}>Translation:</span>

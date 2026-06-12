@@ -2006,15 +2006,25 @@ function buildAmbient(){
   var ctx=new AudioCtx();
 
   // G Major: I - IVsus2 - V - IV (same tight voice leading as before)
+  // D - Gsus2 - Bm7 - G - D - Gsus2 - Bm7 - G - Em7 - D/F# - Gsus2 - A
+  // Voiced F#3-A4 range; nearly every transition is stepwise or stays put.
   var PROG=[
-    [196,    246.94, 293.66, 392   ], // G  (G3 B3 D4 G4)
-    [196,    261.63, 293.66, 392   ], // Csus2 (only B->C)
-    [220,    293.66, 369.99, 440   ], // D  (A3 D4 F#4 A4)
-    [196,    261.63, 329.63, 392   ], // C  (G3 C4 E4 G4)
+    [185.00,220,    293.66,369.99], // D    (F#3 A3 D4 F#4)
+    [196,   220,    293.66,392   ], // Gsus2(G3  A3 D4 G4)  F#->G, G stays, stays, F#->G
+    [220,   246.94, 293.66,369.99], // Bm7  (A3  B3 D4 F#4) step up, step up, stays, step down
+    [196,   246.94, 293.66,392   ], // G    (G3  B3 D4 G4)  step down, stays, stays, step up
+    [185.00,220,    293.66,369.99], // D    (F#3 A3 D4 F#4) repeat
+    [196,   220,    293.66,392   ], // Gsus2 repeat
+    [220,   246.94, 293.66,369.99], // Bm7  repeat
+    [196,   246.94, 293.66,392   ], // G    repeat
+    [196,   246.94, 293.66,329.63], // Em7  (G3  B3 D4 E4)  3 voices stay, G4->E4
+    [185.00,220,    293.66,369.99], // D/F# (F#3 A3 D4 F#4) half step down, step down, stays, step up
+    [196,   220,    293.66,392   ], // Gsus2 F#->G, stays, stays, F#->G
+    [220,   277.18, 329.63,440   ], // A    (A3  C#4 E4 A4)  stepwise throughout
   ];
-  var CHORD_DUR=10;
+  var CHORD_DUR=8;
   var FADE_IN=1.0;
-  var FADE_OUT=1.0;
+  var FADE_OUT=0.5;
   var VOLS=[0.28,0.24,0.20,0.18];
   var PANS=[-0.45,0.45,-0.24,0.24];
 

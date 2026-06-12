@@ -2059,7 +2059,10 @@ function buildAmbient(){
   lp.type='lowpass'; lp.frequency.value=700; lp.Q.value=0.7;
   var dryGain=ctx.createGain(); dryGain.gain.value=0.18; // barely audible direct
   lp.connect(dryGain); dryGain.connect(master);
-  lp.connect(preDly); // main path is into the reverb
+  // reverbSendGain gates what enters the delay lines — lets us mute the INPUT
+  // without ever touching the OUTPUT, so the room never goes silent
+  var reverbSendGain=ctx.createGain(); reverbSendGain.gain.value=1.0;
+  lp.connect(reverbSendGain); reverbSendGain.connect(preDly);
 
   // ── Active voice management
   var activeVoiceSets=[];
@@ -2123,15 +2126,28 @@ function buildAmbient(){
 
   function advanceChord(){
     var now=ctx.currentTime;
-    // Duck reverb outputs so the old chord's tail doesn't bleed into the new chord
-    ro1.gain.cancelScheduledValues(now);
-    ro1.gain.setValueAtTime(ro1.gain.value,now);
-    ro1.gain.linearRampToValueAtTime(0,now+0.25);
-    ro1.gain.linearRampToValueAtTime(0.70,now+FADE_IN+0.6);
-    ro2.gain.cancelScheduledValues(now);
-    ro2.gain.setValueAtTime(ro2.gain.value,now);
-    ro2.gain.linearRampToValueAtTime(0,now+0.25);
-    ro2.gain.linearRampToValueAtTime(0.54,now+FADE_IN+0.6);
+
+    // 1. Mute the reverb INPUT — stops old notes feeding the delay lines
+    //    (ro1/ro2 are never touched so the room stays alive)
+    reverbSendGain.gain.cancelScheduledValues(now);
+    reverbSendGain.gain.setValueAtTime(reverbSendGain.gain.value,now);
+    reverbSendGain.gain.linearRampToValueAtTime(0,now+0.15);
+    // Re-open send after old oscillators have faded; new chord then blooms into reverb
+    reverbSendGain.gain.linearRampToValueAtTime(1.0,now+FADE_OUT+0.2);
+
+    // 2. Drain feedback so the captured tail dissipates quickly (not cut — just empties)
+    //    With fb≈0.02 on a 3.1 s delay, the old echo is at ≈2% after one cycle
+    rfb1.gain.cancelScheduledValues(now);
+    rfb1.gain.setValueAtTime(rfb1.gain.value,now);
+    rfb1.gain.linearRampToValueAtTime(0.02,now+0.2);
+    rfb1.gain.linearRampToValueAtTime(0.65,now+1.5);
+
+    rfb2.gain.cancelScheduledValues(now);
+    rfb2.gain.setValueAtTime(rfb2.gain.value,now);
+    rfb2.gain.linearRampToValueAtTime(0.02,now+0.2);
+    rfb2.gain.linearRampToValueAtTime(0.58,now+1.5);
+
+    // 3. ro1/ro2 completely untouched — reverb output always open, no gap or pop
     activeVoiceSets.forEach(function(vs){vs.stop();});
     activeVoiceSets=[];
     chordIdx=(chordIdx+1)%PROG.length;

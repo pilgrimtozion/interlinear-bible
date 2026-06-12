@@ -217,7 +217,8 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:.
   .left-col.mob-show{display:block}
   .right-col{width:100%;}
   .side-toolbar{display:none}
-  .lv-note-btn{opacity:.7}
+  .lv-note-btn{opacity:.9;width:28px;height:28px;font-size:1rem}
+  .lv-row{-webkit-user-select:none;user-select:none;touch-action:manipulation}
   .right-col.mob-hide{display:none}
 
   /* Show the bottom tab bar on mobile */
@@ -3096,7 +3097,7 @@ function App(){
           {leftVerses.map(v=>(
             <LeftVerse key={v.v} verse={v} isNT={isNT} isActive={activeV===v.v}
               noteItems={getNote(v.v)} onAddNote={vn=>setAddingNote(vn)} onDeleteNoteItem={handleDeleteNoteItem} onNavigate={handleNavigate}
-              onSelect={vn=>{setActiveV(vn);setMobileView("interlinear");}}
+              onSelect={vn=>{setActiveV(vn);}}
               hlMode={hlMode}
               hlBg={(()=>{var hk=nk(test,book,ch,v.v);var hc=highlights[hk];var col=hc?HL_COLORS.find(function(x){return x.k===hc;}):null;return col?col.bg:null;})()}
               hlHex={(()=>{var hk=nk(test,book,ch,v.v);var hc=highlights[hk];var col=hc?HL_COLORS.find(function(x){return x.k===hc;}):null;return col?col.hex:null;})()}

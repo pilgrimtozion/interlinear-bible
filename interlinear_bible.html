@@ -2005,30 +2005,26 @@ function buildAmbient(){
   if(!AudioCtx)return null;
   var ctx=new AudioCtx();
 
-  // D Major: I - V - vi7 - IVsus2 × 2, then bridge Em7 - D/F# - G - G, Em7 - D/F# - G - A
-  // D - A - Bm7 - Gsus2 - D - A - Bm7 - Gsus2 - Em7 - D/F# - G - G - Em7 - D/F# - G - A
-  // Voiced F#3-A4 range; tight stepwise voice leading throughout.
+  // D Major: I - IVsus2 - vi7 - IV × 2, then Em7 - D/F# - Gsus2 - A
+  // D - Gsus2 - Bm7 - G - D - Gsus2 - Bm7 - G - Em7 - D/F# - Gsus2 - A
+  // Voiced F#3-A4 range; nearly every transition is stepwise or stays put.
   var PROG=[
     [185.00,220,    293.66,369.99], // D    (F#3 A3 D4 F#4)
-    [220,   277.18, 329.63,440   ], // A    (A3  C#4 E4 A4)
-    [220,   246.94, 293.66,369.99], // Bm7  (A3  B3 D4 F#4)
     [196,   220,    293.66,392   ], // Gsus2(G3  A3 D4 G4)
+    [220,   246.94, 293.66,369.99], // Bm7  (A3  B3 D4 F#4)
+    [196,   246.94, 293.66,392   ], // G    (G3  B3 D4 G4)
     [185.00,220,    293.66,369.99], // D    repeat
-    [220,   277.18, 329.63,440   ], // A    repeat
-    [220,   246.94, 293.66,369.99], // Bm7  repeat
     [196,   220,    293.66,392   ], // Gsus2 repeat
+    [220,   246.94, 293.66,369.99], // Bm7  repeat
+    [196,   246.94, 293.66,392   ], // G    repeat
     [196,   246.94, 293.66,329.63], // Em7  (G3  B3 D4 E4)
     [185.00,220,    293.66,369.99], // D/F# (F#3 A3 D4 F#4)
-    [196,   246.94, 293.66,392   ], // G    (G3  B3 D4 G4)
-    [196,   246.94, 293.66,392   ], // G    (held)
-    [196,   246.94, 293.66,329.63], // Em7
-    [185.00,220,    293.66,369.99], // D/F#
-    [196,   246.94, 293.66,392   ], // G
-    [220,   277.18, 329.63,440   ], // A
+    [196,   220,    293.66,392   ], // Gsus2
+    [220,   277.18, 329.63,440   ], // A    (A3  C#4 E4 A4)
   ];
   var CHORD_DUR=8;
   var FADE_IN=1.0;
-  var FADE_OUT=0.5;
+  var FADE_OUT=0.7;
   var VOLS=[0.28,0.24,0.20,0.18];
   var PANS=[-0.45,0.45,-0.24,0.24];
 
@@ -2040,17 +2036,18 @@ function buildAmbient(){
 
   // ── Cathedral reverb: two long filtered-feedback delays
   // Very high wet level — the reverb IS the sound, the direct signal is ghostly
-  var rev1=ctx.createDelay(6.0); rev1.delayTime.value=3.1;
+  // Shorter delays = echo cycles faster = old chord drains in ~2s not ~6s
+  var rev1=ctx.createDelay(4.0); rev1.delayTime.value=1.8;
   var rlp1=ctx.createBiquadFilter(); rlp1.type='lowpass'; rlp1.frequency.value=3000;
-  var rfb1=ctx.createGain(); rfb1.gain.value=0.65;
-  var ro1=ctx.createGain(); ro1.gain.value=0.70;
+  var rfb1=ctx.createGain(); rfb1.gain.value=0.58;
+  var ro1=ctx.createGain(); ro1.gain.value=0.72;
   rev1.connect(rlp1); rlp1.connect(rfb1); rfb1.connect(rev1);
   rev1.connect(ro1); ro1.connect(master);
 
-  var rev2=ctx.createDelay(6.0); rev2.delayTime.value=4.73;
+  var rev2=ctx.createDelay(5.0); rev2.delayTime.value=2.9;
   var rlp2=ctx.createBiquadFilter(); rlp2.type='lowpass'; rlp2.frequency.value=2400;
-  var rfb2=ctx.createGain(); rfb2.gain.value=0.58;
-  var ro2=ctx.createGain(); ro2.gain.value=0.54;
+  var rfb2=ctx.createGain(); rfb2.gain.value=0.50;
+  var ro2=ctx.createGain(); ro2.gain.value=0.56;
   rev2.connect(rlp2); rlp2.connect(rfb2); rfb2.connect(rev2);
   rev2.connect(ro2); ro2.connect(master);
 
@@ -2150,25 +2147,25 @@ function buildAmbient(){
   function advanceChord(){
     var now=ctx.currentTime;
 
-    // 1. Mute the reverb INPUT — stops old notes feeding the delay lines
-    //    (ro1/ro2 are never touched so the room stays alive)
+    // 1. Ease off the reverb INPUT — stops old notes feeding the delay lines
+    //    Longer ramp (0.25s) avoids the abrupt character shift that caused choppiness
     reverbSendGain.gain.cancelScheduledValues(now);
     reverbSendGain.gain.setValueAtTime(reverbSendGain.gain.value,now);
-    reverbSendGain.gain.linearRampToValueAtTime(0,now+0.15);
+    reverbSendGain.gain.linearRampToValueAtTime(0,now+0.25);
     // Re-open send after old oscillators have faded; new chord then blooms into reverb
     reverbSendGain.gain.linearRampToValueAtTime(1.0,now+FADE_OUT+0.2);
 
-    // 2. Drain feedback so the captured tail dissipates quickly (not cut — just empties)
-    //    With fb≈0.02 on a 3.1 s delay, the old echo is at ≈2% after one cycle
+    // 2. Drain feedback gently — with delay=1.8s, fb=0.10 means old echo is at 10%
+    //    after one 1.8s cycle and at ~1% after two cycles (~3.6s). Clean and smooth.
     rfb1.gain.cancelScheduledValues(now);
     rfb1.gain.setValueAtTime(rfb1.gain.value,now);
-    rfb1.gain.linearRampToValueAtTime(0.02,now+0.2);
-    rfb1.gain.linearRampToValueAtTime(0.65,now+1.5);
+    rfb1.gain.linearRampToValueAtTime(0.10,now+0.35);
+    rfb1.gain.linearRampToValueAtTime(0.58,now+1.8);
 
     rfb2.gain.cancelScheduledValues(now);
     rfb2.gain.setValueAtTime(rfb2.gain.value,now);
-    rfb2.gain.linearRampToValueAtTime(0.02,now+0.2);
-    rfb2.gain.linearRampToValueAtTime(0.58,now+1.5);
+    rfb2.gain.linearRampToValueAtTime(0.10,now+0.35);
+    rfb2.gain.linearRampToValueAtTime(0.50,now+1.8);
 
     // 3. ro1/ro2 completely untouched — reverb output always open, no gap or pop
     activeVoiceSets.forEach(function(vs){vs.stop();});

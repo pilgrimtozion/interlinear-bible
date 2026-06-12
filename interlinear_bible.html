@@ -83,8 +83,8 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:.
 .hl-panel-bar.hl-sel{border-color:rgba(0,0,0,.45)!important;box-shadow:0 2px 12px rgba(0,0,0,.25)}
 .hl-panel-bar .hl-check{position:absolute;left:.6rem;font-size:.75rem;opacity:.7}
 .hl-label-row{display:flex;align-items:center;gap:.4rem;margin-top:.25rem;margin-bottom:.1rem}
-.hl-label-inp{flex:1;background:rgba(0,0,0,.06);border:none;border-radius:4px;padding:.2rem .45rem;font-size:.72rem;color:rgba(0,0,0,.75);outline:none;font-family:Georgia,serif}
-.hl-label-inp::placeholder{color:rgba(0,0,0,.35)}
+.hl-label-inp{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:.25rem .5rem;font-size:.82rem;color:var(--text);outline:none;font-family:Georgia,serif}
+.hl-label-inp::placeholder{color:var(--text3)}
 .hl-section-head{display:flex;align-items:center;gap:.5rem;padding:.3rem 0 .2rem;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-top:.6rem}
 .hl-verse-row{display:flex;align-items:flex-start;gap:.5rem;padding:.4rem .5rem;border-radius:5px;cursor:pointer;transition:background .1s;margin-bottom:2px}
 .hl-verse-row:hover{background:var(--surface2)}
@@ -175,6 +175,18 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:.
 
 /* ── Mobile tab bar (hidden on desktop) ─────────────────────────────── */
 .mob-tabs{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);z-index:90}
+.tools-sheet-backdrop{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.45)}
+.tools-sheet{position:fixed;bottom:0;left:0;right:0;z-index:201;background:var(--surface);border-radius:1.2rem 1.2rem 0 0;border-top:1px solid var(--border);padding-bottom:calc(env(safe-area-inset-bottom,0px) + 56px);animation:sheet-up .22s ease-out}
+@keyframes sheet-up{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.tools-sheet-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:.65rem auto .2rem}
+.tools-sheet-title{text-align:center;font-size:.72rem;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;padding-bottom:.4rem}
+.tools-sheet-row{display:flex;align-items:center;gap:.85rem;padding:.85rem 1.4rem;cursor:pointer;border-top:1px solid var(--border);transition:background .1s;-webkit-tap-highlight-color:transparent}
+.tools-sheet-row:active{background:var(--surface2)}
+.tools-sheet-icon{font-size:1.35rem;width:2rem;text-align:center;flex-shrink:0}
+.tools-sheet-info{flex:1}
+.tools-sheet-label{font-size:.92rem;font-weight:600;color:var(--text)}
+.tools-sheet-desc{font-size:.73rem;color:var(--text3);margin-top:.1rem}
+.tools-sheet-badge{font-size:.65rem;background:var(--nt);color:#fff;border-radius:8px;padding:.1rem .4rem;margin-left:.4rem;vertical-align:middle}
 .mob-tab{flex:1;padding:.55rem .3rem .45rem;border:none;background:transparent;color:var(--text3);font-family:Georgia,serif;font-size:.64rem;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;transition:color .12s}
 .mob-tab.mob-on{color:var(--nt)}
 .mob-tab.mob-on.mob-ot{color:var(--ot)}
@@ -1971,13 +1983,13 @@ async function fetchInterlinearBook(testament, book) {
 
 const NOTES_KEY = "bib_notes_v2";
 const HL_COLORS=[
-  {k:'red',    hex:'#ef4444',bg:'rgba(239,68,68,.22)'},
-  {k:'orange', hex:'#f97316',bg:'rgba(249,115,22,.22)'},
-  {k:'yellow', hex:'#eab308',bg:'rgba(234,179,8,.25)'},
-  {k:'green',  hex:'#22c55e',bg:'rgba(34,197,94,.22)'},
-  {k:'blue',   hex:'#3b82f6',bg:'rgba(59,130,246,.22)'},
-  {k:'indigo', hex:'#6366f1',bg:'rgba(99,102,241,.22)'},
-  {k:'violet', hex:'#a855f7',bg:'rgba(168,85,247,.22)'},
+  {k:'red',    hex:'#ef4444',bg:'rgba(239,68,68,.45)'},
+  {k:'orange', hex:'#f97316',bg:'rgba(249,115,22,.42)'},
+  {k:'yellow', hex:'#eab308',bg:'rgba(234,179,8,.48)'},
+  {k:'green',  hex:'#22c55e',bg:'rgba(34,197,94,.42)'},
+  {k:'blue',   hex:'#3b82f6',bg:'rgba(59,130,246,.42)'},
+  {k:'indigo', hex:'#6366f1',bg:'rgba(99,102,241,.42)'},
+  {k:'violet', hex:'#a855f7',bg:'rgba(168,85,247,.42)'},
 ];
 const HL_KEY='jm-hl'; const HLL_KEY='jm-hll';
 function loadHighlights(){try{return JSON.parse(localStorage.getItem(HL_KEY)||'{}')}catch{return {}}}
@@ -2168,7 +2180,7 @@ function HighlightsPanel({highlights, hlLabels, hlColor, onSelectColor, onLabelC
                       style={{background:c.bg,borderColor:isSel?c.hex:'transparent',flex:1}}
                       onClick={function(){onSelectColor(c.k);}}>
                       {isSel&&<span className="hl-check">✓</span>}
-                      <span style={{color:'rgba(0,0,0,.75)'}}>{label||''}</span>
+                      <span style={{color:'var(--text)',fontWeight:label?600:400}}>{label||''}</span>
                     </div>
                     <button
                       style={{flexShrink:0,background:'none',border:'1px solid var(--border)',borderRadius:5,padding:'.3rem .5rem',cursor:'pointer',fontSize:'.78rem',color:'var(--text2)',whiteSpace:'nowrap'}}
@@ -2177,11 +2189,11 @@ function HighlightsPanel({highlights, hlLabels, hlColor, onSelectColor, onLabelC
                     </button>
                   </div>
                   {isEditing&&(
-                    <div style={{marginTop:'.35rem',display:'flex',alignItems:'center',gap:'.4rem',background:'var(--bg2,rgba(0,0,0,.05))',borderRadius:6,padding:'.4rem .55rem',border:'1px solid var(--border)'}}>
-                      <span style={{fontSize:'.75rem',color:'var(--text3)',whiteSpace:'nowrap'}}>Name:</span>
+                    <div style={{marginTop:'.35rem',display:'flex',alignItems:'center',gap:'.4rem',background:'var(--surface2)',borderRadius:6,padding:'.4rem .55rem',border:'1px solid var(--border)'}}>
+                      <span style={{fontSize:'.75rem',color:'var(--text2)',whiteSpace:'nowrap',fontWeight:600}}>Name:</span>
                       <input
                         autoFocus
-                        style={{flex:1,background:'none',border:'none',borderBottom:'1px solid var(--border)',padding:'.15rem .25rem',fontSize:'.85rem',color:'var(--text)',outline:'none',fontFamily:'Georgia,serif'}}
+                        style={{flex:1,background:'var(--bg)',border:'1px solid var(--border)',borderRadius:4,padding:'.2rem .4rem',fontSize:'.85rem',color:'var(--text)',outline:'none',fontFamily:'Georgia,serif'}}
                         value={label}
                         placeholder={'e.g. Prophecy, Prayer, Promise…'}
                         onChange={function(e){saveLabel(c.k,e.target.value);}}
@@ -2886,6 +2898,7 @@ function App(){
   const [hlMode,setHlMode]=useState(false);
   const [hlColor,setHlColor]=useState('yellow');
   const [showHighlights,setShowHighlights]=useState(false);
+  const [showToolsSheet,setShowToolsSheet]=useState(false);
 
   const isNT=test==="NT";
   function handleNavigate(refStr){
@@ -3139,28 +3152,49 @@ function App(){
           <span className="mob-tab-icon">{isNT?"α":"א"}</span>
           <span>Interlinear</span>
         </button>
-        <button className={"mob-tab"+(showNotes?" mob-on"+(isNT?"":" mob-ot"):"")}
-                onClick={()=>setShowNotes(true)}>
-          <span className="mob-tab-icon">📝</span>
-          <span>Notes</span>
-        </button>
-        <button className={"mob-tab"+(showPlaces?" mob-on"+(isNT?"":" mob-ot"):"")}
-                onClick={()=>setShowPlaces(true)}>
-          <span className="mob-tab-icon">📍</span>
-          <span>Places</span>
-        </button>
-        <button className={"mob-tab"+(showTheo?" mob-on"+(isNT?"":" mob-ot"):"")}
-                onClick={()=>setShowTheo(true)}>
-          <span className="mob-tab-icon">⧁</span>
-          <span>Topics</span>
-        </button>
-        <button className={"mob-tab"+((showHighlights||hlMode)?" mob-on"+(isNT?"":" mob-ot"):"")}
-                style={hlMode?{color:activeHlColor.hex}:{}}
-                onClick={()=>setShowHighlights(true)}>
-          <span className="mob-tab-icon">🖌</span>
-          <span>Color</span>
+        <button className={"mob-tab"+((showNotes||showPlaces||showTheo||showHighlights||hlMode)?" mob-on"+(isNT?"":" mob-ot"):"")}
+                onClick={()=>setShowToolsSheet(true)}>
+          <span className="mob-tab-icon">⚙</span>
+          <span>Tools</span>
         </button>
       </div>
+      {showToolsSheet&&(
+        <>
+          <div className="tools-sheet-backdrop" onClick={()=>setShowToolsSheet(false)}/>
+          <div className="tools-sheet">
+            <div className="tools-sheet-handle"/>
+            <div className="tools-sheet-title">Tools</div>
+            <div className="tools-sheet-row" onClick={()=>{setShowNotes(true);setShowToolsSheet(false);}}>
+              <span className="tools-sheet-icon">📝</span>
+              <div className="tools-sheet-info">
+                <div className="tools-sheet-label">Notes</div>
+                <div className="tools-sheet-desc">Add and review your verse notes and cross-references</div>
+              </div>
+            </div>
+            <div className="tools-sheet-row" onClick={()=>{setShowPlaces(true);setShowToolsSheet(false);}}>
+              <span className="tools-sheet-icon">📍</span>
+              <div className="tools-sheet-info">
+                <div className="tools-sheet-label">Places</div>
+                <div className="tools-sheet-desc">Biblical locations and their narrative through Scripture</div>
+              </div>
+            </div>
+            <div className="tools-sheet-row" onClick={()=>{setShowTheo(true);setShowToolsSheet(false);}}>
+              <span className="tools-sheet-icon">⧁</span>
+              <div className="tools-sheet-info">
+                <div className="tools-sheet-label">Topics</div>
+                <div className="tools-sheet-desc">Theological arcs traced from seed to fulfillment</div>
+              </div>
+            </div>
+            <div className="tools-sheet-row" onClick={()=>{setShowHighlights(true);setShowToolsSheet(false);}}>
+              <span className="tools-sheet-icon" style={hlMode?{color:activeHlColor.hex}:{}}>🖌</span>
+              <div className="tools-sheet-info">
+                <div className="tools-sheet-label">Highlights{hlMode&&<span className="tools-sheet-badge">Active</span>}</div>
+                <div className="tools-sheet-desc">Color-code verses and review by theme</div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
       {showHighlights&&<HighlightsPanel
         highlights={highlights}
         hlLabels={hlLabels}

@@ -69,7 +69,7 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:.
 .lv-num{font-size:.7rem;font-weight:700;color:var(--nt);min-width:20px;padding-top:2px;flex-shrink:0}
 .lv-num.ot{color:var(--ot)}
 .lv-text{font-size:.84rem;color:var(--text2);line-height:1.6;flex:1}
-.lv-note-btn{opacity:0;flex-shrink:0;background:none;border:1px solid var(--border);color:var(--text3);width:20px;height:20px;border-radius:4px;cursor:pointer;font-size:.8rem;display:flex;align-items:center;justify-content:center;transition:all .12s;margin-top:1px}
+.lv-note-btn{opacity:0;flex-shrink:0;background:none;border:1px solid var(--border);color:var(--text3);width:22px;height:22px;border-radius:4px;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;transition:all .12s;margin-top:1px}
 .lv-row:hover .lv-note-btn{opacity:1}
 .lv-note-btn:hover{background:var(--border);color:var(--text)}
 .lv-row.hl-verse{border-left:3px solid transparent}
@@ -205,6 +205,7 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:.
   .left-col.mob-show{display:block}
   .right-col{width:100%;}
   .side-toolbar{display:none}
+  .lv-note-btn{opacity:.7}
   .right-col.mob-hide{display:none}
 
   /* Show the bottom tab bar on mobile */
@@ -2112,9 +2113,9 @@ function WordCell({word,vNum,isNT,selKey,onClick}){
   );
 }
 
-function VerseBlock({verse,isNT,activeV,selKey,onClick,id}){
+function VerseBlock({verse,isNT,activeV,selKey,onClick,id,hlBg,hlHex}){
   return(
-    <div id={id} className={"verse-block"+(activeV===verse.v?(isNT?" v-active":" v-active ot"):"")}>
+    <div id={id} className={"verse-block"+(activeV===verse.v?(isNT?" v-active":" v-active ot"):"")} style={hlBg?{background:hlBg,borderLeft:'3px solid '+(hlHex||'transparent'),paddingLeft:'.5rem'}:{}}>
       <div className="v-head-slim">
         <span className={"v-num-r"+(isNT?"":" ot")}>{verse.v}</span>
       </div>
@@ -2129,6 +2130,7 @@ function VerseBlock({verse,isNT,activeV,selKey,onClick,id}){
 // ── Highlights Panel ──────────────────────────────────────────────────────────
 function HighlightsPanel({highlights, hlLabels, hlColor, onSelectColor, onLabelChange, onClose, onNavigate}){
   const [editLabels, setEditLabels] = useState({...hlLabels});
+  const [editingColor, setEditingColor] = useState(null);
   function saveLabel(k,v){
     const next={...editLabels,[k]:v};
     setEditLabels(next);
@@ -2158,23 +2160,34 @@ function HighlightsPanel({highlights, hlLabels, hlColor, onSelectColor, onLabelC
             {HL_COLORS.map(function(c){
               var label=editLabels[c.k]||'';
               var isSel=hlColor===c.k;
-              var textCol='rgba(0,0,0,.75)';
+              var isEditing=editingColor===c.k;
               return(
-                <div key={c.k} style={{marginBottom:'.35rem'}}>
-                  <div className={"hl-panel-bar"+(isSel?' hl-sel':'')}
-                    style={{background:c.bg,borderColor:isSel?c.hex:'transparent'}}
-                    onClick={function(){onSelectColor(c.k);}}>
-                    {isSel&&<span className="hl-check">✓</span>}
-                    <span style={{color:textCol}}>{label||(isSel?'Selected':'')}</span>
+                <div key={c.k} style={{marginBottom:'.5rem'}}>
+                  <div style={{display:'flex',alignItems:'center',gap:'.45rem'}}>
+                    <div className={"hl-panel-bar"+(isSel?' hl-sel':'')}
+                      style={{background:c.bg,borderColor:isSel?c.hex:'transparent',flex:1}}
+                      onClick={function(){onSelectColor(c.k);}}>
+                      {isSel&&<span className="hl-check">✓</span>}
+                      <span style={{color:'rgba(0,0,0,.75)'}}>{label||''}</span>
+                    </div>
+                    <button
+                      style={{flexShrink:0,background:'none',border:'1px solid var(--border)',borderRadius:5,padding:'.3rem .5rem',cursor:'pointer',fontSize:'.78rem',color:'var(--text2)',whiteSpace:'nowrap'}}
+                      onClick={function(e){e.stopPropagation();setEditingColor(isEditing?null:c.k);}}>
+                      {isEditing?'Done':'✏️ Name'}
+                    </button>
                   </div>
-                  <div className="hl-label-row">
-                    <span style={{fontSize:'.65rem',color:'var(--text3)',whiteSpace:'nowrap'}}>Label:</span>
-                    <input className="hl-label-inp"
-                      value={label}
-                      placeholder={'Name this color…'}
-                      onChange={function(e){saveLabel(c.k,e.target.value);}}
-                      onClick={function(e){e.stopPropagation();}}/>
-                  </div>
+                  {isEditing&&(
+                    <div style={{marginTop:'.35rem',display:'flex',alignItems:'center',gap:'.4rem',background:'var(--bg2,rgba(0,0,0,.05))',borderRadius:6,padding:'.4rem .55rem',border:'1px solid var(--border)'}}>
+                      <span style={{fontSize:'.75rem',color:'var(--text3)',whiteSpace:'nowrap'}}>Name:</span>
+                      <input
+                        autoFocus
+                        style={{flex:1,background:'none',border:'none',borderBottom:'1px solid var(--border)',padding:'.15rem .25rem',fontSize:'.85rem',color:'var(--text)',outline:'none',fontFamily:'Georgia,serif'}}
+                        value={label}
+                        placeholder={'e.g. Prophecy, Prayer, Promise…'}
+                        onChange={function(e){saveLabel(c.k,e.target.value);}}
+                        onClick={function(e){e.stopPropagation();}}/>
+                    </div>
+                  )}
                 </div>
               );
             })}
@@ -3051,7 +3064,7 @@ function App(){
 
         <span className="hint">Click verse to sync · Click word for Strong's · ✦ = note · hover verse for +</span>
       </div>
-      {hlMode&&(
+      {hlMode&&mobileView!=="interlinear"&&(
         <div className="hl-mode-strip">
           <div className="hl-color-chip" style={{background:activeHlColor.hex}}/>
           <span className="hl-mode-label">Highlight mode: tap verses to color</span>
@@ -3090,7 +3103,7 @@ function App(){
         </div>
         <div className={"right-col"+(mobileView==="list"?" mob-hide":"")}>
           {interlinearVerses
-            ?interlinearVerses.map(v=><VerseBlock key={v.v} id={"rv-"+v.v} verse={v} isNT={isNT} activeV={activeV} selKey={sel?sel.key:null} onClick={handleWord}/>)
+            ?interlinearVerses.map(v=>{var _hk=nk(test,book,ch,v.v);var _hc=highlights[_hk];var _hcol=_hc?HL_COLORS.find(function(x){return x.k===_hc;}):null;return <VerseBlock key={v.v} id={"rv-"+v.v} verse={v} isNT={isNT} activeV={activeV} selKey={sel?sel.key:null} onClick={handleWord} hlBg={_hcol?_hcol.bg:null} hlHex={_hcol?_hcol.hex:null}/>;})
             :<div className="no-interlinear">
               {fetchingInterlinear
                 ?"Loading interlinear data…"

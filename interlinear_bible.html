@@ -2015,8 +2015,8 @@ function buildAmbient(){
   ];
   var CHORD_DUR=10;   // seconds between chord strikes
   var FADE_IN =4.5;   // new chord bloom
-  var FADE_OUT=10.0;  // old chord natural ring-out (amp envelope release)
-  var VOLS=[0.20,0.17,0.15,0.13];
+  var FADE_OUT=6.5;   // old chord natural ring-out (amp envelope release)
+  var VOLS=[0.23,0.20,0.17,0.15];
   var PANS=[-0.45,0.45,-0.28,0.28];
 
   // ── Master gain (slow initial fade-in)
@@ -2047,7 +2047,7 @@ function buildAmbient(){
   var filtLfo=ctx.createOscillator();
   var filtLg=ctx.createGain();
   filtLfo.type='sine'; filtLfo.frequency.value=0.065;
-  filtLg.gain.value=380;
+  filtLg.gain.value=160;
   filtLfo.connect(filtLg); filtLg.connect(filt.frequency);
   filtLfo.start();
 
@@ -2081,6 +2081,15 @@ function buildAmbient(){
     for(var vi=0;vi<4;vi++){
       (function(freq,vol,vidx){
         var panL=PANS[vidx]; var panR=-PANS[vidx];
+
+        // Sub layer: octave below, quiet sine — adds warmth and fullness
+        var subOsc=ctx.createOscillator();
+        var subG=ctx.createGain();
+        subOsc.type='sine'; subOsc.frequency.value=freq*0.5;
+        subG.gain.value=vol*0.14;
+        subOsc.connect(subG); subG.connect(vg);
+        subOsc.start(ctx.currentTime);
+        allOscs.push(subOsc);
 
         // Sine layer: pure, warm, foundational (58% of mix)
         var sOsc=ctx.createOscillator();

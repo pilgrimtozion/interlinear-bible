@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jammin Interlinear App</title>
+<title>The Pilgrim's Interlinear</title>
 <!-- PWA -->
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0f172a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Jammin">
+<meta name="apple-mobile-web-app-title" content="Pilgrim's">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <meta name="description" content="Greek and Hebrew interlinear Bible with Strong's concordance and Septuagint bridges">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
@@ -1998,103 +1998,112 @@ const HL_COLORS=[
 ];
 const HL_KEY='jm-hl'; const HLL_KEY='jm-hll';
 // ── Ambient Audio ────────────────────────────────────────────────────────────
-// Chord progression: A - E - F#m - D - A - E - F#m - D - Bm - A/C# - D - E
-// Airy pad voicings: mid-to-high register (220–880 Hz), crossfade between chords
+// Soaking worship pad: I–IV–V–IV (A–D–E–D) voiced for voice leading.
+// Sawtooth → lowpass filter → diffuse reverb cloud. No silence gaps.
 function buildAmbient(){
   var AudioCtx=window.AudioContext||window.webkitAudioContext;
   if(!AudioCtx)return null;
   var ctx=new AudioCtx();
 
-  // All voicings in 185–880 Hz range — no muddy bass, light and airy
+  // Chord voicings with smooth voice leading — no note moves more than a whole step.
+  // A maj: A3 C#4 E4 A4
+  // D maj: A3 D4  F#4 A4  (C#→D, E→F#: half/whole step only)
+  // E maj: B3 E4  G#4 B4  (all voices move by step from D)
   var PROG=[
-    [220,  277.18,329.63,440,  554.37,659.25], // A   (A3 C#4 E4 A4 C#5 E5)
-    [246.94,329.63,415.30,493.88,659.25,830.61], // E  (B3 E4 G#4 B4 E5 G#5)
-    [185.00,277.18,369.99,440,  554.37,739.99], // F#m (F#3 C#4 F#4 A4 C#5 F#5)
-    [220,  293.66,369.99,440,  587.33,739.99], // D   (A3 D4 F#4 A4 D5 F#5)
-    [220,  277.18,329.63,440,  554.37,659.25], // A
-    [246.94,329.63,415.30,493.88,659.25,830.61], // E
-    [185.00,277.18,369.99,440,  554.37,739.99], // F#m
-    [220,  293.66,369.99,440,  587.33,739.99], // D
-    [246.94,293.66,369.99,493.88,587.33,739.99], // Bm (B3 D4 F#4 B4 D5 F#5)
-    [277.18,329.63,440,  554.37,659.25,880.00], // A/C# (C#4 E4 A4 C#5 E5 A5)
-    [220,  293.66,369.99,440,  587.33,739.99], // D
-    [246.94,329.63,415.30,493.88,659.25,830.61], // E
+    [220,  277.18,329.63,440],   // A (I)
+    [220,  293.66,369.99,440],   // D (IV)
+    [246.94,329.63,415.30,493.88], // E (V)
+    [220,  293.66,369.99,440],   // D (IV)
   ];
-  var CHORD_DUR=7;   // seconds per chord
-  var FADE_OUT=0.4;  // fade out before chord change
-  var FADE_IN=1.1;   // fade in after chord change
+  var CHORD_DUR=10;  // seconds per chord — slow, meditative
+  var GLIDE=4.5;     // slow frequency glide; voice leading makes it imperceptible
 
-  // Master — gentle overall level
+  // ── Master gain
   var master=ctx.createGain();
   master.gain.setValueAtTime(0,ctx.currentTime);
-  master.gain.linearRampToValueAtTime(0.13,ctx.currentTime+3.5);
+  master.gain.linearRampToValueAtTime(0.19,ctx.currentTime+5.0);
   master.connect(ctx.destination);
 
-  // Light reverb — shorter, less feedback than before
-  var dly=ctx.createDelay(4.0); dly.delayTime.value=2.2;
-  var dlyFb=ctx.createGain(); dlyFb.gain.value=0.18;
-  var dlyOut=ctx.createGain(); dlyOut.gain.value=0.20;
-  dly.connect(dlyFb); dlyFb.connect(dly);
-  dly.connect(dlyOut); dlyOut.connect(master);
+  // ── Diffuse reverb cloud: two feedback delays at different times
+  // Long tail, high feedback → notes melt into each other
+  var dly1=ctx.createDelay(6.0); dly1.delayTime.value=3.2;
+  var fb1=ctx.createGain();  fb1.gain.value=0.56;
+  var out1=ctx.createGain(); out1.gain.value=0.38;
+  dly1.connect(fb1); fb1.connect(dly1);
+  dly1.connect(out1); out1.connect(master);
 
-  // Higher LPF cutoff — lets the airy highs through
+  var dly2=ctx.createDelay(4.0); dly2.delayTime.value=1.85;
+  var fb2=ctx.createGain();  fb2.gain.value=0.42;
+  var out2=ctx.createGain(); out2.gain.value=0.24;
+  dly2.connect(fb2); fb2.connect(dly2);
+  dly2.connect(out2); out2.connect(master);
+
+  // ── Warm analog lowpass (sawtooth source → filter = classic pad character)
   var filt=ctx.createBiquadFilter();
-  filt.type='lowpass'; filt.frequency.value=1600; filt.Q.value=0.6;
-  filt.connect(master); filt.connect(dly);
+  filt.type='lowpass'; filt.frequency.value=680; filt.Q.value=1.5;
+  filt.connect(master); filt.connect(dly1); filt.connect(dly2);
 
-  // 6 oscillators — each has: osc → gainNode (LFO) → envGain → filt
-  // envGain is what we fade for chord changes (LFO modulates gainNode separately)
-  var vols=[0.16,0.18,0.15,0.16,0.12,0.08];
+  // ── Filter LFO: slow breathing (~14-second cycle)
+  var filtLfo=ctx.createOscillator();
+  var filtLg=ctx.createGain();
+  filtLfo.type='sine'; filtLfo.frequency.value=0.072;
+  filtLg.gain.value=260; // sweeps filter ±260 Hz around 680 Hz base
+  filtLfo.connect(filtLg); filtLg.connect(filt.frequency);
+  filtLfo.start();
+
+  // ── Shimmer layer: quiet highpass signal → reverb → ethereal top-end texture
+  var shimHp=ctx.createBiquadFilter();
+  shimHp.type='highpass'; shimHp.frequency.value=1100;
+  var shimGain=ctx.createGain(); shimGain.gain.value=0.04;
+  shimHp.connect(shimGain); shimGain.connect(dly1);
+
+  // ── 4 voice pairs (8 sawtooth oscs, L/R spread, detuned per pair)
+  // Sawtooth through lowpass gives the warm, rich analog pad character.
+  var vols=[0.20,0.17,0.15,0.13];
+  var pans=[-0.5,0.5,-0.3,0.3]; // wide stereo spread
   var oscs=[];
   var chord0=PROG[0];
-  for(var ni=0;ni<6;ni++){
-    (function(freq,vol,idx){
-      var osc=ctx.createOscillator();
-      var og=ctx.createGain();   // permanent level + LFO target
-      var env=ctx.createGain();  // chord envelope (0→1)
-      osc.type='sine';
-      // Tiny random detune for warmth/chorus
-      osc.frequency.value=freq*(1+(Math.random()-0.5)*0.003);
-      og.gain.value=vol;
-      env.gain.value=0;
-      osc.connect(og); og.connect(env); env.connect(filt);
-      // Very slow, subtle tremolo
-      var lfo=ctx.createOscillator();
-      var lg=ctx.createGain();
-      lfo.frequency.value=0.04+Math.random()*0.07;
-      lg.gain.value=vol*0.12; // gentle — just a breath
-      lfo.connect(lg); lg.connect(og.gain);
-      lfo.start();
-      // Staggered initial bloom
-      var t0=ctx.currentTime+idx*0.45;
-      env.gain.setValueAtTime(0,t0);
-      env.gain.linearRampToValueAtTime(1.0,t0+2.2);
-      osc.start(t0);
-      oscs.push({osc,og,env,lfo,lg});
-    })(chord0[ni],vols[ni],ni);
+
+  for(var vi=0;vi<4;vi++){
+    (function(freq,vol,vidx,pan){
+      var det=6+Math.random()*5; // 6-11 cents detune between L/R
+      for(var side=0;side<2;side++){
+        var osc=ctx.createOscillator();
+        var og=ctx.createGain();
+        var panner=ctx.createStereoPanner();
+        osc.type='sawtooth';
+        osc.frequency.value=freq;
+        osc.detune.value=side===0?-det/2:det/2;
+        og.gain.value=0;
+        panner.pan.value=side===0?pan:-pan; // opposite sides per pair
+        osc.connect(og); og.connect(panner);
+        panner.connect(filt); panner.connect(shimHp);
+        // Staggered bloom entry, long soft attack
+        var t0=ctx.currentTime+vidx*0.8+side*0.2;
+        og.gain.setValueAtTime(0,t0);
+        og.gain.linearRampToValueAtTime(vol*0.5,t0+4.5);
+        osc.start(t0);
+        oscs.push({osc,og,voiceIdx:vidx});
+      }
+    })(chord0[vi],vols[vi],vi,pans[vi]);
   }
 
-  // Chord changes: fade out → snap frequency → fade in (no sliding)
+  // ── Chord advancement: continuous slow glide, no silence gap
   var chordIdx=0;
   function advanceChord(){
     chordIdx=(chordIdx+1)%PROG.length;
     var chord=PROG[chordIdx];
     var now=ctx.currentTime;
     for(var i=0;i<oscs.length;i++){
-      var env=oscs[i].env;
-      env.gain.cancelScheduledValues(now);
-      env.gain.setValueAtTime(1.0,now);
-      env.gain.linearRampToValueAtTime(0,now+FADE_OUT);
-      // Snap to new frequency at silence
-      oscs[i].osc.frequency.setValueAtTime(chord[i],now+FADE_OUT+0.02);
-      // Breathe back in
-      env.gain.setValueAtTime(0,now+FADE_OUT+0.02);
-      env.gain.linearRampToValueAtTime(1.0,now+FADE_OUT+0.02+FADE_IN);
+      var vi=oscs[i].voiceIdx;
+      oscs[i].osc.frequency.cancelScheduledValues(now);
+      oscs[i].osc.frequency.setValueAtTime(oscs[i].osc.frequency.value,now);
+      oscs[i].osc.frequency.linearRampToValueAtTime(chord[vi],now+GLIDE);
     }
   }
   var timer=setInterval(advanceChord,CHORD_DUR*1000);
 
-  return {ctx,master,oscs,filt,dly,dlyFb,dlyOut,timer};
+  return {ctx,master,oscs,filt,filtLfo,dly1,dly2,shimHp,shimGain,timer};
 }
 
 function teardownAmbient(amb){
@@ -2102,8 +2111,8 @@ function teardownAmbient(amb){
   if(amb.timer)clearInterval(amb.timer);
   var now=amb.ctx.currentTime;
   amb.master.gain.setValueAtTime(amb.master.gain.value,now);
-  amb.master.gain.linearRampToValueAtTime(0,now+2.5);
-  setTimeout(function(){try{amb.ctx.close();}catch(e){}},3000);
+  amb.master.gain.linearRampToValueAtTime(0,now+3.0);
+  setTimeout(function(){try{amb.ctx.close();}catch(e){}},3500);
 }
 
 function loadHighlights(){try{return JSON.parse(localStorage.getItem(HL_KEY)||'{}')}catch{return {}}}
@@ -3180,7 +3189,7 @@ function App(){
     <div>
       <header>
         <div>
-          <div className="app-title">Jammin Interlinear App</div>
+          <div className="app-title">The Pilgrim's Interlinear</div>
           <div className="app-subtitle">BSB · Greek NT · Hebrew OT · Strong's · LXX Bridges</div>
         </div>
         <div className="header-right">
@@ -3234,7 +3243,7 @@ function App(){
               onHighlight={applyHighlight}/>
           ))}
           <div className="footer">
-            <strong style={{color:"var(--text3)"}}>Jammin Interlinear App</strong><br/>
+            <strong style={{color:"var(--text3)"}}>The Pilgrim's Interlinear</strong><br/>
             English text:{" "}
             {translation==="WEB"
               ?<><a href="https://ebible.org/eng-web/copyright.htm" target="_blank" rel="noopener" style={{color:"inherit"}}>World English Bible</a> (Public Domain)</>

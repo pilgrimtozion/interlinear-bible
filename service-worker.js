@@ -1,11 +1,11 @@
 /**
- * Berean Interlinear Bible — Service Worker
+ * The Pilgrim's Interlinear — Service Worker
  * Caches the app shell for offline use.
  * Bible data JSON files are cached on first load and served from cache thereafter.
  */
 
-const CACHE_NAME = 'jammin-interlinear-v27';
-const DATA_CACHE  = 'jammin-data-v27';
+const CACHE_NAME = 'jammin-interlinear-v28';
+const DATA_CACHE  = 'jammin-data-v28';
 
 // App shell — files that must be cached immediately on install
 const SHELL_FILES = [

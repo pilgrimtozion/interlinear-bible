@@ -1,6 +1,6 @@
 {
-  "name": "Jammin Interlinear App",
-  "short_name": "Jammin",
+  "name": "The Pilgrim's Interlinear",
+  "short_name": "Pilgrim",
   "description": "Greek and Hebrew interlinear Bible with full Strong's concordance and Septuagint bridges",
   "start_url": "/interlinear-bible/interlinear_bible.html",
   "scope": "/interlinear-bible/",

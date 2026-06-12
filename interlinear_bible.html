@@ -2005,22 +2005,26 @@ function buildAmbient(){
   if(!AudioCtx)return null;
   var ctx=new AudioCtx();
 
-  // G Major: I - IVsus2 - V - IV (same tight voice leading as before)
-  // D - Gsus2 - Bm7 - G - D - Gsus2 - Bm7 - G - Em7 - D/F# - Gsus2 - A
-  // Voiced F#3-A4 range; nearly every transition is stepwise or stays put.
+  // D Major: I - V - vi7 - IVsus2 × 2, then bridge Em7 - D/F# - G - G, Em7 - D/F# - G - A
+  // D - A - Bm7 - Gsus2 - D - A - Bm7 - Gsus2 - Em7 - D/F# - G - G - Em7 - D/F# - G - A
+  // Voiced F#3-A4 range; tight stepwise voice leading throughout.
   var PROG=[
     [185.00,220,    293.66,369.99], // D    (F#3 A3 D4 F#4)
-    [196,   220,    293.66,392   ], // Gsus2(G3  A3 D4 G4)  F#->G, G stays, stays, F#->G
-    [220,   246.94, 293.66,369.99], // Bm7  (A3  B3 D4 F#4) step up, step up, stays, step down
-    [196,   246.94, 293.66,392   ], // G    (G3  B3 D4 G4)  step down, stays, stays, step up
-    [185.00,220,    293.66,369.99], // D    (F#3 A3 D4 F#4) repeat
-    [196,   220,    293.66,392   ], // Gsus2 repeat
+    [220,   277.18, 329.63,440   ], // A    (A3  C#4 E4 A4)
+    [220,   246.94, 293.66,369.99], // Bm7  (A3  B3 D4 F#4)
+    [196,   220,    293.66,392   ], // Gsus2(G3  A3 D4 G4)
+    [185.00,220,    293.66,369.99], // D    repeat
+    [220,   277.18, 329.63,440   ], // A    repeat
     [220,   246.94, 293.66,369.99], // Bm7  repeat
-    [196,   246.94, 293.66,392   ], // G    repeat
-    [196,   246.94, 293.66,329.63], // Em7  (G3  B3 D4 E4)  3 voices stay, G4->E4
-    [185.00,220,    293.66,369.99], // D/F# (F#3 A3 D4 F#4) half step down, step down, stays, step up
-    [196,   220,    293.66,392   ], // Gsus2 F#->G, stays, stays, F#->G
-    [220,   277.18, 329.63,440   ], // A    (A3  C#4 E4 A4)  stepwise throughout
+    [196,   220,    293.66,392   ], // Gsus2 repeat
+    [196,   246.94, 293.66,329.63], // Em7  (G3  B3 D4 E4)
+    [185.00,220,    293.66,369.99], // D/F# (F#3 A3 D4 F#4)
+    [196,   246.94, 293.66,392   ], // G    (G3  B3 D4 G4)
+    [196,   246.94, 293.66,392   ], // G    (held)
+    [196,   246.94, 293.66,329.63], // Em7
+    [185.00,220,    293.66,369.99], // D/F#
+    [196,   246.94, 293.66,392   ], // G
+    [220,   277.18, 329.63,440   ], // A
   ];
   var CHORD_DUR=8;
   var FADE_IN=1.0;
@@ -2056,7 +2060,7 @@ function buildAmbient(){
 
   // ── Soft lowpass: rolls off harshness, keeps the pad warm and breathy
   var lp=ctx.createBiquadFilter();
-  lp.type='lowpass'; lp.frequency.value=700; lp.Q.value=0.7;
+  lp.type='lowpass'; lp.frequency.value=1000; lp.Q.value=0.7;
   var dryGain=ctx.createGain(); dryGain.gain.value=0.18; // barely audible direct
   lp.connect(dryGain); dryGain.connect(master);
   // reverbSendGain gates what enters the delay lines — lets us mute the INPUT
@@ -2075,27 +2079,27 @@ function buildAmbient(){
     var allOscs=[];
     for(var vi=0;vi<4;vi++){
       (function(freq,vol,pan){
-        // Three detuned sines per voice: creates slow natural beating (Rhubarb feel)
-        // Detune spread chosen so beating period is 1.5-3 seconds
-        var dets=[-7,0,6]; // cents: -7, 0, +6
-        var wts=[0.35,0.38,0.27]; // relative weights
+        // Three detuned triangles per voice: clean, flute-like, odd-harmonics only
+        // Triangle is much softer than sawtooth — lets the reverb stay open not muddy
+        var dets=[-7,0,6]; // cents
+        var wts=[0.35,0.38,0.27];
         for(var di=0;di<3;di++){
           (function(det,wt){
             var osc=ctx.createOscillator();
             var og=ctx.createGain();
             var panner=ctx.createStereoPanner();
-            osc.type='sine';
+            osc.type='triangle';
             osc.frequency.value=freq;
-            osc.detune.value=det+(Math.random()-0.5)*2; // tiny extra randomness
-            panner.pan.value=pan*(0.6+di*0.2); // each detune layer slightly different pan
+            osc.detune.value=det+(Math.random()-0.5)*2;
+            panner.pan.value=pan*(0.6+di*0.2);
             og.gain.value=vol*wt;
             osc.connect(og); og.connect(panner); panner.connect(vg);
 
-            // Per-oscillator slow amplitude LFO: the "breathing" quality
+            // Per-oscillator breathing LFO
             var bLfo=ctx.createOscillator(); var bLg=ctx.createGain();
             bLfo.type='sine';
-            bLfo.frequency.value=0.06+Math.random()*0.08; // 0.06-0.14 Hz
-            bLg.gain.value=vol*wt*0.22; // gentle depth
+            bLfo.frequency.value=0.06+Math.random()*0.08;
+            bLg.gain.value=vol*wt*0.22;
             bLfo.connect(bLg); bLg.connect(og.gain);
             bLfo.start();
 
@@ -2103,6 +2107,25 @@ function buildAmbient(){
             allOscs.push(osc,bLfo);
           })(dets[di],wts[di]);
         }
+        // Pure sine layer: warm fundamental reinforcement, no added harmonics
+        (function(){
+          var sOsc=ctx.createOscillator();
+          var sGain=ctx.createGain();
+          var sPan=ctx.createStereoPanner();
+          sOsc.type='sine';
+          sOsc.frequency.value=freq;
+          sPan.pan.value=pan*0.4;
+          sGain.gain.value=vol*0.28;
+          sOsc.connect(sGain); sGain.connect(sPan); sPan.connect(vg);
+          var sLfo=ctx.createOscillator(); var sLg=ctx.createGain();
+          sLfo.type='sine';
+          sLfo.frequency.value=0.04+Math.random()*0.05;
+          sLg.gain.value=vol*0.28*0.18;
+          sLfo.connect(sLg); sLg.connect(sGain.gain);
+          sLfo.start();
+          sOsc.start(ctx.currentTime);
+          allOscs.push(sOsc,sLfo);
+        })();
       })(chord[vi],VOLS[vi],PANS[vi]);
     }
 

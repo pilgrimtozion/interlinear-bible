@@ -2005,28 +2005,21 @@ function buildAmbient(){
   if(!AudioCtx)return null;
   var ctx=new AudioCtx();
 
-  // D Major: I - IVsus2 - vi7 - IV × 2, then Em7 - D/F# - Gsus2 - A
-  // D - Gsus2 - Bm7 - G - D - Gsus2 - Bm7 - G - Em7 - D/F# - Gsus2 - A
-  // Voiced F#3-A4 range; nearly every transition is stepwise or stays put.
+  // 4-chord loop — bass (vi 0-1) + pad (vi 2-5) per chord
+  // G3 and D4 are locked across Gadd9/Cadd9/Cadd9; A4 appears as the magic 9th
   var PROG=[
-    [185.00,220,    293.66,369.99], // D    (F#3 A3 D4 F#4)
-    [196,   220,    293.66,392   ], // Gsus2(G3  A3 D4 G4)
-    [220,   246.94, 293.66,369.99], // Bm7  (A3  B3 D4 F#4)
-    [196,   246.94, 293.66,392   ], // G    (G3  B3 D4 G4)
-    [185.00,220,    293.66,369.99], // D    repeat
-    [196,   220,    293.66,392   ], // Gsus2 repeat
-    [220,   246.94, 293.66,369.99], // Bm7  repeat
-    [196,   246.94, 293.66,392   ], // G    repeat
-    [196,   246.94, 293.66,329.63], // Em7  (G3  B3 D4 E4)
-    [185.00,220,    293.66,369.99], // D/F# (F#3 A3 D4 F#4)
-    [196,   220,    293.66,392   ], // Gsus2
-    [220,   277.18, 329.63,440   ], // A    (A3  C#4 E4 A4)
+    //  bass──────────────  pad──────────────────────────────
+    [49.00, 98.00,  196.00, 246.94, 293.66, 440.00], // Gadd9  G1 G2 | G3 B3 D4 A4
+    [65.41, 130.81, 196.00, 261.63, 293.66, 392.00], // Cadd9  C2 C3 | G3 C4 D4 G4
+    [73.42, 146.83, 220.00, 293.66, 392.00, 440.00], // Dsus4  D2 D3 | A3 D4 G4 A4
+    [65.41, 130.81, 196.00, 261.63, 293.66, 392.00], // Cadd9  C2 C3 | G3 C4 D4 G4
   ];
-  var CHORD_DUR=8;
-  var FADE_IN=1.0;
-  var FADE_OUT=0.7;
-  var VOLS=[0.28,0.24,0.20,0.18];
-  var PANS=[-0.45,0.45,-0.24,0.24];
+  var CHORD_DUR=14;
+  var FADE_IN=3.0;
+  var FADE_OUT=3.0;
+  // vi 0-1 = bass (quiet, centred); vi 2-5 = pad (louder, spread)
+  var VOLS=[0.12, 0.10, 0.26, 0.22, 0.19, 0.17];
+  var PANS=[0,    0,   -0.45, 0.45, -0.24, 0.24];
 
   // ── Master
   var master=ctx.createGain();
@@ -2074,56 +2067,70 @@ function buildAmbient(){
     vg.connect(lp);
 
     var allOscs=[];
-    for(var vi=0;vi<4;vi++){
-      (function(freq,vol,pan){
-        // Three detuned triangles per voice: clean, flute-like, odd-harmonics only
-        // Triangle is much softer than sawtooth — lets the reverb stay open not muddy
-        var dets=[-7,0,6]; // cents
-        var wts=[0.35,0.38,0.27];
-        for(var di=0;di<3;di++){
-          (function(det,wt){
-            var osc=ctx.createOscillator();
-            var og=ctx.createGain();
-            var panner=ctx.createStereoPanner();
-            osc.type='triangle';
-            osc.frequency.value=freq;
-            osc.detune.value=det+(Math.random()-0.5)*2;
-            panner.pan.value=pan*(0.6+di*0.2);
-            og.gain.value=vol*wt;
-            osc.connect(og); og.connect(panner); panner.connect(vg);
-
-            // Per-oscillator breathing LFO
-            var bLfo=ctx.createOscillator(); var bLg=ctx.createGain();
-            bLfo.type='sine';
-            bLfo.frequency.value=0.06+Math.random()*0.08;
-            bLg.gain.value=vol*wt*0.22;
-            bLfo.connect(bLg); bLg.connect(og.gain);
-            bLfo.start();
-
-            osc.start(ctx.currentTime);
-            allOscs.push(osc,bLfo);
-          })(dets[di],wts[di]);
+    for(var vi=0;vi<6;vi++){
+      (function(freq,vol,pan,isBass){
+        if(isBass){
+          // ── Bass voice: pure sine, centred, no detune (detune is muddy at 49-147 Hz)
+          var osc=ctx.createOscillator();
+          var og=ctx.createGain();
+          osc.type='sine';
+          osc.frequency.value=freq;
+          og.gain.value=vol;
+          osc.connect(og); og.connect(vg);
+          var bLfo=ctx.createOscillator(); var bLg=ctx.createGain();
+          bLfo.type='sine';
+          bLfo.frequency.value=0.03+Math.random()*0.03; // very slow, subtle
+          bLg.gain.value=vol*0.12;
+          bLfo.connect(bLg); bLg.connect(og.gain);
+          bLfo.start();
+          osc.start(ctx.currentTime);
+          allOscs.push(osc,bLfo);
+        } else {
+          // ── Pad voice: detuned triangle cluster + sine support
+          var dets=[-7,0,6];
+          var wts=[0.35,0.38,0.27];
+          for(var di=0;di<3;di++){
+            (function(det,wt){
+              var osc=ctx.createOscillator();
+              var og=ctx.createGain();
+              var panner=ctx.createStereoPanner();
+              osc.type='triangle';
+              osc.frequency.value=freq;
+              osc.detune.value=det+(Math.random()-0.5)*2;
+              panner.pan.value=pan*(0.6+di*0.2);
+              og.gain.value=vol*wt;
+              osc.connect(og); og.connect(panner); panner.connect(vg);
+              var bLfo=ctx.createOscillator(); var bLg=ctx.createGain();
+              bLfo.type='sine';
+              bLfo.frequency.value=0.06+Math.random()*0.08;
+              bLg.gain.value=vol*wt*0.22;
+              bLfo.connect(bLg); bLg.connect(og.gain);
+              bLfo.start();
+              osc.start(ctx.currentTime);
+              allOscs.push(osc,bLfo);
+            })(dets[di],wts[di]);
+          }
+          // Pure sine under the triangle for warm fundamental
+          (function(){
+            var sOsc=ctx.createOscillator();
+            var sGain=ctx.createGain();
+            var sPan=ctx.createStereoPanner();
+            sOsc.type='sine';
+            sOsc.frequency.value=freq;
+            sPan.pan.value=pan*0.4;
+            sGain.gain.value=vol*0.28;
+            sOsc.connect(sGain); sGain.connect(sPan); sPan.connect(vg);
+            var sLfo=ctx.createOscillator(); var sLg=ctx.createGain();
+            sLfo.type='sine';
+            sLfo.frequency.value=0.04+Math.random()*0.05;
+            sLg.gain.value=vol*0.28*0.18;
+            sLfo.connect(sLg); sLg.connect(sGain.gain);
+            sLfo.start();
+            sOsc.start(ctx.currentTime);
+            allOscs.push(sOsc,sLfo);
+          })();
         }
-        // Pure sine layer: warm fundamental reinforcement, no added harmonics
-        (function(){
-          var sOsc=ctx.createOscillator();
-          var sGain=ctx.createGain();
-          var sPan=ctx.createStereoPanner();
-          sOsc.type='sine';
-          sOsc.frequency.value=freq;
-          sPan.pan.value=pan*0.4;
-          sGain.gain.value=vol*0.28;
-          sOsc.connect(sGain); sGain.connect(sPan); sPan.connect(vg);
-          var sLfo=ctx.createOscillator(); var sLg=ctx.createGain();
-          sLfo.type='sine';
-          sLfo.frequency.value=0.04+Math.random()*0.05;
-          sLg.gain.value=vol*0.28*0.18;
-          sLfo.connect(sLg); sLg.connect(sGain.gain);
-          sLfo.start();
-          sOsc.start(ctx.currentTime);
-          allOscs.push(sOsc,sLfo);
-        })();
-      })(chord[vi],VOLS[vi],PANS[vi]);
+      })(chord[vi],VOLS[vi],PANS[vi],vi<2);
     }
 
     var now=ctx.currentTime;
@@ -2145,29 +2152,9 @@ function buildAmbient(){
   activeVoiceSets.push(createVoiceSet(PROG[0],true));
 
   function advanceChord(){
-    var now=ctx.currentTime;
-
-    // 1. Ease off the reverb INPUT — stops old notes feeding the delay lines
-    //    Longer ramp (0.25s) avoids the abrupt character shift that caused choppiness
-    reverbSendGain.gain.cancelScheduledValues(now);
-    reverbSendGain.gain.setValueAtTime(reverbSendGain.gain.value,now);
-    reverbSendGain.gain.linearRampToValueAtTime(0,now+0.25);
-    // Re-open send after old oscillators have faded; new chord then blooms into reverb
-    reverbSendGain.gain.linearRampToValueAtTime(1.0,now+FADE_OUT+0.2);
-
-    // 2. Drain feedback gently — with delay=1.8s, fb=0.10 means old echo is at 10%
-    //    after one 1.8s cycle and at ~1% after two cycles (~3.6s). Clean and smooth.
-    rfb1.gain.cancelScheduledValues(now);
-    rfb1.gain.setValueAtTime(rfb1.gain.value,now);
-    rfb1.gain.linearRampToValueAtTime(0.10,now+0.35);
-    rfb1.gain.linearRampToValueAtTime(0.58,now+1.8);
-
-    rfb2.gain.cancelScheduledValues(now);
-    rfb2.gain.setValueAtTime(rfb2.gain.value,now);
-    rfb2.gain.linearRampToValueAtTime(0.10,now+0.35);
-    rfb2.gain.linearRampToValueAtTime(0.50,now+1.8);
-
-    // 3. ro1/ro2 completely untouched — reverb output always open, no gap or pop
+    // Pure crossfade: old chord fades out over FADE_OUT, new chord blooms in over FADE_IN.
+    // Reverb, feedback, and send gain are left completely untouched — the room stays wide open.
+    // Old and new oscillator sets are separate nodes so notes overlap naturally.
     activeVoiceSets.forEach(function(vs){vs.stop();});
     activeVoiceSets=[];
     chordIdx=(chordIdx+1)%PROG.length;

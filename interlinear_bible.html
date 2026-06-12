@@ -2122,6 +2122,16 @@ function buildAmbient(){
   activeVoiceSets.push(createVoiceSet(PROG[0],true));
 
   function advanceChord(){
+    var now=ctx.currentTime;
+    // Duck reverb outputs so the old chord's tail doesn't bleed into the new chord
+    ro1.gain.cancelScheduledValues(now);
+    ro1.gain.setValueAtTime(ro1.gain.value,now);
+    ro1.gain.linearRampToValueAtTime(0,now+0.25);
+    ro1.gain.linearRampToValueAtTime(0.70,now+FADE_IN+0.6);
+    ro2.gain.cancelScheduledValues(now);
+    ro2.gain.setValueAtTime(ro2.gain.value,now);
+    ro2.gain.linearRampToValueAtTime(0,now+0.25);
+    ro2.gain.linearRampToValueAtTime(0.54,now+FADE_IN+0.6);
     activeVoiceSets.forEach(function(vs){vs.stop();});
     activeVoiceSets=[];
     chordIdx=(chordIdx+1)%PROG.length;

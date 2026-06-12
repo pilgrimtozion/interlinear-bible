@@ -4,8 +4,8 @@
  * Bible data JSON files are cached on first load and served from cache thereafter.
  */
 
-const CACHE_NAME = 'jammin-interlinear-v40';
-const DATA_CACHE  = 'jammin-data-v40';
+const CACHE_NAME = 'jammin-interlinear-v42';
+const DATA_CACHE  = 'jammin-data-v42';
 
 // App shell — files that must be cached immediately on install
 const SHELL_FILES = [
@@ -55,22 +55,35 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // App shell → cache-first
+  // App shell → stale-while-revalidate: serve cache instantly, fetch update in background
   event.respondWith(
-    caches.match(event.request).then(cached => {
-      if (cached) return cached;
-      return fetch(event.request).then(response => {
-        // Cache same-origin successful responses
-        if (response.ok && url.origin === self.location.origin) {
-          caches.open(CACHE_NAME).then(c => c.put(event.request, response.clone()));
-        }
-        return response;
-      }).catch(() => {
-        // Offline fallback for navigation requests
-        if (event.request.mode === 'navigate') {
-          return caches.match('/interlinear-bible/interlinear_bible.html');
-        }
-      });
-    })
+    caches.open(CACHE_NAME).then(cache =>
+      cache.match(event.request).then(cached => {
+        const networkFetch = fetch(event.request).then(response => {
+          if (!response.ok) return response;
+
+          // Compare ETags / last-modified to decide if content actually changed
+          const cachedEtag    = cached && cached.headers.get('etag');
+          const networkEtag   = response.headers.get('etag');
+          const cachedDate    = cached && cached.headers.get('last-modified');
+          const networkDate   = response.headers.get('last-modified');
+
+          const changed = !cached
+            || (networkEtag  && networkEtag  !== cachedEtag)
+            || (networkDate  && networkDate  !== cachedDate)
+            || (!networkEtag && !networkDate && !cached); // no headers → assume changed if no cache
+
+          if (changed) {
+            cache.put(event.request, response.clone());
+            // Notify all open tabs that a new version is ready
+            self.clients.matchAll({ includeUncontrolled: true, type: 'window' })
+              .then(clients => clients.forEach(c => c.postMessage({ type: 'UPDATE_AVAILABLE' })));
+          }
+          return response;
+        }).catch(() => cached);
+
+        return cached || networkFetch;
+      })
+    )
   );
 });

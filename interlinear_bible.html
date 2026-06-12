@@ -78,6 +78,9 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:.
 .lv-note-btn:hover{background:var(--border);color:var(--text)}
 .lv-row.hl-verse{border-left:3px solid transparent}
 .hl-mode-strip{padding:.45rem .8rem;display:flex;align-items:center;gap:.5rem;border-bottom:2px solid var(--border);background:var(--surface);flex-shrink:0;flex-wrap:wrap}
+.update-banner{padding:.45rem 1rem;display:flex;align-items:center;gap:.6rem;background:#1e3a5f;color:#e0f0ff;font-size:.78rem;border-bottom:1px solid #2d5a8e;flex-shrink:0}
+.update-banner button{margin-left:auto;padding:3px 12px;border-radius:10px;border:1px solid #4a90d9;background:#2563a8;color:#fff;font-size:.75rem;cursor:pointer}
+.update-banner button:hover{background:#1d4f8a}
 .hl-mode-label{font-size:.72rem;color:var(--text3);font-style:italic;white-space:nowrap}
 .hl-exit-btn{padding:.2rem .55rem;font-size:.72rem;background:none;border:1px solid var(--border);border-radius:10px;cursor:pointer;color:var(--text2);white-space:nowrap}
 .hl-exit-btn:hover{border-color:var(--text2);color:var(--text)}
@@ -346,6 +349,27 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:.
 .geo-dot.disputed{background:#ef4444;border-style:dashed}
 .geo-dot.region{background:#10b981;opacity:.4;width:14px;height:14px}
 .geo-no-places{padding:1.5rem;text-align:center;color:var(--text3);font-size:.85rem;line-height:1.8}
+
+/* ── Cultural Context Panel ────────────────────────────────────────────────── */
+.culture-list{display:flex;flex-direction:column;gap:.75rem;padding:1rem}
+.culture-card{background:var(--surface2,rgba(255,255,255,.05));border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:border-color .15s}
+.culture-card:hover{border-color:var(--accent,#818cf8)}
+.culture-card-head{display:flex;align-items:flex-start;gap:.65rem;padding:.75rem .9rem}
+.culture-card-icon{font-size:1.25rem;flex-shrink:0;margin-top:.05rem}
+.culture-card-meta{flex:1;min-width:0}
+.culture-cat{display:inline-block;font-size:.65rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.15rem .5rem;border-radius:20px;margin-bottom:.3rem}
+.culture-cat.concept{background:rgba(99,102,241,.2);color:#a5b4fc}
+.culture-cat.custom{background:rgba(245,158,11,.18);color:#fcd34d}
+.culture-cat.idiom{background:rgba(168,85,247,.2);color:#d8b4fe}
+.culture-cat.social{background:rgba(20,184,166,.18);color:#5eead4}
+.culture-cat.ane{background:rgba(180,83,9,.25);color:#fb923c}
+.culture-cat.otlink{background:rgba(234,179,8,.18);color:#fde047}
+.culture-cat.form{background:rgba(34,197,94,.18);color:#86efac}
+.culture-cat.feast{background:rgba(239,68,68,.18);color:#fca5a5}
+.culture-card-title{font-size:.88rem;font-weight:600;color:var(--text1);line-height:1.35}
+.culture-card-body{padding:0 .9rem .85rem 2.9rem;font-size:.82rem;line-height:1.65;color:var(--text2)}
+.culture-empty{padding:2rem 1rem;text-align:center;color:var(--text3);font-size:.85rem;line-height:1.7}
+.culture-passage-label{font-size:.72rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text3);padding:.75rem 1rem .25rem;border-bottom:1px solid var(--border);margin-bottom:.5rem}
 
 </style>
 <script type="text/javascript" src="https://pkg.api.bible/fumsV3.min.js"></script>
@@ -2655,6 +2679,432 @@ function PlacesPanel({book, ch, onClose, onNavigate, inline}){
 }
 
 
+const CULTURE_DATA = {
+  // ── GENESIS ──────────────────────────────────────────────────────────────
+  "Genesis":[
+    {cat:"ane",icon:"📜",title:"Patriarchal Period & the Ancient Near East",body:"The Genesis narratives unfold in a world documented by the Nuzi tablets, Mari archives, and Ugaritic texts. Customs once considered implausible — levirate marriage, adoption as heir, household gods (teraphim), oral blessing as legally binding — are all attested in 2nd-millennium BC texts from Mesopotamia and Canaan, grounding the patriarchal stories firmly in their historical milieu."},
+    {cat:"concept",icon:"🤝",title:"Covenant Theology — Berit",body:"The Hebrew berit (covenant) is the spine of Genesis. Unlike a contract between equals, a berit in the ANE was typically a suzerain-vassal treaty — the stronger party defining terms and the weaker accepting. God's covenants with Noah, Abraham, and Jacob are all initiated by God, who bears the obligations. The blood, cutting, and oath-taking that ratify them were standard ANE treaty forms."},
+    {cat:"ane",icon:"🌊",title:"ANE Flood Parallels",body:"The Gilgamesh Epic (Tablet XI) and the older Atrahasis Epic both contain flood narratives strikingly similar to Genesis 6–9: a divine decision to flood, one man warned by a god, a large boat, birds sent out, and sacrifice after landing. Rather than proving literary borrowing, the shared traditions reflect a deep cultural memory. Genesis reframes them theologically: one sovereign God acts in moral judgment, not divine squabbling."},
+  ],
+  "Genesis 1":[
+    {cat:"ane",icon:"🌍",title:"Creation vs. Enuma Elish",body:"Genesis 1 systematically deconstructs the Babylonian Enuma Elish, in which Marduk creates the world from the slain body of the sea-goddess Tiamat, and humans from a slain god's blood — to be slaves of the gods. In Genesis, one God creates through sovereign speech, without conflict or corpse. The sun and moon — gods in every surrounding culture — are demoted to mere 'lights.' Humans are not slaves but image-bearers."},
+    {cat:"idiom",icon:"🌆",title:"'Evening and Morning' — Hebrew Day",body:"The Hebrew day began at sundown, not midnight. 'There was evening and there was morning, one day' establishes the pattern still observed in Jewish practice: Sabbath and all feast days begin at sundown the evening before. This is why Good Friday's crucifixion and Sunday's resurrection could still be counted as 'three days' in Jewish reckoning."},
+    {cat:"concept",icon:"👑",title:"Image of God — Tselem Elohim",body:"In Egyptian and Mesopotamian usage, the 'image of a god' was the king alone — a statue placed in a conquered territory to assert divine rule. Genesis democratises this: every human bears the divine image. This radical claim meant that any Hebrew slave, widow, or foreigner carried royal dignity. The NT develops this into Christology (Col. 1:15) and new-creation anthropology (2 Cor. 3:18)."},
+  ],
+  "Genesis 2":[
+    {cat:"idiom",icon:"💬",title:"'Helper' (Ezer) — Not Subordinate",body:"The Hebrew ezer appears 21 times in the OT: twice for the woman, and otherwise almost exclusively for God himself or military reinforcement. Ezer describes indispensable strength that rescues — not a junior assistant. The assumption that the word implies subordination is not supported by its usage anywhere else in Scripture."},
+    {cat:"custom",icon:"💍",title:"'Bone of My Bones' — Kinship Covenant Formula",body:"'Bone of my bones, flesh of my flesh' is a recognised ANE covenantal kinship formula, used when parties entered a binding family relationship. The same phrase reappears in 2 Samuel 5:1 when the tribes of Israel pledge loyalty to David. Adam's words are not merely poetic delight — they are a covenant oath."},
+    {cat:"concept",icon:"🌳",title:"The Two Trees & Wisdom",body:"The Tree of the Knowledge of Good and Evil relates to a Semitic idiom for totality ('good and evil' = everything) and judicial discernment. In the Ancient Near East, knowing good and evil was a prerogative of kings and gods. The serpent's temptation is essentially an offer of autonomous royal authority — to set oneself as the arbiter of reality — bypassing the divine wisdom that orders creation."},
+  ],
+  "Genesis 3":[
+    {cat:"ane",icon:"🐍",title:"The Serpent in ANE Mythology",body:"In the ANE, serpents were complex symbols: associated with chaos (Tiamat, Leviathan), with wisdom (the serpent in the Epic of Gilgamesh steals the plant of immortality), and with healing (the copper serpent, Num. 21). The serpent in Genesis 3 is presented as the cleverest of the animals — not a demon — who twists God's words. Later revelation identifies the serpent with the accuser (Rev. 12:9)."},
+    {cat:"concept",icon:"👗",title:"Shame, Nakedness & Honour Culture",body:"In Mediterranean and ANE honour/shame societies, nakedness was deeply shameful (associated with defeat, slavery, poverty). Before the Fall, 'naked and not ashamed' (2:25) indicates total relational transparency before God and each other. The making of garments immediately after the Fall and God's provision of better coverings (3:21) frame the whole redemption narrative as one of restoring what shame destroyed."},
+  ],
+  "Genesis 6":[
+    {cat:"ane",icon:"🚢",title:"The Ark's Dimensions",body:"The ark's proportions (300 × 50 × 30 cubits, a 6:1 length-to-width ratio) are hydrodynamically stable — close to modern cargo ship ratios. This is distinct from the square ark in the Gilgamesh Epic (which would spin chaotically). Whether the account is historical or typological, the internal consistency is notable. Peter uses the ark as a type of baptism (1 Pet. 3:20-21)."},
+  ],
+  "Genesis 11":[
+    {cat:"ane",icon:"🏛",title:"Tower of Babel & Ziggurat Architecture",body:"The Tower of Babel ('gate of God' in Akkadian) almost certainly describes a Mesopotamian ziggurat — stepped temple towers built in cities like Ur and Babylon. Ziggurats were understood as cosmic mountains connecting heaven and earth, with the divine descending to meet humanity at the top. Genesis's irony is sharp: God must 'come down' to see even this massive monument (11:5) — it barely registers."},
+  ],
+  "Genesis 12":[
+    {cat:"custom",icon:"🌍",title:"Abram's Call & Ancient Near East Travel",body:"Long-distance travel in the ancient world was rare and dangerous, making Abram's departure from Ur (a sophisticated urban centre) for an unknown land all the more remarkable. Caravans followed established routes; moving 'not knowing where he was going' (Heb. 11:8) was genuine risk. The land promise in a world of city-states and tribal territories had concrete political and economic meaning."},
+    {cat:"custom",icon:"😔",title:"Abram and the Pharaoh — Wife/Sister Custom",body:"The 'wife-sister' episodes (Gen. 12, 20, 26) have puzzled readers. Nuzi tablets from the same era describe a custom where a wife could also be adopted as a sister by her husband to give her a higher legal status. This may explain Abram's partial truth ('she is my sister,' 20:12) — she was both. The episodes also establish that God protects the covenant lineage even from the patriarchs' failures."},
+  ],
+  "Genesis 15":[
+    {cat:"custom",icon:"🔪",title:"Covenant Between the Pieces",body:"The 'cutting' of a covenant (in Hebrew, karat berit — literally 'cut a covenant') involved slaughtering animals and walking between the halves — symbolising: 'may I become like these animals if I break this oath.' In Genesis 15, only God (as a smoking firepot and torch) passes between the pieces while Abram sleeps. God alone bears the curse of covenant-breaking — a foreshadowing of the cross."},
+  ],
+  "Genesis 22":[
+    {cat:"ane",icon:"🔥",title:"The Akedah & Child Sacrifice Context",body:"Child sacrifice to deities was practiced in Canaan and among some Israelites (condemned by the prophets; 2 Kgs 23:10; Jer. 7:31). The Binding of Isaac occurs against this background. The test is whether Abraham would categorise YHWH alongside Molech. The ram substitution decisively answers: YHWH does not require — and actively provides against — child sacrifice. The Akedah is central to later Jewish theology and NT atonement language."},
+  ],
+  "Genesis 37":[
+    {cat:"social",icon:"👕",title:"Joseph's Coat & Birthright Symbolism",body:"The 'coat of many colours' (ketonet passim) is more literally 'a long-sleeved robe' — the garment of a non-labouring manager or royal figure. Jacob's gift signalled Joseph as heir-designate over his older brothers, violating birth-order customs. Garments in the Joseph narrative carry enormous weight: they mark status, deception (Potiphar's wife keeping it), and restoration (fine Egyptian linen at investiture, 41:42)."},
+  ],
+  "Genesis 41":[
+    {cat:"social",icon:"🇪🇬",title:"Egyptian Investiture Customs",body:"Joseph's elevation to vizier follows Egyptian protocols precisely: the signet ring (delegating royal authority), fine linen garments (priestly-royal class), a gold chain, a chariot, the title 'Abrech' (possibly 'bow the knee'), and a new Egyptian name. These details align well with Egyptian records of high Semitic officials in the Second Intermediate Period."},
+  ],
+  // ── EXODUS ───────────────────────────────────────────────────────────────
+  "Exodus":[
+    {cat:"ane",icon:"🇪🇬",title:"Egyptian Slavery & the Historical Context",body:"The Exodus account describes corvée labour — state-compelled construction work common in Egypt. The store-cities Pithom and Ramesses align with construction in the eastern Delta region under Ramesses II (13th century BC), the most commonly proposed Exodus pharaoh. The Merneptah Stele (c.1208 BC) is the earliest extrabiblical reference to 'Israel' as a people in Canaan."},
+    {cat:"concept",icon:"🙏",title:"The Plagues as Judgment on Egyptian Gods",body:"Each of the ten plagues targets a specific Egyptian deity or domain: the Nile (Hapi), frogs (Heqet, frog-goddess), sun (Ra/Aten — darkened in plague 9). The climactic death of Pharaoh's firstborn strikes at the living 'god' on Egypt's throne. The plagues are not random natural disasters but a systematic theological deconstruction of Egyptian religion."},
+    {cat:"custom",icon:"🗓",title:"Passover Institution",body:"The Passover (Pesach) combined the older spring shepherds' festival (offering a firstborn animal) with the agricultural Feast of Unleavened Bread. Their fusion in Exodus 12 creates a memorial meal re-enacting the Exodus. The lamb's blood on doorposts has been linked by NT writers to Christ's sacrificial death (1 Cor. 5:7; John 1:29). The Passover Seder continues virtually unchanged in Jewish practice today."},
+  ],
+  "Exodus 3":[
+    {cat:"concept",icon:"🔥",title:"The Divine Name — YHWH & 'I AM'",body:"'I AM WHO I AM' (Ehyeh asher Ehyeh) may mean 'I will be what I will be' — refusing to be defined or limited by human categories. YHWH (the tetragrammaton) likely derives from the Hebrew verb 'to be' (hayah). The name was considered so holy that Second Temple Jews ceased pronouncing it, substituting Adonai (Lord). English Bibles follow this convention with 'LORD' in small capitals."},
+    {cat:"custom",icon:"👟",title:"Holy Ground — Sandals & Sacred Space",body:"Removing sandals on holy ground was an ANE custom marking the transition from profane to sacred space. Slaves and suppliants went barefoot; removing footwear indicated both humility and purity. The same instruction is given to Joshua at Jericho (Josh. 5:15). John the Baptist uses sandal-removal imagery to express his unworthiness relative to Jesus (John 1:27)."},
+  ],
+  "Exodus 12":[
+    {cat:"custom",icon:"🩸",title:"The Passover Lamb & Blood on the Doorposts",body:"The instruction to slaughter the lamb at twilight ('between the evenings'), apply the blood with hyssop, and eat it in haste with sandals on and staff in hand — all encode the urgency of imminent departure. The blood on the doorpost was a sign to the destroying angel, not a propitiation of God. Jewish families re-enact this Seder meal each year with the four cups of wine, bitter herbs, and unleavened bread."},
+  ],
+  "Exodus 20":[
+    {cat:"concept",icon:"📋",title:"The Ten Commandments & Suzerain-Vassal Treaties",body:"The structure of the Decalogue mirrors Hittite suzerain-vassal treaties: preamble ('I am YHWH'), historical prologue ('who brought you out of Egypt'), then stipulations. The treaty form clarifies the logic: the commands are not how to earn relationship with God but the terms for living in covenant with a God who has already acted. The First Commandment ('no other gods') is the foundational loyalty clause."},
+  ],
+  "Exodus 25":[
+    {cat:"ane",icon:"🏕",title:"Tabernacle & ANE Temple Architecture",body:"The Tabernacle's design closely parallels ANE temple conventions: an outer court, a holy place, and an inner sanctuary (Holy of Holies) where the deity's 'presence' dwelt, represented by the ark. Egyptian portable shrines and the tent-temples of Ugarit provide close parallels. The unique feature of the Israelite Tabernacle is the absence of an idol — replaced by empty space above the mercy seat, where God spoke."},
+  ],
+  // ── LEVITICUS ────────────────────────────────────────────────────────────
+  "Leviticus":[
+    {cat:"concept",icon:"🕊",title:"The Sacrificial System — Not Earning Favour",body:"The five main offerings (burnt, grain, peace, sin, guilt) were not means of earning God's favour from scratch but responses to a covenant already established. The sacrificial system provided structured ways to restore broken communion, express gratitude, and maintain ritual purity. NT writers (especially Hebrews) present Christ as both the final high priest and the complete fulfilment of every sacrifice type."},
+    {cat:"custom",icon:"✨",title:"Purity Laws & Clean/Unclean Distinctions",body:"The purity system in Leviticus is not primarily about hygiene. Uncleanness was a ritual state — often caused by natural processes (childbirth, menstruation, skin disease, death) — that temporarily barred temple access. The system enforced boundaries between Israel and the nations and between the holy and the common. Jesus's healings of the unclean (lepers, haemorrhaging woman) are deliberate reversals of these boundaries."},
+  ],
+  "Leviticus 16":[
+    {cat:"custom",icon:"🐐",title:"Day of Atonement — Yom Kippur",body:"Yom Kippur was the one day each year the high priest entered the Holy of Holies to sprinkle blood on the mercy seat for the nation's sins. Two goats: one was sacrificed, one (the 'scapegoat,' azazel) had the nation's sins symbolically laid on it and was driven into the wilderness. Hebrews 9 presents Christ as simultaneously the high priest who enters the true Holy of Holies and the perfect sacrifice."},
+  ],
+  "Leviticus 23":[
+    {cat:"feast",icon:"📅",title:"The Seven Feasts of Israel",body:"Leviticus 23 establishes seven annual feasts: Passover, Unleavened Bread, Firstfruits, Pentecost (Shavuot), Trumpets (Rosh Hashanah), Day of Atonement, and Tabernacles (Sukkot). The spring feasts (Passover through Pentecost) were fulfilled in Christ's first coming — death, burial, resurrection, and Spirit outpouring. The autumn feasts are widely associated with future eschatological events."},
+  ],
+  // ── NUMBERS ──────────────────────────────────────────────────────────────
+  "Numbers":[
+    {cat:"social",icon:"🏕",title:"Wilderness Encampment & Tribal Organisation",body:"The arrangement of Israel's camp — with the Tabernacle at centre and the 12 tribes in a precise formation around it — mirrors the battle formations of ancient armies, where the command tent was protected at the centre. The tribe's banner (degel) identified each group's position. God's dwelling at the centre of the community was both theological and sociological: the divine king dwelling among the army."},
+  ],
+  "Numbers 6":[
+    {cat:"custom",icon:"✂",title:"The Nazirite Vow",body:"The Nazirite vow (from nazir, 'consecrated') was a voluntary dedication to God for a set period, involving three prohibitions: no wine or grapes, no haircuts, no contact with corpses. Samson, Samuel, and John the Baptist are associated with lifetime Nazirite status. Paul shaved his head at Cenchreae (Acts 18:18) and sponsored others' Nazirite completion (Acts 21:23-24) — demonstrating continuity of this practice in the NT period."},
+  ],
+  // ── DEUTERONOMY ──────────────────────────────────────────────────────────
+  "Deuteronomy":[
+    {cat:"concept",icon:"📜",title:"Covenant Renewal & Suzerain-Vassal Treaty Form",body:"Deuteronomy follows the structure of Hittite suzerain-vassal treaties almost exactly: preamble, historical prologue, stipulations, deposit and public reading, witnesses, blessings and curses. This form was used in the late 2nd millennium BC and became obsolete by the 1st millennium — a detail relevant to dating debates. The 'blessings and curses' of chapters 27-28 directly parallel treaty curse lists."},
+    {cat:"concept",icon:"❤",title:"The Shema — Israel's Core Confession",body:"'Hear, O Israel: YHWH our God, YHWH is one' (6:4) is the Shema, Judaism's foundational declaration of faith. Devout Jews recite it morning and evening and at death. The command to bind it on hands and forehead (6:8) gave rise to tefillin (phylacteries) — small boxes containing Torah portions strapped to the arm and forehead during prayer. Jesus quotes the Shema as the greatest commandment (Mark 12:29)."},
+  ],
+  "Deuteronomy 34":[
+    {cat:"custom",icon:"⛰",title:"Moses's Death & Burial by God",body:"The unique detail that 'no one knows his burial place to this day' (34:6) likely served to prevent the tomb becoming a shrine or place of veneration. God burying Moses in secret reflects the same concern seen later in the NT: the empty tomb makes a martyrs' shrine impossible. Jewish tradition later developed the legend (referenced in Jude 9) of Michael the archangel contesting Moses's body with the devil."},
+  ],
+  // ── JOSHUA ───────────────────────────────────────────────────────────────
+  "Joshua":[
+    {cat:"ane",icon:"⚔",title:"Conquest Theology & ANE Warfare",body:"The command to utterly destroy (herem) the Canaanite peoples is the most difficult passage in Joshua for modern readers. Herem was an ANE concept of dedicating a conquered city or people entirely to a deity — removing them from the sphere of human profit. The moral frame in Deuteronomy (9:4-5) is explicit: it is not Israel's righteousness but the Canaanites' wickedness accumulated over 400 years (Gen. 15:16). The wholesale destructions in Joshua also appear to be selective and formulaic rather than literal total annihilation."},
+  ],
+  "Joshua 2":[
+    {cat:"social",icon:"🧵",title:"Rahab, the Scarlet Cord & Covenant Marking",body:"The scarlet cord in the window echoes the blood on the doorposts at the Exodus — a visible mark that brings safety in judgment. Rahab's declaration (2:11) is one of the most complete confessions of faith in the OT. Her inclusion in Matthew's genealogy of Jesus (1:5) is deliberate: a Canaanite prostitute is an ancestor of the Messiah, signalling the scope of redemptive grace from the very start."},
+  ],
+  // ── JUDGES ───────────────────────────────────────────────────────────────
+  "Judges":[
+    {cat:"social",icon:"🔄",title:"The Judges Cycle — A Theological Pattern",body:"The book of Judges is structured around a recurring cycle: Israel abandons YHWH → oppression by surrounding nations → Israel cries out → God raises a judge → deliverance → peace → repeat. The cycle is not merely a narrative device but a theological argument: the problem is not external enemies but internal covenant disloyalty. Each cycle spirals deeper until the final chapters are shockingly dark."},
+    {cat:"social",icon:"⚖",title:"Tribal Confederation & the Absence of a King",body:"During the Judges period, Israel operated as a loose tribal confederation with no permanent central authority. The phrase 'every man did what was right in his own eyes' (21:25) is the book's own diagnosis. The tribes were united by covenant with YHWH but often acted in isolation — sometimes against each other. This context makes the request for a king in 1 Samuel both understandable and theologically fraught."},
+  ],
+  // ── RUTH ─────────────────────────────────────────────────────────────────
+  "Ruth":[
+    {cat:"social",icon:"🌾",title:"Moabite Background & Ethnic Inclusion",body:"Ruth was a Moabite — a nationality Deuteronomy 23:3 excluded from the assembly of YHWH 'to the tenth generation.' Yet Ruth becomes an ancestor of David and, through him, of Jesus (Matt. 1:5). Her inclusion is deliberate theological commentary: covenant loyalty (hesed) transcends ethnic boundary. Ruth's declaration to Naomi ('your people shall be my people, your God my God,' 1:16) is a formal covenant oath."},
+    {cat:"custom",icon:"⚖",title:"The Kinsman-Redeemer — Goel",body:"The goel (kinsman-redeemer) was a legal role in ancient Israel: the nearest male relative who could redeem land sold under economic duress, redeem a relative sold into slavery, avenge a murdered relative (blood avenger), and marry a childless widow (levirate). The entire book of Ruth is structured around finding a functioning goel. The NT presents Christ as the ultimate goel — redeeming what was lost and marrying his people."},
+  ],
+  "Ruth 2":[
+    {cat:"custom",icon:"🌾",title:"Gleaning Rights in Israelite Law",body:"Gleaning was not charity — it was a legal entitlement under the Mosaic Law (Lev. 19:9-10; Deut. 24:19). Landowners were required to leave field edges unharvested, not re-harvest dropped grain, and not strip olive trees or vineyards a second time. This safety net was specifically for 'the poor and the stranger.' Boaz goes beyond the legal minimum, instructing workers to intentionally drop extra grain for Ruth."},
+  ],
+  "Ruth 3":[
+    {cat:"custom",icon:"🛌",title:"The Threshing Floor — A Covenantal Appeal",body:"Ruth uncovering Boaz's feet and lying down is a formal, culturally recognised act requesting kinsman-redeemer marriage — not a sexual encounter. The threshing floor was a communal, semi-public space (Boaz sleeps there to guard the harvest). Ruth's action follows Naomi's explicit instructions and uses the word 'wing/covering' (kanaf, 3:9) — echoing Boaz's earlier words about Ruth sheltering under YHWH's wings (2:12), making it a covenant appeal."},
+  ],
+  // ── 1-2 SAMUEL ───────────────────────────────────────────────────────────
+  "1 Samuel":[
+    {cat:"social",icon:"👑",title:"The Demand for a King — Honour & International Pressure",body:"Israel's demand for a king 'like all the nations' (8:5) must be read in its geopolitical context: the Philistines were organised under a centralised monarchy with iron-age military technology. The tribal confederation model was struggling. Samuel's warning about what a king would do (8:11-18) closely matches what we know of Canaanite royal economics from the Ugaritic texts — essentially a list of the corvée burdens kings imposed."},
+  ],
+  "1 Samuel 17":[
+    {cat:"social",icon:"⚔",title:"Single Combat — Champion Warfare",body:"The challenge of Goliath follows a recognised ANE practice of representative or champion combat — where two armies would agree to let a single warrior from each side determine the outcome, sparing mass casualties. Goliath's armour and weapons are described in detail consistent with Aegean/Sea People warrior equipment, fitting the Philistine archaeological context. David's refusal of Saul's armour is both practical and theological."},
+  ],
+  "2 Samuel 7":[
+    {cat:"concept",icon:"🏠",title:"The Davidic Covenant — A Dynasty Promise",body:"God's promise to David ('I will establish his kingdom… I will be his father and he will be my son… your throne shall be established forever,' 7:12-16) becomes one of the most theologically weighty passages in the OT. It is the basis of all Messianic expectation and is directly quoted or alluded to in the NT more than any other OT passage. The word 'house' (bayit) plays on temple/dynasty ambiguity throughout the chapter."},
+  ],
+  // ── 1-2 KINGS ────────────────────────────────────────────────────────────
+  "1 Kings":[
+    {cat:"social",icon:"🏛",title:"The Divided Monarchy — Political Context",body:"After Solomon's death (~930 BC), the kingdom split: Israel (10 northern tribes, capital Samaria) and Judah (2 southern tribes, capital Jerusalem). The split was driven partly by Solomon's heavy taxation and forced labour (1 Kgs 12:4). The northern kingdom never had a godly dynasty; all 19 of its kings are judged negatively in Kings' theological framework. The Assyrians destroyed the north in 722 BC; Babylon destroyed the south in 586 BC."},
+  ],
+  "1 Kings 18":[
+    {cat:"custom",icon:"🔥",title:"Elijah vs. Baal Prophets on Mount Carmel",body:"The contest on Carmel has sharp cultural logic: Baal was the storm and fertility god of Canaan — his domain was rain, thunder, and fire from heaven. Elijah's challenge is fighting Baal on his home turf. The prophets' self-laceration was a recognised mourning and petition rite in the ancient world. The 'still small voice' (or 'sound of sheer silence') after the fire directly answers the noisy, spectacular Baal worship."},
+  ],
+  // ── EZRA-NEHEMIAH ────────────────────────────────────────────────────────
+  "Ezra":[
+    {cat:"social",icon:"🏛",title:"Persian Period & the Return from Exile",body:"The Cyrus Decree (Ezra 1) is corroborated by the Cyrus Cylinder (539 BC), in which Cyrus of Persia documents his policy of returning displaced peoples to their homelands and restoring their cultic objects — the opposite of Babylonian policy. Isaiah 44-45 had named Cyrus as God's instrument over a century earlier. The returnees faced a complex reception from those who had remained in the land."},
+  ],
+  "Nehemiah 8":[
+    {cat:"custom",icon:"📖",title:"Public Reading of the Torah — A Synagogue Precursor",body:"Ezra's public reading of the Torah to the entire assembly (Neh. 8), with Levites explaining the meaning so the people could understand, is considered the foundation of the synagogue movement. When exile removed the Temple, the Torah itself became the centre of Jewish communal life. This practice — reading, translating, and expounding Scripture to a gathered assembly — directly shapes the NT synagogue scenes and the Christian practice of Scripture reading and homily."},
+  ],
+  // ── ESTHER ───────────────────────────────────────────────────────────────
+  "Esther":[
+    {cat:"social",icon:"👑",title:"Persian Court Customs & the Book of Esther",body:"Esther is set in the court of Ahasuerus (Xerxes I, 486-465 BC) at Susa. The lavish banquet descriptions, the 180-day display of royal wealth, the protocol requiring royal summons before approach, and the 'golden sceptre' for permission all align with Persian court customs documented in Greek historians (Herodotus). God's name never appears in Esther — a feature widely noted and likely intentional, reflecting life in diaspora where Providence operates through seemingly ordinary events."},
+  ],
+  // ── JOB ──────────────────────────────────────────────────────────────────
+  "Job":[
+    {cat:"ane",icon:"⚖",title:"Wisdom Genre & ANE Parallels",body:"Job belongs to the ANE Wisdom genre, which deals with the problem of innocent suffering. Parallel texts include the Babylonian Theodicy and the Sumerian text 'A Man and His God' — both featuring a righteous sufferer questioning divine justice. Job is distinctive in its radical honesty about suffering and its refusal of easy answers. The whirlwind speeches (chs. 38-41) do not answer Job's questions — they reframe the question."},
+    {cat:"concept",icon:"⚖",title:"The Heavenly Council",body:"Job 1-2 opens in the divine council (Hebrew: sod — a council of heavenly beings before God). The 'satan' here is not yet a proper name but a role — the 'accuser' or 'adversary' (ha-satan, with the definite article), functioning as a prosecuting attorney in God's court. This heavenly council appears throughout the OT (1 Kgs 22:19-22; Psa. 82; Isa. 6) and underlies NT angelology and demonology."},
+  ],
+  // ── PSALMS ───────────────────────────────────────────────────────────────
+  "Psalms":[
+    {cat:"form",icon:"🎵",title:"Psalm Types & Hebrew Poetry",body:"Psalms fall into recognisable genres: lament (the most common — individual and communal), praise/hymn, royal/messianic, wisdom, enthronement, and pilgrimage (Songs of Ascent, 120-134). Hebrew poetry works through parallelism rather than rhyme: synonymous (both lines say the same thing), antithetical (second line contrasts), and synthetic (second line develops or completes). Understanding parallelism prevents over-literalising individual lines."},
+    {cat:"custom",icon:"🎶",title:"Musical Superscriptions",body:"Many Psalms have superscriptions mentioning instruments (sheminith — eight-stringed instrument; gittith — possibly a Gath-style instrument), musical instructions (selah — a pause or interlude), and the director of music. 'Of David' could mean 'by David,' 'for David,' 'in the style of David,' or 'dedicated to David' — all are grammatically possible in Hebrew. The exact meaning of many musical terms was already lost by the LXX translation period."},
+  ],
+  "Psalms 22":[
+    {cat:"form",icon:"🎵",title:"Lament Psalm Structure & the Crucifixion",body:"Psalm 22 follows the classic lament form: address, complaint ('My God, my God, why have you forsaken me?'), recollection of past faithfulness, renewed petition, and anticipated praise. The transition from desolation to trust at v.24 is characteristic. Jesus's quotation of the opening line from the cross would have evoked the entire psalm for Jewish listeners — including its triumphant conclusion, which is not defeat but vindication."},
+    {cat:"concept",icon:"🔮",title:"Prophetic Detail in Psalm 22",body:"Written by David centuries before crucifixion was invented as a form of execution, Psalm 22 contains details that map onto the crucifixion narrative: hands and feet 'pierced' (v.16), bones out of joint (v.14), clothing divided by lot (v.18), mockers quoting identity claims (v.8), intense thirst (v.15). Whether these are prophetic foreknowledge or patterns applied retrospectively, the early church found them strikingly applicable."},
+  ],
+  "Psalms 23":[
+    {cat:"custom",icon:"🐑",title:"Shepherding in Ancient Palestine",body:"The shepherd imagery in Psalm 23 reflects daily Palestinian pastoral life. Shepherds in the Judean highlands would lead their flocks to fresh pasture ('green pastures') alongside seasonal streams ('still waters' — not rushing torrents that frighten sheep). Anointing a sheep's head with oil was a common treatment for flies and parasites. 'The valley of the shadow of death' may refer to specific deep ravines in Judea where predators lurked."},
+  ],
+  // ── PROVERBS ─────────────────────────────────────────────────────────────
+  "Proverbs":[
+    {cat:"ane",icon:"📜",title:"ANE Wisdom Literature Parallels",body:"Proverbs 22:17-24:22 ('Words of the Wise') closely parallels the Egyptian Instruction of Amenemope (c.1200 BC), including similar proverbs in the same order. Rather than this proving dependence, it demonstrates that Israel's wisdom tradition engaged with the common intellectual heritage of the ancient world while reframing it in terms of 'the fear of the LORD.' Solomon's wisdom was explicitly compared favourably to Egyptian and Eastern wisdom (1 Kgs 4:30-31)."},
+    {cat:"concept",icon:"👩",title:"Lady Wisdom — Chokmah Personified",body:"Proverbs 1-9 personifies Wisdom (chokmah) as a woman calling in the streets and inviting young men to her house — directly contrasting the 'adulteress/foreign woman' who offers counterfeit pleasure leading to death. Proverbs 8's description of Wisdom as present at creation and delighting before God has profoundly shaped NT Christology (John 1; Col. 1:15-17; Heb. 1:3), where the pre-existent Christ fulfils the role Lady Wisdom anticipated."},
+  ],
+  // ── ECCLESIASTES ─────────────────────────────────────────────────────────
+  "Ecclesiastes":[
+    {cat:"concept",icon:"💨",title:"Hebel — Vapour, Not Futility",body:"The word usually translated 'vanity' (hebel) literally means 'breath' or 'vapour' — something real but insubstantial, present but fleeting. Qohelet is not teaching nihilism but probing the limits of human wisdom: under the sun (i.e., within the visible, mortal world), everything is temporary and cannot be securely grasped. The frame narrative (12:13-14) places the book's conclusions in a theistic context: fear God and keep his commandments."},
+    {cat:"social",icon:"👴",title:"Qohelet — The Teacher as Sage",body:"'Qohelet' (often translated 'Teacher' or 'Preacher') means 'one who assembles or addresses an assembly.' The voice adopts the persona of Solomon — the wisest and wealthiest king — to conduct a thought experiment: if anyone could find lasting satisfaction 'under the sun' through wisdom, pleasure, work, or wealth, Solomon could. The conclusion that he cannot is meant to be shocking."},
+  ],
+  // ── SONG OF SOLOMON ──────────────────────────────────────────────────────
+  "Song of Solomon":[
+    {cat:"ane",icon:"💑",title:"ANE Love Poetry & the Song",body:"The Song of Solomon belongs to a well-attested genre of ANE love poetry, with close parallels in Egyptian love songs (c.1300 BC) that use similar imagery: gardens, vineyards, spices, physical descriptions, longing. In Hebrew literary custom, these poems were read at the Passover as an allegory of God's love for Israel. The NT church read them as Christ's love for the Church. Both readings have ancient precedent; the literal reading as human love poetry is also fully valid."},
+  ],
+  // ── ISAIAH ───────────────────────────────────────────────────────────────
+  "Isaiah":[
+    {cat:"social",icon:"🏛",title:"Isaiah's Historical Context — Assyrian Crisis",body:"Isaiah prophesied in Jerusalem from c.740 BC (Uzziah's death) through the Assyrian crisis of 701 BC when Sennacherib besieged Jerusalem. The superpower of the day was Assyria, whose propaganda and brutality are well documented in the Lachish reliefs and Sennacherib's Prism. Isaiah's consistent message — trust YHWH rather than Egyptian or Assyrian alliances — was politically dangerous and theologically radical."},
+    {cat:"concept",icon:"🌿",title:"The Servant Songs",body:"Isaiah 42, 49, 50, and 52-53 describe a 'Servant of YHWH' whose identity shifts between the nation of Israel, an individual within Israel, and someone who suffers for the nation. Isaiah 52:13-53:12 describes substitutionary suffering in detail startling for 700 BC: despised, rejected, bearing our griefs, pierced for our transgressions, silent before accusers. The early church applied these songs to Jesus more than any other OT texts."},
+  ],
+  "Isaiah 6":[
+    {cat:"concept",icon:"👁",title:"The Throne Room Vision — Trisagion",body:"Isaiah's vision of the divine throne room (c.740 BC, 'the year King Uzziah died') sets the pattern for all subsequent Jewish and Christian apocalyptic visions. The seraphim ('burning ones') chanting 'Holy, holy, holy' (the trisagion) became central to Jewish synagogue liturgy (Kedushah) and Christian worship (Sanctus). Isaiah's response ('woe to me, I am undone') is the archetypal encounter with absolute holiness."},
+  ],
+  "Isaiah 53":[
+    {cat:"concept",icon:"🩸",title:"Substitutionary Suffering — 700 Years Before the Cross",body:"Isaiah 53 describes the Servant as bearing others' sins ('he was pierced for our transgressions'), silent before accusers, assigned a grave with the wicked but with the rich in his death, and seeing his offspring after his death. The chapter contains more verbal parallels to NT passion narratives than any other OT passage. The Ethiopian eunuch was reading this chapter when Philip met him (Acts 8:32-33)."},
+  ],
+  // ── JEREMIAH ─────────────────────────────────────────────────────────────
+  "Jeremiah":[
+    {cat:"social",icon:"😢",title:"Jeremiah's Historical Context — Babylonian Crisis",body:"Jeremiah prophesied from ~627 BC through the fall of Jerusalem in 586 BC — a 40-year period covering Josiah's reform, the Battle of Megiddo, Jehoiakim's betrayal, Nebuchadnezzar's three deportations (605, 597, 586 BC), the destruction of the Temple, and the flight to Egypt. He was accused of treason for advising surrender to Babylon and experienced prolonged suffering, making him a type of Christ for later interpreters."},
+  ],
+  "Jeremiah 31":[
+    {cat:"concept",icon:"📜",title:"The New Covenant — Berit Chadashah",body:"Jeremiah 31:31-34 is the only explicit 'new covenant' promise in the OT — and is quoted verbatim in Hebrews 8:8-12 as the hermeneutical key to understanding Christ's work. Three features distinguish it from the Mosaic covenant: internalised law ('written on hearts'), universalised knowledge of God ('they shall all know me'), and permanent forgiveness ('I will remember their sin no more'). Jesus declares this covenant inaugurated at the Last Supper (Luke 22:20)."},
+  ],
+  // ── EZEKIEL ──────────────────────────────────────────────────────────────
+  "Ezekiel":[
+    {cat:"social",icon:"🏛",title:"Ezekiel's Context — Priestly Prophet in Exile",body:"Ezekiel was a priest (1:3) deported to Babylon in 597 BC with Jehoiachin. He prophesied on the bank of the Chebar canal among the first wave of exiles. His elaborate visions and symbolic actions were addressed to exiles trying to understand whether God had abandoned them. His answer is consistently: the problem is Israel's idolatry; God withdrew before the Temple was destroyed; God will return and restore."},
+  ],
+  "Ezekiel 1":[
+    {cat:"concept",icon:"🌀",title:"The Merkabah — Divine Chariot Vision",body:"Ezekiel's opening vision of the four living creatures, wheels within wheels, and the enthroned divine figure became the foundation of Jewish mystical tradition (Merkabah, 'chariot,' mysticism). Rabbinic Judaism restricted its study to mature scholars. The four living creatures (man, lion, ox, eagle) appear in Revelation 4 and became symbols of the four Evangelists in Christian iconography. The vision asserts that God's throne is mobile — not confined to Jerusalem."},
+  ],
+  "Ezekiel 37":[
+    {cat:"concept",icon:"💀",title:"The Valley of Dry Bones — Exile & Resurrection",body:"The vision of dry bones coming to life (Ezek. 37) was primarily about the national restoration of Israel from exile — the bones are explicitly 'the whole house of Israel' (v.11). But the imagery of individual bodily resurrection, the role of the Spirit/breath (ruach), and the language of graves being opened (v.12) fed directly into developing Jewish resurrection theology. Paul alludes to this passage in his discussion of bodily resurrection (1 Cor. 15)."},
+  ],
+  // ── DANIEL ───────────────────────────────────────────────────────────────
+  "Daniel":[
+    {cat:"concept",icon:"🌙",title:"Apocalyptic Genre",body:"Daniel 7-12 belongs to the apocalyptic genre: a form of Jewish literature (flourishing 200 BC – 100 AD) using symbolic visions, heavenly journeys, angelic interpreters, and coded historical review to encourage faithfulness under persecution. The genre assumes that history is moving toward a divine resolution. Apocalyptic is not prophecy-as-prediction in a simple sense — it is resistance literature using cosmic imagery to say: God has not lost control."},
+    {cat:"concept",icon:"👤",title:"Son of Man — Bar Enosh",body:"Daniel 7:13-14 describes 'one like a son of man' (bar enosh — a human figure) coming on the clouds to receive an eternal kingdom from the Ancient of Days. In Daniel's context, this figure likely represents the vindicated people of God receiving the kingdom. Jesus's most distinctive self-title was 'Son of Man' — evoking Daniel 7 consistently. His use of it (especially at his trial, Mark 14:62) made the messianic claim unmistakable to those with ears to hear."},
+  ],
+  // ── HOSEA ────────────────────────────────────────────────────────────────
+  "Hosea":[
+    {cat:"social",icon:"💔",title:"Hosea's Marriage as Prophetic Sign",body:"God's command to Hosea to marry a promiscuous woman (or one who would become so) was a living parable of God's relationship with Israel. The covenant between YHWH and Israel used marriage language throughout the prophets (Jer. 3; Ezek. 16; Isa. 54). Israel's worship of Baal was literally described as prostitution — the fertility cult involved actual cult prostitution at Canaanite high places. Hosea's family life enacted the national spiritual reality."},
+  ],
+  // ── AMOS ─────────────────────────────────────────────────────────────────
+  "Amos":[
+    {cat:"social",icon:"⚖",title:"Amos — Social Justice & the 8th-Century Prophets",body:"Amos prophesied in the prosperous reign of Jeroboam II (c.760 BC) when Israel was wealthy but deeply unjust. His indictments — selling the poor for a pair of sandals (2:6), reclining on ivory beds (6:4), using dishonest scales (8:5) — reflect a society where wealth concentration had broken the covenant community's economic solidarity. His message that God rejects worship divorced from justice (5:21-24) became foundational for the prophetic tradition."},
+  ],
+  // ── JONAH ────────────────────────────────────────────────────────────────
+  "Jonah":[
+    {cat:"social",icon:"🐟",title:"Nineveh — Capital of Assyrian Terror",body:"Nineveh was the capital of Assyria — the most brutal empire of the ancient world. Assyrian records and palace reliefs document their practice of impaling, flaying, and mass deportation of conquered peoples. That God would send a prophet to offer Nineveh a chance to repent was scandalous to any Israelite of the period. Jonah's reluctance was not mere stubbornness but a theologically coherent objection: why save the enemies who will destroy us?"},
+  ],
+  // ── ZECHARIAH ────────────────────────────────────────────────────────────
+  "Zechariah":[
+    {cat:"concept",icon:"🔮",title:"Night Visions & Messianic Prophecies",body:"Zechariah (520-480 BC) contains the richest concentration of explicitly messianic prophecy in the Minor Prophets. Zechariah 9:9 (the king entering Jerusalem on a donkey), 11:12-13 (thirty pieces of silver thrown to the potter), 12:10 (looking on the one they pierced), and 13:7 (strike the shepherd) are all directly quoted or applied in the NT Passion narratives. The eight night visions of Zechariah 1-6 use apocalyptic imagery to encourage the post-exilic community."},
+  ],
+  // ── MALACHI ──────────────────────────────────────────────────────────────
+  "Malachi":[
+    {cat:"concept",icon:"✉",title:"The Messenger & the 400-Year Silence",body:"Malachi (meaning 'my messenger') is the last book of the Hebrew prophetic canon, ending with a promise of Elijah's return before 'the great and terrible day of the LORD' (4:5). After Malachi, Jewish tradition speaks of the cessation of prophecy. The 400 years between Malachi and John the Baptist were not scripturally silent — but no canonical prophet spoke. John the Baptist is explicitly identified as the promised Elijah figure (Matt. 11:14; Luke 1:17)."},
+  ],
+  // ── MATTHEW ──────────────────────────────────────────────────────────────
+  "Matthew":[
+    {cat:"social",icon:"✡",title:"Matthew's Jewish Audience",body:"Matthew is the most Jewish of the four Gospels: it quotes the OT more than any other (c.40 direct citations), consistently uses 'kingdom of heaven' instead of 'kingdom of God' (avoiding the divine name), structures Jesus's teaching in five discourses echoing the five books of Moses, and opens with a genealogy (a form of establishing messianic legitimacy for a Jewish audience). It was almost certainly addressed to Jewish Christians navigating their relationship with the synagogue."},
+    {cat:"concept",icon:"📜",title:"The Five Discourses — Moses Typology",body:"Matthew structures Jesus's teaching in five great discourses: Sermon on the Mount (5-7), Mission Discourse (10), Parables (13), Community (18), Olivet Discourse (24-25). Each ends with 'when Jesus had finished these sayings.' The five-fold structure mirrors the five books of the Torah, presenting Jesus as the new Moses — not merely interpreting the Law but giving the new covenant's law with divine authority ('but I say to you')."},
+  ],
+  "Matthew 1":[
+    {cat:"custom",icon:"📋",title:"Genealogy as Messianic Credential",body:"Matthew's genealogy (unlike Luke's which traces to Adam) begins with Abraham and structures history in three sets of 14 generations — 14 being the numerical value of David's name in Hebrew (gematria: D=4, V=6, D=4). The inclusion of four women (Tamar, Rahab, Ruth, Bathsheba) — each associated with Gentiles or sexual irregularity — anticipates the disruption of normal categories that characterises Matthew's entire story. Genealogies in the ancient world established identity and legitimate claim."},
+  ],
+  "Matthew 2":[
+    {cat:"social",icon:"⭐",title:"The Magi — Zoroastrian Astronomers",body:"The 'wise men from the East' (Magi) were almost certainly Zoroastrian astrologer-priests from Persia or Babylon, practitioners of the dominant religion of the Persian Empire. That they found the Jewish Messiah through the movements of stars fits their professional practice; that they came to worship him is Matthew's opening statement of universal scope. The tradition of 'three kings' is not in the text — the three gifts (gold, frankincense, myrrh) gave rise to the number."},
+  ],
+  "Matthew 5":[
+    {cat:"form",icon:"📜",title:"Beatitude Form — Ashre",body:"The beatitude form ('Blessed is…') was well established in Jewish literature — found throughout Psalms and Wisdom writings. The Hebrew ashre and Greek makarios convey deep, envied wellbeing rather than surface happiness. Jesus systematically inverts the world's categories of the blessed: the poor, the mourning, the persecuted are not losers but participants in the coming kingdom. Each beatitude is a reversal of the honour/shame social scoreboard."},
+    {cat:"concept",icon:"⚖",title:"'You Have Heard… But I Say' — Antitheses",body:"Jesus's six 'antitheses' ('you have heard… but I say to you') are not rejecting Torah but intensifying it from external behavior to internal motivation. The phrase 'you have heard' likely refers to scribal interpretation, not the written Torah itself ('it is written' is the standard OT quotation formula). Jesus speaks with direct divine authority ('but I say to you') — not 'thus says the LORD' like a prophet, but on his own authority."},
+  ],
+  "Matthew 26":[
+    {cat:"feast",icon:"🍷",title:"The Last Supper — Passover Seder",body:"The Last Supper was a Passover meal (or a meal on the eve of Passover — the gospels present a slight chronological puzzle). The four cups of the Seder correspond to the four promises in Exodus 6:6-7. Jesus identifies the third cup ('the cup of redemption') as 'my blood of the covenant' — reinterpreting the Passover meal in light of his impending death. 'Do this in remembrance' echoes the Passover instruction to remember the Exodus (Deut. 16:3)."},
+  ],
+  // ── MARK ─────────────────────────────────────────────────────────────────
+  "Mark":[
+    {cat:"social",icon:"⚡",title:"Mark's Roman Audience & Urgency",body:"Mark is the shortest, fastest-paced Gospel. The word 'immediately' (euthys) occurs c.40 times, giving the narrative breathless momentum. Mark explains Jewish customs for his audience (7:3-4; 14:12) — indicating Gentile readers unfamiliar with them. Many scholars identify this as the Gospel Peter preached in Rome, written down by Mark. The abrupt ending (16:8) — 'they said nothing to anyone, for they were afraid' — may be original or may have lost its ending."},
+  ],
+  // ── LUKE ─────────────────────────────────────────────────────────────────
+  "Luke":[
+    {cat:"social",icon:"🌍",title:"Luke's Greek Audience & Social Concerns",body:"Luke-Acts is addressed to 'Theophilus' (possibly a literary patron or a generic 'lover of God') and is written in the most polished Greek of the NT. Luke consistently highlights those at the margins: women (who appear far more prominently than in the other Gospels), the poor, Samaritans, tax collectors, Gentiles. His genealogy (3:23-38) traces Jesus all the way to Adam — universal humanity rather than merely Jewish ancestry."},
+  ],
+  "Luke 4":[
+    {cat:"feast",icon:"📜",title:"The Jubilee Reading — Isaiah 61",body:"In the Nazareth synagogue, Jesus reads Isaiah 61 (the Jubilee proclamation: release to captives, sight for the blind, freedom for the oppressed) and declares 'today this Scripture is fulfilled in your hearing.' The Jubilee Year (Lev. 25) mandated release of debt-slaves and return of ancestral land every 50 years — a radical economic reset. Whether ever fully implemented, it was a utopian ideal. Jesus claims to be its personal, embodied fulfilment."},
+  ],
+  "Luke 15":[
+    {cat:"social",icon:"🐷",title:"The Prodigal Son — Honour/Shame Culture",body:"The parable is set entirely within a Mediterranean honour/shame framework. Requesting an inheritance early was equivalent to wishing your father dead — an act of radical dishonour. A Jewish boy feeding pigs (unclean animals) for Gentiles represents maximum defilement. The father running to meet him (undignified for an older man) and throwing a robe and ring on him before any confession is complete represents honour restoration before it is earned. The older son's anger is the culturally expected reaction."},
+  ],
+  // ── JOHN ─────────────────────────────────────────────────────────────────
+  "John":[
+    {cat:"concept",icon:"💡",title:"Johannine Dualism — Light/Darkness, Above/Below",body:"John's Gospel is structured around a series of binary contrasts: light/darkness, life/death, above/below, truth/lie, love/hate. This dualism is not Greek philosophical dualism (matter vs. spirit) but Jewish moral dualism — a pattern found extensively in the Dead Sea Scrolls (especially the Community Rule's 'War of Light vs. Darkness'). John's dualism is not static: people move from darkness to light through belief."},
+    {cat:"concept",icon:"✋",title:"The 'I AM' Statements",body:"John records seven 'I AM' statements with predicates (bread of life, light, door, good shepherd, resurrection, way/truth/life, vine) and several absolute 'I AM' statements (8:24, 58; 13:19; 18:5-8). The absolute form ('I am he,' in Greek simply 'I am') echoes the divine self-declaration in the LXX of Exodus 3:14 and Isaiah 43:10, 25; 51:12 — all contexts where God identifies himself by this unique formula. The soldiers falling back when Jesus says 'I am he' (18:5-6) reflects the divine weight of the phrase."},
+  ],
+  "John 1":[
+    {cat:"concept",icon:"💡",title:"The Logos — Greek & Hebrew Fusion",body:"John opens with 'In the beginning was the Word (Logos)' — echoing Genesis 1 for a Hebrew audience while invoking the Greek philosophical concept of the cosmic rational principle. Philo of Alexandria had blended these, but John makes the radical move: the Logos became flesh — something no Greek philosopher would accept. The Logos does not merely reveal God (as in Philo) but is God, entering the physical world in a specific human life."},
+    {cat:"custom",icon:"🕊",title:"Baptism & Jewish Ritual Immersion",body:"John's baptism was a variation of the Jewish mikveh — ritual immersion for purification. What was distinctive was his call for Israel to be baptised for repentance, treating ethnic Jews as if they were Gentile converts entering the covenant afresh. The question of his authority (1:25) — 'why then are you baptising?' — reflects how socially radical this was."},
+    {cat:"social",icon:"👥",title:"Rabbi–Disciple Relationship",body:"'Come and see' (v.39) was a standard rabbinic invitation. Disciples memorised their rabbi's rulings, imitated his daily conduct, and left trade and family permanently. To follow a rabbi was a complete life transfer. Andrew's first act upon meeting Jesus is finding his brother Peter — standard practice in a society where extended-family networks were the primary social structure."},
+  ],
+  "John 2":[
+    {cat:"custom",icon:"🍷",title:"Jewish Wedding Customs",body:"First-century Galilean weddings lasted seven days. Running out of wine was a social disgrace that could damage the family's honour for years. The six stone water-jars — each holding 20-30 gallons, used for Jewish purification rites — are an ironic detail: the substance of Jewish purity rituals becomes the vehicle of abundant blessing. The quantity (120-180 gallons) is extravagant, a sign of the messianic abundance of the new age."},
+    {cat:"social",icon:"🏛",title:"Temple Commerce & the Court of the Gentiles",body:"The money-changers and dove-sellers occupied the Court of the Gentiles — the only space where non-Jews could come to pray. The high-priestly family of Caiaphas had expanded the market there. Turning the one area open to the nations into a marketplace is precisely what Jesus objects to: quoting both Isaiah 56:7 ('house of prayer for all nations') and Jeremiah 7:11 ('den of robbers')."},
+  ],
+  "John 3":[
+    {cat:"social",icon:"🎓",title:"Nicodemus — Sanhedrin Member by Night",body:"Nicodemus was a member of the Sanhedrin, Judaism's 70-member ruling council. Coming at night likely reflects either fear of peer judgment or the Jewish custom of serious Torah study after dark. He addresses Jesus as 'Rabbi' — genuine respect despite Jesus's lack of formal ordination. He appears twice more in John (7:50; 19:39), each time at greater personal cost."},
+    {cat:"idiom",icon:"💬",title:"'Born Again' — Anothen (From Above / Again)",body:"The Greek anothen means both 'again' and 'from above.' Jesus almost certainly exploited the double meaning. Nicodemus hears 'born again' (a second physical birth); Jesus means 'born from above' (a heavenly origin). This kind of deliberate semantic double-play is characteristic of Johannine dialogue — words are misunderstood at the literal level to drive towards a deeper meaning."},
+    {cat:"otlink",icon:"📜",title:"The Bronze Serpent — Numbers 21",body:"'As Moses lifted up the serpent in the wilderness' references Numbers 21, where Israelites bitten by snakes were healed by looking at a bronze serpent on a pole. The LXX uses hypsōthēnai (to be lifted up/exalted) in both passages. Jesus maps his own crucifixion onto this image — and the word 'lifted up' in John carries the double meaning of physical crucifixion and divine exaltation throughout (8:28; 12:32)."},
+  ],
+  "John 4":[
+    {cat:"social",icon:"⚔",title:"Jewish–Samaritan Hostility",body:"Jews and Samaritans had been in bitter conflict for centuries. Samaritans were descendants of intermarried Israelites and Assyrian settlers (2 Kgs 17), accepted only the Pentateuch, and worshipped at Mount Gerizim rather than Jerusalem. A Jewish man speaking alone with a Samaritan woman — especially requesting water from her vessel — crossed multiple taboos. The disciples' surprise on returning (v.27) captures the social shock."},
+    {cat:"idiom",icon:"💧",title:"'Living Water' — Mayim Chayyim",body:"'Living water' (mayim chayyim) was a technical term in Jewish law for running water — required for a valid mikveh. The woman hears it literally (superior well-water); Jesus means water that gives eternal life. Jacob's well carried symbolic weight since Jacob was the patriarch claimed by both Jews and Samaritans — making Jesus's offer of better water than Jacob's a pointed messianic claim."},
+    {cat:"custom",icon:"🌞",title:"Drawing Water at Noon",body:"Women typically drew water at dawn or dusk — when it was cool and social. Coming alone at the sixth hour (noon) in summer heat strongly suggests social ostracism. The conversation Jesus initiates reverses the order of honour: the one who should be excluded becomes the one who brings a whole village."},
+  ],
+  "John 6":[
+    {cat:"otlink",icon:"🍞",title:"Manna & the Bread of Life",body:"The crowd references manna — God's provision in the wilderness for 40 years (Exod. 16). First-century Jews widely expected the Messiah to repeat the manna miracle. Jesus reframes this: the true bread from heaven is not a substance but a person. His discourse also echoes the Wisdom literature, where Wisdom invites the people to eat her bread (Prov. 9; Sir. 24) — another dimension of his implicit claim."},
+    {cat:"feast",icon:"🐟",title:"Feeding 5,000 — Passover Context",body:"John notes 'the Passover was near' (v.4). Feeding a multitude in the wilderness before Passover directly evokes the Exodus and Jewish expectation of the Messianic banquet. The twelve baskets of leftovers — more than the five loaves they started with — evoke the abundance of the new Exodus. Jesus's refusal to be made king (v.15) follows immediately: he is not the political-military messiah they want."},
+  ],
+  "John 10":[
+    {cat:"custom",icon:"🐑",title:"Palestinian Shepherding Practices",body:"In Palestine, sheep from multiple flocks shared a single stone-walled sheepfold overnight, guarded by a hired doorkeeper. In the morning each shepherd called his own sheep, which recognised their shepherd's distinctive voice — ignoring all others. This was daily, observable life for Jesus's audience, not abstract metaphor. The image of the shepherd lying across the doorway at night — literally becoming the door — illuminates verse 7."},
+    {cat:"feast",icon:"🕎",title:"Feast of Dedication — Hanukkah",body:"John 10:22 is the only NT mention of Hanukkah (Feast of Dedication). Hanukkah celebrated the Maccabean rededication of the Temple (~165 BC) after Antiochus IV desecrated it. The crowd's 'Are you the Messiah?' during this feast carries specific weight: Judas Maccabeus was a warrior-deliverer who drove out foreign occupiers. They want that kind of messiah. Jesus's answer — that his works testify — redirects the question."},
+  ],
+  "John 19":[
+    {cat:"custom",icon:"⚰",title:"Crucifixion — Roman Practice & the Jewish Curse",body:"Crucifixion was a Roman penalty reserved for slaves and political rebels. Jews considered it the most accursed death (Deut. 21:23 — 'cursed is everyone who hangs on a tree'), which Paul explicitly uses in Gal. 3:13. 'It is finished' (tetelestai) was also stamped on paid-in-full debt receipts in the Greco-Roman world. The hyssop used to offer wine (v.29) echoes the hyssop used to apply the Passover blood (Exod. 12:22) in the final Passover typology."},
+  ],
+  // ── ACTS ─────────────────────────────────────────────────────────────────
+  "Acts":[
+    {cat:"social",icon:"🌍",title:"Acts as Theological History",body:"Acts is written as Hellenistic historiography — a genre that presented history through key speeches (Luke uses this technique as Greek historians like Thucydides did, composing speeches that capture what the speaker 'would have said'). Acts traces the movement of the gospel from Jerusalem to Rome — from the Jewish heartland to the capital of the Gentile world — in fulfilment of Acts 1:8. The narrative ends in Rome with Paul preaching unhindered: the mission is launched, not concluded."},
+  ],
+  "Acts 2":[
+    {cat:"feast",icon:"🔥",title:"Pentecost — Feast of Weeks (Shavuot)",body:"Pentecost (Shavuot, Feast of Weeks) fell 50 days after Passover and was one of three great pilgrimage feasts requiring Jewish men to come to Jerusalem — explaining the international crowd. In Second Temple Judaism, Shavuot was increasingly associated with the giving of the Torah at Sinai, making the Spirit's arrival on this day a Torah-fulfilment counterpoint: the law that had been written on stone tablets is now written on hearts (Jer. 31:33)."},
+    {cat:"concept",icon:"🗣",title:"Tongues — Reversal of Babel",body:"The crowd hears 'each in his own language' (2:8) — intelligible foreign languages (xenolalia). The miracle directly reverses Babel (Gen. 11), where unified human language was scattered as judgment. At Pentecost, the scattered languages are gathered in understanding. The list of nations in Acts 2:9-11 evokes the Table of Nations in Genesis 10 — the whole scattered human family hears the mighty works of God in their mother tongue."},
+  ],
+  "Acts 10":[
+    {cat:"concept",icon:"🐖",title:"Peter's Vision & Purity Laws",body:"Peter's vision of unclean animals and God's command 'kill and eat' (10:13) is a direct challenge to the Levitical purity laws that defined Jewish identity over against Gentiles. Peter's three-fold refusal ('surely not, Lord') mirrors his three-fold denial of Jesus. The vision's meaning — that Gentiles are not 'unclean' before God — represents the single most socially explosive theological decision of the early church."},
+  ],
+  "Acts 17":[
+    {cat:"social",icon:"🏛",title:"The Areopagus — Athens' Court of Ideas",body:"The Areopagus (Mars Hill) was both a physical hill and the name of Athens' ancient council with authority over religious and moral matters. Paul's audience included Epicurean philosophers (who denied divine providence and personal immortality) and Stoic philosophers (who affirmed a divine rational logos ordering the universe but not a personal God). Paul quotes their own poets (Aratus, possibly Epimenides) and builds a bridge from 'the unknown god' to the resurrection."},
+  ],
+  // ── ROMANS ───────────────────────────────────────────────────────────────
+  "Romans":[
+    {cat:"social",icon:"🏛",title:"Roman Imperial Theology",body:"Paul's letter to Rome opens with language that directly parallels Roman imperial propaganda: 'gospel' (euangelion — used for imperial announcements), 'Son of God' (a title of the emperors), 'descended from David' (claiming royal lineage). He applies every imperial title to a crucified Jewish peasant. Writing from Corinth to the capital of the empire that executed Jesus, the political subtext of Romans is never far from the surface."},
+    {cat:"concept",icon:"⚖",title:"Justification — Dikaiōsis",body:"Paul's doctrine of justification by faith uses legal terminology (dikaiōsis — a courtroom verdict of 'not guilty'). In the Roman legal system, this was a judge's declaration of innocence, not the making-innocent of the accused. Paul's scandal is that God declares guilty people righteous (4:5) — not because they have become righteous but because the righteous One has become their representative. This is the forensic core of Reformation theology."},
+  ],
+  "Romans 1":[
+    {cat:"social",icon:"🏛",title:"Imperial 'Gospel' Language",body:"Paul's opening — 'gospel of God's Son, descended from David, declared Son of God in power' — directly mirrors propaganda used for Caesar Augustus: his birth announcements were euangelion; his son Octavian was 'Son of God' (divi filius); his reign ushered in a golden age of peace (pax Romana). Paul's letter opens by applying every one of these titles to a crucified Galilean in the imperial city itself."},
+  ],
+  "Romans 3":[
+    {cat:"concept",icon:"⚖",title:"Hilasterion — Mercy Seat / Propitiation",body:"The word hilasterion (v.25) is the same Greek word the LXX uses for the mercy seat — the golden lid of the Ark of the Covenant where the high priest sprinkled blood on Yom Kippur. Paul presents Christ as the ultimate mercy seat: where God's justice and mercy meet, now accessible to all, not hidden in the Holy of Holies and opened once a year by a single priest. The shift from restricted to universal access is deliberate."},
+  ],
+  // ── 1 CORINTHIANS ────────────────────────────────────────────────────────
+  "1 Corinthians":[
+    {cat:"social",icon:"🏛",title:"Corinth — A Roman Colony City",body:"Corinth was refounded as a Roman colony in 44 BC and by Paul's day was the prosperous capital of Achaia with a diverse, mobile population of freed slaves, merchants, artisans, and Roman colonists. It hosted the Isthmian Games (second only to the Olympics). The city's prosperity, social mobility, and reputation for immorality (the verb 'to corinthianise' meant to be sexually immoral in Greek) provide the context for most of Paul's specific instructions."},
+    {cat:"custom",icon:"🍖",title:"Food Offered to Idols — Temple Economy",body:"Pagan temples in the Greco-Roman world functioned partly as butcher shops: animals sacrificed to gods would have most of their meat sold in the market or served at temple banquets. Wealthy Corinthians attended dinner parties in temples (1 Cor. 8:10). For former pagans, these associations were deeply problematic. For Jewish Christians, eating idol-food violated Torah. Paul's solution (chs. 8-10) navigates between 'knowledge' (idols are nothing) and 'love' (the conscience of weaker brothers matters more)."},
+  ],
+  // ── GALATIANS ────────────────────────────────────────────────────────────
+  "Galatians":[
+    {cat:"concept",icon:"✂",title:"The Circumcision Controversy",body:"Paul's letter to Galatia responds to 'Judaisers' — Jewish Christian missionaries who taught that Gentile converts needed to be circumcised and observe Torah to be fully saved. Paul's response is explosive: 'if you receive circumcision, Christ is of no advantage to you' (5:2). The controversy was not about ritual but about whether Gentiles needed to become Jews to become Christians — the foundational question of whether the gospel was culturally portable."},
+  ],
+  "Galatians 3":[
+    {cat:"otlink",icon:"📜",title:"Curse of the Law — Crucifixion & Deut. 21",body:"Paul's statement that Christ 'redeemed us from the curse of the law by becoming a curse for us' (quoting Deut. 21:23, 'cursed is everyone who hangs on a tree') was theologically explosive. Crucifixion's apparent disqualification of Jesus as Messiah (a cursed man cannot be God's anointed) was the core Jewish objection to the gospel. Paul inverts it entirely: he became the curse, absorbing its force, so that the blessing of Abraham could reach the Gentiles."},
+  ],
+  // ── EPHESIANS ────────────────────────────────────────────────────────────
+  "Ephesians":[
+    {cat:"social",icon:"🏛",title:"Ephesus — Artemis, Magic & Imperial Cult",body:"Ephesus was the religious capital of Asia Minor — home of the massive temple of Artemis (one of the Seven Wonders), a thriving trade in magical texts (Acts 19:19), and a prominent imperial cult. The principalities and powers language in Ephesians (1:21; 6:12) reflects a world saturated with beliefs in heavenly powers governing earthly events. Paul's claim that Christ is 'far above all rule and authority' was a direct challenge to every competing power structure."},
+  ],
+  "Ephesians 6":[
+    {cat:"social",icon:"⚔",title:"The Roman Legionary's Armour",body:"The armour of God passage maps onto the equipment of a Roman legionary. Belt of truth → the balteus (leather belt supporting weapon and tunic); breastplate of righteousness → the lorica segmentata; feet shod → the caligae (military sandals laced above the ankle); shield → the scutum (large rectangular shield, held together in testudo formation to shelter the whole body); helmet → the galea; sword → the gladius (short thrusting sword). Paul's audience saw soldiers daily throughout the empire."},
+  ],
+  // ── PHILIPPIANS ──────────────────────────────────────────────────────────
+  "Philippians":[
+    {cat:"social",icon:"🏛",title:"Philippi — Roman Colony & Citizenship",body:"Philippi was a Roman colony in Macedonia — its residents had full Roman citizenship, spoke Latin, and modelled civic life on Rome. Paul's statement 'our citizenship (politeuma) is in heaven' (3:20) would have landed with specific force in a city where Roman citizenship was a source of intense civic pride. The same word was used of a diaspora community governed by its homeland's laws while living in a foreign city — as Jews in Alexandria were."},
+  ],
+  // ── COLOSSIANS ───────────────────────────────────────────────────────────
+  "Colossians":[
+    {cat:"concept",icon:"🌀",title:"The Colossian 'Philosophy' & Mystery Cults",body:"The 'philosophy' Paul warns against in Colossae (2:8) appears to be a syncretic blend of Jewish calendar observance, angel veneration, ascetic practices, and mystery-cult 'special knowledge' (gnosis). Mystery cults (Isis, Mithras, Eleusis) promised secret spiritual knowledge available only to initiates. Paul's response is that all the 'fullness' of divine mystery is openly available in Christ — no secret initiation required."},
+  ],
+  // ── HEBREWS ──────────────────────────────────────────────────────────────
+  "Hebrews":[
+    {cat:"concept",icon:"🏛",title:"High Priest Typology & the Levitical System",body:"Hebrews is the most sophisticated theological argument in the NT, addressed to Jewish Christians tempted to return to Judaism under persecution. Its central argument uses the Levitical priesthood and sacrificial system as a 'shadow' (skia) of the heavenly reality fulfilled in Christ. The word 'better' (kreitton) appears 13 times: better covenant, better sacrifice, better hope, better country. The argument assumes detailed knowledge of the Levitical system."},
+    {cat:"concept",icon:"🧩",title:"Melchizedek — Mysterious OT Priest-King",body:"Melchizedek (Gen. 14; Psa. 110) was the priest-king of Salem who received tithes from Abraham and blessed him — before the Levitical priesthood existed. Hebrews uses his mysterious appearance ('without father, without mother, without genealogy' — i.e., no priestly credentials given in the text) to argue for a priestly order predating and superseding Levi. Psalm 110:4 ('You are a priest forever after the order of Melchizedek') is the key proof text for Jesus's high priestly identity."},
+  ],
+  // ── JAMES ────────────────────────────────────────────────────────────────
+  "James":[
+    {cat:"form",icon:"📜",title:"James as Jewish Wisdom Literature",body:"James reads more like Jewish wisdom literature (Proverbs, Sirach) than a Pauline letter — practical, aphoristic, and focused on ethics. It is addressed to 'the twelve tribes in the Dispersion' — either Jewish Christians scattered outside Palestine or the church as the new Israel of the diaspora. Its famous tension with Paul ('faith without works is dead') is resolved when the different contexts are noted: Paul argues against earning salvation; James argues against intellectual assent with no life change."},
+  ],
+  // ── 1 PETER ──────────────────────────────────────────────────────────────
+  "1 Peter":[
+    {cat:"social",icon:"🌍",title:"Diaspora Language & Suffering Churches",body:"Peter addresses his readers as 'elect exiles of the Dispersion' — using diaspora Jewish language to describe Gentile Christians scattered through Asia Minor. The letter was written during (or anticipating) Neronian persecution (c.64 AD). The central pastoral strategy is reframing social marginality through OT identity: you are 'a chosen race, a royal priesthood, a holy nation, a people for his own possession' (2:9 — quoting Exod. 19:6)."},
+  ],
+  // ── REVELATION ───────────────────────────────────────────────────────────
+  "Revelation":[
+    {cat:"concept",icon:"🌀",title:"Apocalyptic Genre & Imperial Cult",body:"Revelation is Jewish apocalyptic literature addressed to seven churches in Asia Minor during the reign of Domitian (c.95 AD), when the imperial cult (emperor worship) was enforced with increasing pressure. The 'mark of the beast' (13:16-17) may refer to official stamps required for guild membership and commerce — participation in the imperial economic system that required emperor veneration. The beast's imagery (seven heads, ten horns) evokes both Rome and the broader pattern of human empire."},
+    {cat:"concept",icon:"🔢",title:"Number Symbolism — 666 and Gematria",body:"The 'number of a man, 666' (13:18) is widely understood through gematria (assigning numerical values to letters). In Hebrew, 'Nero Caesar' gives 666; 'Neron Caesar' (the Greek form) gives 616 — which is a textual variant actually found in some manuscripts. This suggests a first-century referent (Nero or Domitian as a 'Nero-type') while leaving the pattern open to recurrence in history. Seven is the number of completion; 666 is a triple falling-short."},
+    {cat:"custom",icon:"✉",title:"The Seven Churches — Postal Route",body:"The seven churches of Revelation 2-3 (Ephesus, Smyrna, Pergamum, Thyatira, Sardis, Philadelphia, Laodicea) are arranged in a geographical sequence following the main Roman postal road of western Asia Minor — suggesting a circular letter delivered by courier. Each church's message contains specific local allusions: Pergamum's 'throne of Satan' likely refers to the great altar of Zeus; Laodicea's 'lukewarm water' references its tepid aqueduct water."},
+  ],
+  "Revelation 4":[
+    {cat:"concept",icon:"👁",title:"The Heavenly Throne Room",body:"Revelation 4's vision of the throne room draws from Isaiah 6 (seraphim, trisagion), Ezekiel 1 (four living creatures, wheels, crystal sea), and Daniel 7 (the Ancient of Days). The 24 elders have been interpreted as the 12 tribes + 12 apostles (i.e., the complete people of God), or as an angelic council of 24 corresponding to the 24 priestly divisions (1 Chr. 24). The scene establishes cosmic divine sovereignty before the judgments of subsequent chapters unfold."},
+  ],
+};
+
+// ── Cultural Context Panel ─────────────────────────────────────────────────
+function CulturePanel({book, ch, onClose}){
+  const [expanded,setExpanded]=React.useState(null);
+
+  // Build the entry list: chapter-specific first, then book-level fallback
+  const chKey=book+" "+ch;
+  const chEntries=CULTURE_DATA[chKey]||[];
+  const bookEntries=(CULTURE_DATA[book]||[]).filter(e=>
+    !chEntries.includes(e) // avoid duplicating if book key === ch key
+  );
+  const all=chEntries.length||bookEntries.length
+    ? [{label:book+" "+ch, entries:chEntries}, {label:"Book Context", entries:bookEntries}].filter(g=>g.entries.length)
+    : [];
+
+  return(
+    <div className="theo-overlay" onClick={onClose}>
+      <div className="theo-panel" onClick={e=>e.stopPropagation()}>
+        <div className="theo-header">
+          <span className="theo-title">🏺 Cultural Context</span>
+          <button className="theo-close" onClick={onClose}>×</button>
+        </div>
+        <div className="theo-body">
+          {all.length===0&&(
+            <div className="culture-empty">
+              <div style={{fontSize:"2rem",marginBottom:".5rem"}}>🏺</div>
+              <strong>No entries for {book} {ch}</strong>
+              <p style={{marginTop:".4rem"}}>Cultural context notes are being added continuously. Check back as more passages are covered.</p>
+            </div>
+          )}
+          {all.map((group,gi)=>(
+            <div key={gi}>
+              {all.length>1&&<div className="culture-passage-label">{group.label}</div>}
+              <div className="culture-list" style={{paddingTop:gi===0?'1rem':'.25rem'}}>
+                {group.entries.map((entry,i)=>{
+                  const key=gi+"-"+i;
+                  const open=expanded===key;
+                  const catClass=entry.cat==="otlink"?"otlink":entry.cat;
+                  return(
+                    <div key={key} className="culture-card" onClick={()=>setExpanded(open?null:key)}>
+                      <div className="culture-card-head">
+                        <span className="culture-card-icon">{entry.icon}</span>
+                        <div className="culture-card-meta">
+                          <span className={"culture-cat "+catClass}>{entry.cat==="ane"?"ANE Context":entry.cat==="otlink"?"OT Link":entry.cat.charAt(0).toUpperCase()+entry.cat.slice(1)}</span>
+                          <div className="culture-card-title">{entry.title}</div>
+                        </div>
+                        <span style={{color:"var(--text3)",fontSize:".85rem",flexShrink:0,marginTop:".15rem"}}>{open?"▲":"▼"}</span>
+                      </div>
+                      {open&&<div className="culture-card-body">{entry.body}</div>}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Theological Arc Navigator ──────────────────────────────────────────────
 const PHASE_LABELS = {seed:"🌱 The Seed — OT Foundation", promise:"🔥 The Promise — Prophetic", fruit:"🌿 The Fulfillment — NT"};
 function TheologyPanel({onClose, onNavigate, inline}){
@@ -3086,8 +3536,17 @@ function App(){
   const [hlColor,setHlColor]=useState('yellow');
   const [showHighlights,setShowHighlights]=useState(false);
   const [showToolsSheet,setShowToolsSheet]=useState(false);
+  const [showCulture,setShowCulture]=useState(false);
   const [playing,setPlaying]=useState(false);
+  const [updateReady,setUpdateReady]=useState(false);
   const ambientRef=useRef(null);
+
+  useEffect(()=>{
+    if(!('serviceWorker' in navigator)) return;
+    navigator.serviceWorker.addEventListener('message', e=>{
+      if(e.data && e.data.type==='UPDATE_AVAILABLE') setUpdateReady(true);
+    });
+  },[]);
 
   const isNT=test==="NT";
   function handleNavigate(refStr){
@@ -3169,7 +3628,7 @@ function App(){
   const iData=(INTERLINEAR[test]||{})[book]||{};
   const [fetchedVerses,setFetchedVerses]=useState(null);
   const [fetchingInterlinear,setFetchingInterlinear]=useState(false);
-  const interlinearVerses=iData[ch]||(fetchedVerses&&fetchedVerses[String(ch)])||null;
+  const interlinearVerses=(fetchedVerses&&fetchedVerses[String(ch)])||iData[ch]||null;
 
   useEffect(()=>{document.body.className=dark?"":"light";},[dark]);
 
@@ -3269,6 +3728,12 @@ function App(){
           <button className="theme-btn" onClick={()=>setDark(d=>!d)} title="Toggle light/dark mode">{dark?"☀️":"🌙"}</button>
         </div>
       </header>
+      {updateReady&&(
+        <div className="update-banner">
+          <span>✦ A new version is available</span>
+          <button onClick={()=>window.location.reload()}>Update now</button>
+        </div>
+      )}
       <div className="nav-bar">
         <select className={"nav-select"+(isNT?"":" ot")} value={book} onChange={e=>{setBook(e.target.value);setCh(1);setSel(null);setActiveV(null);}}>
           {bookNames.map(b=><option key={b}>{b}</option>)}
@@ -3389,6 +3854,13 @@ function App(){
                 <div className="tools-sheet-desc">Theological arcs traced from seed to fulfillment</div>
               </div>
             </div>
+            <div className="tools-sheet-row" onClick={()=>{setShowCulture(true);setShowToolsSheet(false);}}>
+              <span className="tools-sheet-icon">🏺</span>
+              <div className="tools-sheet-info">
+                <div className="tools-sheet-label">Cultural Context</div>
+                <div className="tools-sheet-desc">Customs, idioms, and social background for {book} {ch}</div>
+              </div>
+            </div>
             <div className="tools-sheet-row" onClick={()=>{setShowHighlights(true);setShowToolsSheet(false);}}>
               <span className="tools-sheet-icon" style={hlMode?{color:activeHlColor.hex}:{}}>🖌</span>
               <div className="tools-sheet-info">
@@ -3410,6 +3882,7 @@ function App(){
       {showNotes&&<NotesPanel notes={notes} onClose={()=>setShowNotes(false)} onNavigate={handleNavigate}/>}
       {showPlaces&&<PlacesPanel book={book} ch={ch} onClose={()=>setShowPlaces(false)} onNavigate={ref=>{handleNavigate(ref);setShowPlaces(false);}}/>}
       {showTheo&&<TheologyPanel onClose={()=>setShowTheo(false)} onNavigate={ref=>{handleNavigate(ref);setShowTheo(false);}}/>}
+      {showCulture&&<CulturePanel book={book} ch={ch} onClose={()=>setShowCulture(false)}/>}
       {sel&&<StrongsPanel entry={entry} strongs={sel.word.s} word={sel.word} isNT={isNT} onClose={()=>setSel(null)} onNavigate={ref=>{handleNavigate(ref);setSel(null);}}/>}
       {addingNote&&<NoteModal verse={addingNote} onSave={data=>handleSaveNote(addingNote,data)} onClose={()=>setAddingNote(null)}/>}
 

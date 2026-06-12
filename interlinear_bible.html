@@ -3543,8 +3543,10 @@ function App(){
 
   useEffect(()=>{
     if(!('serviceWorker' in navigator)) return;
-    navigator.serviceWorker.addEventListener('message', e=>{
-      if(e.data && e.data.type==='UPDATE_AVAILABLE') setUpdateReady(true);
+    // Only show banner if a SW was already in control (i.e. this is an update, not fresh install)
+    const hadController = !!navigator.serviceWorker.controller;
+    navigator.serviceWorker.addEventListener('controllerchange', ()=>{
+      if(hadController) setUpdateReady(true);
     });
   },[]);
 

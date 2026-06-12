@@ -72,6 +72,24 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:.
 .lv-note-btn{opacity:0;flex-shrink:0;background:none;border:1px solid var(--border);color:var(--text3);width:20px;height:20px;border-radius:4px;cursor:pointer;font-size:.8rem;display:flex;align-items:center;justify-content:center;transition:all .12s;margin-top:1px}
 .lv-row:hover .lv-note-btn{opacity:1}
 .lv-note-btn:hover{background:var(--border);color:var(--text)}
+.lv-row.hl-verse{border-left:3px solid transparent}
+.hl-mode-strip{padding:.45rem .8rem;display:flex;align-items:center;gap:.5rem;border-bottom:2px solid var(--border);background:var(--surface);flex-shrink:0;flex-wrap:wrap}
+.hl-mode-label{font-size:.72rem;color:var(--text3);font-style:italic;white-space:nowrap}
+.hl-exit-btn{padding:.2rem .55rem;font-size:.72rem;background:none;border:1px solid var(--border);border-radius:10px;cursor:pointer;color:var(--text2);white-space:nowrap}
+.hl-exit-btn:hover{border-color:var(--text2);color:var(--text)}
+.hl-color-chip{width:14px;height:14px;border-radius:3px;flex-shrink:0}
+.hl-panel-bar{display:flex;align-items:center;justify-content:center;border-radius:7px;cursor:pointer;font-weight:600;font-size:.84rem;letter-spacing:.02em;transition:transform .1s,box-shadow .12s;border:2px solid transparent;min-height:2.5rem;padding:.45rem .75rem;user-select:none;position:relative}
+.hl-panel-bar:hover{transform:scale(1.01);box-shadow:0 2px 10px rgba(0,0,0,.18)}
+.hl-panel-bar.hl-sel{border-color:rgba(0,0,0,.45)!important;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.hl-panel-bar .hl-check{position:absolute;left:.6rem;font-size:.75rem;opacity:.7}
+.hl-label-row{display:flex;align-items:center;gap:.4rem;margin-top:.25rem;margin-bottom:.1rem}
+.hl-label-inp{flex:1;background:rgba(0,0,0,.06);border:none;border-radius:4px;padding:.2rem .45rem;font-size:.72rem;color:rgba(0,0,0,.75);outline:none;font-family:Georgia,serif}
+.hl-label-inp::placeholder{color:rgba(0,0,0,.35)}
+.hl-section-head{display:flex;align-items:center;gap:.5rem;padding:.3rem 0 .2rem;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-top:.6rem}
+.hl-verse-row{display:flex;align-items:flex-start;gap:.5rem;padding:.4rem .5rem;border-radius:5px;cursor:pointer;transition:background .1s;margin-bottom:2px}
+.hl-verse-row:hover{background:var(--surface2)}
+.hl-verse-ref{font-size:.7rem;font-weight:700;white-space:nowrap;flex-shrink:0;padding-top:2px}
+.hl-verse-text{font-size:.78rem;color:var(--text2);line-height:1.5;flex:1}
 .note-star{color:#f59e0b;font-size:.75rem;margin-left:3px;cursor:pointer;vertical-align:middle}
 .note-star:hover{color:#fbbf24}
 /* Interlinear */
@@ -1951,6 +1969,18 @@ async function fetchInterlinearBook(testament, book) {
 }
 
 const NOTES_KEY = "bib_notes_v2";
+const HL_COLORS=[
+  {k:'red',    hex:'#ef4444',bg:'rgba(239,68,68,.22)'},
+  {k:'orange', hex:'#f97316',bg:'rgba(249,115,22,.22)'},
+  {k:'yellow', hex:'#eab308',bg:'rgba(234,179,8,.25)'},
+  {k:'green',  hex:'#22c55e',bg:'rgba(34,197,94,.22)'},
+  {k:'blue',   hex:'#3b82f6',bg:'rgba(59,130,246,.22)'},
+  {k:'indigo', hex:'#6366f1',bg:'rgba(99,102,241,.22)'},
+  {k:'violet', hex:'#a855f7',bg:'rgba(168,85,247,.22)'},
+];
+const HL_KEY='jm-hl'; const HLL_KEY='jm-hll';
+function loadHighlights(){try{return JSON.parse(localStorage.getItem(HL_KEY)||'{}')}catch{return {}}}
+function loadHlLabels(){try{return JSON.parse(localStorage.getItem(HLL_KEY)||'{}')}catch{return {}}}
 function loadNotes(){try{return JSON.parse(localStorage.getItem(NOTES_KEY)||"{}")}catch{return {}}}
 function saveNotes(n){localStorage.setItem(NOTES_KEY,JSON.stringify(n))}
 function nk(t,b,c,v){return t+"|"+b+"|"+c+"|"+v}
@@ -2095,23 +2125,114 @@ function VerseBlock({verse,isNT,activeV,selKey,onClick,id}){
   );
 }
 
-function LeftVerse({verse,isNT,isActive,noteItems,onAddNote,onDeleteNoteItem,onNavigate,onSelect}){
+
+// ── Highlights Panel ──────────────────────────────────────────────────────────
+function HighlightsPanel({highlights, hlLabels, hlColor, onSelectColor, onLabelChange, onClose, onNavigate}){
+  const [editLabels, setEditLabels] = useState({...hlLabels});
+  function saveLabel(k,v){
+    const next={...editLabels,[k]:v};
+    setEditLabels(next);
+    onLabelChange(next);
+  }
+  // Group highlights by color
+  var byColor={};
+  var keys=Object.keys(highlights);
+  for(var i=0;i<keys.length;i++){
+    var hk=keys[i]; var hc=highlights[hk];
+    if(!byColor[hc])byColor[hc]=[];
+    byColor[hc].push(hk);
+  }
+  var totalHl=keys.length;
+  return(
+    <div className="theo-overlay" onClick={onClose}>
+      <div className="theo-panel" onClick={e=>e.stopPropagation()}>
+        <div className="theo-header">
+          <span className="theo-title">🖌 Highlights</span>
+          <button className="theo-close" onClick={onClose}>×</button>
+        </div>
+        <div className="theo-body">
+          <div style={{marginBottom:'.75rem'}}>
+            <div style={{fontSize:'.72rem',color:'var(--text3)',marginBottom:'.55rem',lineHeight:1.5}}>
+              Tap a color to activate highlighter mode, then tap any verse.
+            </div>
+            {HL_COLORS.map(function(c){
+              var label=editLabels[c.k]||'';
+              var isSel=hlColor===c.k;
+              var textCol='rgba(0,0,0,.75)';
+              return(
+                <div key={c.k} style={{marginBottom:'.35rem'}}>
+                  <div className={"hl-panel-bar"+(isSel?' hl-sel':'')}
+                    style={{background:c.bg,borderColor:isSel?c.hex:'transparent'}}
+                    onClick={function(){onSelectColor(c.k);}}>
+                    {isSel&&<span className="hl-check">✓</span>}
+                    <span style={{color:textCol}}>{label||(isSel?'Selected':'')}</span>
+                  </div>
+                  <div className="hl-label-row">
+                    <span style={{fontSize:'.65rem',color:'var(--text3)',whiteSpace:'nowrap'}}>Label:</span>
+                    <input className="hl-label-inp"
+                      value={label}
+                      placeholder={'Name this color…'}
+                      onChange={function(e){saveLabel(c.k,e.target.value);}}
+                      onClick={function(e){e.stopPropagation();}}/>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          {totalHl===0
+            ?<div style={{textAlign:'center',color:'var(--text3)',fontSize:'.82rem',padding:'1rem 0'}}>No highlights yet.</div>
+            :HL_COLORS.filter(function(c){return byColor[c.k]&&byColor[c.k].length>0;}).map(function(c){
+              var label=editLabels[c.k]||c.k.charAt(0).toUpperCase()+c.k.slice(1);
+              return(
+                <div key={c.k}>
+                  <div className="hl-section-head">
+                    <span style={{width:10,height:10,borderRadius:'50%',background:c.hex,display:'inline-block',flexShrink:0}}/>
+                    <span style={{color:c.hex}}>{label}</span>
+                    <span style={{color:'var(--text3)',fontWeight:400}}>({byColor[c.k].length})</span>
+                  </div>
+                  {byColor[c.k].sort().map(function(hk){
+                    var parts=hk.split('|');
+                    var ref=parts[1]+' '+parts[2]+':'+parts[3];
+                    return(
+                      <div key={hk} className="hl-verse-row"
+                        style={{borderLeft:'3px solid '+c.bg}}
+                        onClick={function(){onNavigate&&onNavigate(ref);onClose();}}>
+                        <span className={"hl-verse-ref"} style={{color:c.hex}}>{ref}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })
+          }
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function LeftVerse({verse,isNT,isActive,noteItems,onAddNote,onDeleteNoteItem,onNavigate,onSelect,hlMode,hlBg,hlHex,onHighlight}){
   const [showPop,setShowPop]=useState(false);
   const hasNote=noteItems&&noteItems.length>0;
+  function handleClick(){
+    if(hlMode){onHighlight&&onHighlight(verse.v);return;}
+    onSelect&&onSelect(verse.v);
+    const el=document.getElementById("rv-"+verse.v);
+    if(el)el.scrollIntoView({behavior:"smooth",block:"nearest"});
+  }
+  var rowStyle={position:"relative"};
+  if(hlBg){rowStyle.background=hlBg;rowStyle.borderLeft="3px solid "+(hlHex||'transparent');}
   return(
-    <div className={"lv-row"+(isActive?(isNT?" active":" active ot"):"")} style={{position:"relative"}}
-         onClick={()=>{
-           onSelect&&onSelect(verse.v);
-           const el=document.getElementById("rv-"+verse.v);
-           if(el)el.scrollIntoView({behavior:"smooth",block:"nearest"});
-         }}>
+    <div className={"lv-row"+(isActive&&!hlMode?(isNT?" active":" active ot"):"")}
+         style={rowStyle} onClick={handleClick}>
       <div className="lv-header">
         <span className={"lv-num"+(isNT?"":" ot")}>{verse.v}</span>
         <span className="lv-text">
           {verse.text}
-          {hasNote&&<span className="note-star" title="View notes" onClick={e=>{e.stopPropagation();setShowPop(p=>!p);}}>&#x2726;</span>}
+          {hasNote&&!hlMode&&<span className="note-star" title="View notes" onClick={e=>{e.stopPropagation();setShowPop(p=>!p);}}>&#x2726;</span>}
         </span>
-        <button className="lv-note-btn" title="Add note or link" onClick={e=>{e.stopPropagation();onAddNote(verse.v);}}>+</button>
+        {!hlMode&&<button className="lv-note-btn" title="Add note or link" onClick={e=>{e.stopPropagation();onAddNote(verse.v);}}>+</button>}
+        {hlMode&&hlBg&&<span style={{fontSize:'.7rem',opacity:.6,paddingTop:'2px'}}>✓</span>}
       </div>
       {showPop&&hasNote&&<NotePopover items={noteItems} isNT={isNT} onDeleteItem={i=>{onDeleteNoteItem(verse.v,i);if(noteItems.length<=1)setShowPop(false);}} onClose={()=>setShowPop(false)} onNavigate={ref=>{onNavigate&&onNavigate(ref);setShowPop(false);}}/>}
     </div>
@@ -2747,6 +2868,11 @@ function App(){
   const [showPlaces,setShowPlaces]=useState(false);
   const [translation,setTranslation]=useState("WEB");
   const [translationCopyright,setTranslationCopyright]=useState("");
+  const [highlights,setHighlights]=useState(loadHighlights);
+  const [hlLabels,setHlLabels]=useState(loadHlLabels);
+  const [hlMode,setHlMode]=useState(false);
+  const [hlColor,setHlColor]=useState('yellow');
+  const [showHighlights,setShowHighlights]=useState(false);
 
   const isNT=test==="NT";
   function handleNavigate(refStr){
@@ -2793,6 +2919,22 @@ function App(){
     el.addEventListener('touchend',te,{passive:true});
     return()=>{el.removeEventListener('touchstart',ts);el.removeEventListener('touchend',te);};
   },[]);
+
+  // Highlight helpers
+  function applyHighlight(verseNum){
+    var key=nk(test,book,ch,verseNum);
+    setHighlights(function(prev){
+      var n=Object.assign({},prev);
+      if(n[key]===hlColor)delete n[key]; else n[key]=hlColor;
+      localStorage.setItem(HL_KEY,JSON.stringify(n));
+      return n;
+    });
+  }
+  function saveHlLabels(labels){
+    setHlLabels(labels);
+    localStorage.setItem(HLL_KEY,JSON.stringify(labels));
+  }
+  var activeHlColor=HL_COLORS.find(function(c){return c.k===hlColor;})||HL_COLORS[2];
 
   const bookNames=Object.keys(BOOKS[test]);
   const chCount=BOOKS[test][book]||1;
@@ -2909,6 +3051,13 @@ function App(){
 
         <span className="hint">Click verse to sync · Click word for Strong's · ✦ = note · hover verse for +</span>
       </div>
+      {hlMode&&(
+        <div className="hl-mode-strip">
+          <div className="hl-color-chip" style={{background:activeHlColor.hex}}/>
+          <span className="hl-mode-label">Highlight mode: tap verses to color</span>
+          <button className="hl-exit-btn" onClick={()=>setHlMode(false)}>Done</button>
+        </div>
+      )}
       <div className="main-layout" ref={mainLayoutRef}>
         <div className={"left-col"+(mobileView==="list"?" mob-show":"")}>
           <div style={{padding:".4rem .6rem .2rem",display:"flex",alignItems:"center",gap:".5rem",borderBottom:"1px solid var(--border)",flexShrink:0,position:"sticky",top:0,background:"var(--surface)",zIndex:5}}>
@@ -2921,7 +3070,11 @@ function App(){
           {leftVerses.map(v=>(
             <LeftVerse key={v.v} verse={v} isNT={isNT} isActive={activeV===v.v}
               noteItems={getNote(v.v)} onAddNote={vn=>setAddingNote(vn)} onDeleteNoteItem={handleDeleteNoteItem} onNavigate={handleNavigate}
-              onSelect={vn=>{setActiveV(vn);setMobileView("interlinear");}}/>
+              onSelect={vn=>{setActiveV(vn);setMobileView("interlinear");}}
+              hlMode={hlMode}
+              hlBg={(()=>{var hk=nk(test,book,ch,v.v);var hc=highlights[hk];var col=hc?HL_COLORS.find(function(x){return x.k===hc;}):null;return col?col.bg:null;})()}
+              hlHex={(()=>{var hk=nk(test,book,ch,v.v);var hc=highlights[hk];var col=hc?HL_COLORS.find(function(x){return x.k===hc;}):null;return col?col.hex:null;})()}
+              onHighlight={applyHighlight}/>
           ))}
           <div className="footer">
             <strong style={{color:"var(--text3)"}}>Jammin Interlinear App</strong><br/>
@@ -2954,6 +3107,11 @@ function App(){
           <button className={"side-tool-btn"+(showPlaces?" active":"")} title="Places" onClick={()=>{setShowPlaces(true);}}>📍</button>
           <div className="side-tool-sep"/>
           <button className={"side-tool-btn"+(showTheo?" active":"")} title="Topics" onClick={()=>{setShowTheo(true);}}>⧁</button>
+          <div className="side-tool-sep"/>
+          <button className={"side-tool-btn"+(showHighlights||hlMode?" active":"")}
+            title="Highlights"
+            style={hlMode?{background:activeHlColor.hex+'33',color:activeHlColor.hex}:{}}
+            onClick={()=>{setShowHighlights(true);}}>🖌</button>
         </div>
       </div>
       {/* Mobile bottom tab bar */}
@@ -2983,7 +3141,21 @@ function App(){
           <span className="mob-tab-icon">⧁</span>
           <span>Topics</span>
         </button>
+        <button className={"mob-tab"+((showHighlights||hlMode)?" mob-on"+(isNT?"":" mob-ot"):"")}
+                style={hlMode?{color:activeHlColor.hex}:{}}
+                onClick={()=>setShowHighlights(true)}>
+          <span className="mob-tab-icon">🖌</span>
+          <span>Color</span>
+        </button>
       </div>
+      {showHighlights&&<HighlightsPanel
+        highlights={highlights}
+        hlLabels={hlLabels}
+        hlColor={hlColor}
+        onSelectColor={c=>{setHlColor(c);setHlMode(true);setShowHighlights(false);}}
+        onLabelChange={saveHlLabels}
+        onClose={()=>setShowHighlights(false)}
+        onNavigate={handleNavigate}/>}
       {showNotes&&<NotesPanel notes={notes} onClose={()=>setShowNotes(false)} onNavigate={handleNavigate}/>}
       {showPlaces&&<PlacesPanel book={book} ch={ch} onClose={()=>setShowPlaces(false)} onNavigate={ref=>{handleNavigate(ref);setShowPlaces(false);}}/>}
       {showTheo&&<TheologyPanel onClose={()=>setShowTheo(false)} onNavigate={ref=>{handleNavigate(ref);setShowTheo(false);}}/>}

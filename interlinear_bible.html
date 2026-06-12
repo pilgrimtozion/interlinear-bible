@@ -1997,124 +1997,170 @@ const HL_COLORS=[
   {k:'violet', hex:'#a855f7',bg:'rgba(168,85,247,.42)'},
 ];
 const HL_KEY='jm-hl'; const HLL_KEY='jm-hll';
-// ── Ambient Audio ────────────────────────────────────────────────────────────
-// Soaking worship pad: I–IV–V–IV (A–D–E–D) voiced for voice leading.
-// Sawtooth → lowpass filter → diffuse reverb cloud. No silence gaps.
+// ── Ambient Audio ────────────────────────────────────────────
+// Soaking worship pad: I-IV-V-IV (A-D-E-D).
+// Polyphonic crossfade: old chord rings out (10s release) while new chord blooms in.
+// No pitch gliding. Sine+Triangle blend. Shimmer octave layer. Formant Ah color.
 function buildAmbient(){
   var AudioCtx=window.AudioContext||window.webkitAudioContext;
   if(!AudioCtx)return null;
   var ctx=new AudioCtx();
 
-  // Chord voicings with smooth voice leading — no note moves more than a whole step.
-  // A maj: A3 C#4 E4 A4
-  // D maj: A3 D4  F#4 A4  (C#→D, E→F#: half/whole step only)
-  // E maj: B3 E4  G#4 B4  (all voices move by step from D)
+  // A-D-E-D voiced for minimal movement (step-wise voice leading)
   var PROG=[
-    [220,  277.18,329.63,440],   // A (I)
-    [220,  293.66,369.99,440],   // D (IV)
-    [246.94,329.63,415.30,493.88], // E (V)
-    [220,  293.66,369.99,440],   // D (IV)
+    [220,   277.18, 329.63, 440],     // A: A3 C#4 E4 A4
+    [220,   293.66, 369.99, 440],     // D: A3 D4  F#4 A4
+    [246.94,329.63, 415.30, 493.88],  // E: B3 E4  G#4 B4
+    [220,   293.66, 369.99, 440],     // D: A3 D4  F#4 A4
   ];
-  var CHORD_DUR=10;  // seconds per chord — slow, meditative
-  var GLIDE=4.5;     // slow frequency glide; voice leading makes it imperceptible
+  var CHORD_DUR=10;   // seconds between chord strikes
+  var FADE_IN =4.5;   // new chord bloom
+  var FADE_OUT=10.0;  // old chord natural ring-out (amp envelope release)
+  var VOLS=[0.20,0.17,0.15,0.13];
+  var PANS=[-0.45,0.45,-0.28,0.28];
 
-  // ── Master gain
+  // ── Master gain (slow initial fade-in)
   var master=ctx.createGain();
   master.gain.setValueAtTime(0,ctx.currentTime);
-  master.gain.linearRampToValueAtTime(0.19,ctx.currentTime+5.0);
+  master.gain.linearRampToValueAtTime(0.20,ctx.currentTime+5.0);
   master.connect(ctx.destination);
 
-  // ── Diffuse reverb cloud: two feedback delays at different times
-  // Long tail, high feedback → notes melt into each other
+  // ── Diffuse reverb cloud: two feedback loops
   var dly1=ctx.createDelay(6.0); dly1.delayTime.value=3.2;
-  var fb1=ctx.createGain();  fb1.gain.value=0.56;
+  var fb1=ctx.createGain();  fb1.gain.value=0.55;
   var out1=ctx.createGain(); out1.gain.value=0.38;
   dly1.connect(fb1); fb1.connect(dly1);
   dly1.connect(out1); out1.connect(master);
 
-  var dly2=ctx.createDelay(4.0); dly2.delayTime.value=1.85;
-  var fb2=ctx.createGain();  fb2.gain.value=0.42;
-  var out2=ctx.createGain(); out2.gain.value=0.24;
+  var dly2=ctx.createDelay(4.0); dly2.delayTime.value=1.9;
+  var fb2=ctx.createGain();  fb2.gain.value=0.43;
+  var out2=ctx.createGain(); out2.gain.value=0.25;
   dly2.connect(fb2); fb2.connect(dly2);
   dly2.connect(out2); out2.connect(master);
 
-  // ── Warm analog lowpass (sawtooth source → filter = classic pad character)
+  // ── Main lowpass: open at 1500 Hz (airy, not muddy)
   var filt=ctx.createBiquadFilter();
-  filt.type='lowpass'; filt.frequency.value=680; filt.Q.value=1.5;
+  filt.type='lowpass'; filt.frequency.value=1500; filt.Q.value=0.9;
   filt.connect(master); filt.connect(dly1); filt.connect(dly2);
 
-  // ── Filter LFO: slow breathing (~14-second cycle)
+  // ── Filter LFO: slow breathing (~15-second cycle)
   var filtLfo=ctx.createOscillator();
   var filtLg=ctx.createGain();
-  filtLfo.type='sine'; filtLfo.frequency.value=0.072;
-  filtLg.gain.value=260; // sweeps filter ±260 Hz around 680 Hz base
+  filtLfo.type='sine'; filtLfo.frequency.value=0.065;
+  filtLg.gain.value=380;
   filtLfo.connect(filtLg); filtLg.connect(filt.frequency);
   filtLfo.start();
 
-  // ── Shimmer layer: quiet highpass signal → reverb → ethereal top-end texture
+  // ── Formant: parallel bandpass at 900 Hz for choir "Ah" resonance
+  var formantBp=ctx.createBiquadFilter();
+  formantBp.type='bandpass'; formantBp.frequency.value=900; formantBp.Q.value=2.2;
+  var formantMix=ctx.createGain(); formantMix.gain.value=0.18;
+  formantBp.connect(formantMix); formantMix.connect(filt);
+
+  // ── Shimmer reverb: octave-up oscillators -> highpass -> long delay -> master
+  var shimDly=ctx.createDelay(5.0); shimDly.delayTime.value=2.6;
+  var shimFb=ctx.createGain();  shimFb.gain.value=0.58;
+  var shimOut=ctx.createGain(); shimOut.gain.value=0.16;
+  shimDly.connect(shimFb); shimFb.connect(shimDly);
+  shimDly.connect(shimOut); shimOut.connect(master);
   var shimHp=ctx.createBiquadFilter();
-  shimHp.type='highpass'; shimHp.frequency.value=1100;
-  var shimGain=ctx.createGain(); shimGain.gain.value=0.04;
-  shimHp.connect(shimGain); shimGain.connect(dly1);
+  shimHp.type='highpass'; shimHp.frequency.value=900;
+  shimHp.connect(shimDly);
 
-  // ── 4 voice pairs (8 sawtooth oscs, L/R spread, detuned per pair)
-  // Sawtooth through lowpass gives the warm, rich analog pad character.
-  var vols=[0.20,0.17,0.15,0.13];
-  var pans=[-0.5,0.5,-0.3,0.3]; // wide stereo spread
-  var oscs=[];
-  var chord0=PROG[0];
+  // ── Polyphonic voice management
+  var activeVoiceSets=[];
+  var chordIdx=0;
 
-  for(var vi=0;vi<4;vi++){
-    (function(freq,vol,vidx,pan){
-      var det=6+Math.random()*5; // 6-11 cents detune between L/R
-      for(var side=0;side<2;side++){
-        var osc=ctx.createOscillator();
-        var og=ctx.createGain();
-        var panner=ctx.createStereoPanner();
-        osc.type='sawtooth';
-        osc.frequency.value=freq;
-        osc.detune.value=side===0?-det/2:det/2;
-        og.gain.value=0;
-        panner.pan.value=side===0?pan:-pan; // opposite sides per pair
-        osc.connect(og); og.connect(panner);
-        panner.connect(filt); panner.connect(shimHp);
-        // Staggered bloom entry, long soft attack
-        var t0=ctx.currentTime+vidx*0.8+side*0.2;
-        og.gain.setValueAtTime(0,t0);
-        og.gain.linearRampToValueAtTime(vol*0.5,t0+4.5);
-        osc.start(t0);
-        oscs.push({osc,og,voiceIdx:vidx});
-      }
-    })(chord0[vi],vols[vi],vi,pans[vi]);
+  function createVoiceSet(chord,immediate){
+    var vg=ctx.createGain();
+    vg.gain.value=0;
+    vg.connect(filt);
+    vg.connect(formantBp);
+
+    var allOscs=[];
+    for(var vi=0;vi<4;vi++){
+      (function(freq,vol,vidx){
+        var panL=PANS[vidx]; var panR=-PANS[vidx];
+
+        // Sine layer: pure, warm, foundational (58% of mix)
+        var sOsc=ctx.createOscillator();
+        var sG=ctx.createGain();
+        var sP=ctx.createStereoPanner();
+        sOsc.type='sine';
+        sOsc.frequency.value=freq*(1+(Math.random()-0.5)*0.002);
+        sG.gain.value=vol*0.58; sP.pan.value=panL;
+        sOsc.connect(sG); sG.connect(sP); sP.connect(vg);
+        sOsc.start(ctx.currentTime);
+        allOscs.push(sOsc);
+
+        // Triangle layer: slightly detuned, opposite side (42% of mix)
+        var tOsc=ctx.createOscillator();
+        var tG=ctx.createGain();
+        var tP=ctx.createStereoPanner();
+        tOsc.type='triangle';
+        tOsc.frequency.value=freq*(1+(Math.random()-0.5)*0.003);
+        tOsc.detune.value=5+Math.random()*5;
+        tG.gain.value=vol*0.42; tP.pan.value=panR;
+        tOsc.connect(tG); tG.connect(tP); tP.connect(vg);
+        tOsc.start(ctx.currentTime);
+        allOscs.push(tOsc);
+
+        // Shimmer: octave-up sine for glassy ethereal top layer
+        var shOsc=ctx.createOscillator();
+        var shG=ctx.createGain();
+        shOsc.type='sine'; shOsc.frequency.value=freq*2;
+        shG.gain.value=vol*0.05;
+        shOsc.connect(shG); shG.connect(shimHp);
+        shOsc.start(ctx.currentTime);
+        allOscs.push(shOsc);
+      })(chord[vi],VOLS[vi],vi);
+    }
+
+    // Bloom in
+    var now=ctx.currentTime;
+    vg.gain.setValueAtTime(0,now);
+    vg.gain.linearRampToValueAtTime(1.0,now+(immediate?2.5:FADE_IN));
+
+    function stop(){
+      var n=ctx.currentTime;
+      vg.gain.cancelScheduledValues(n);
+      vg.gain.setValueAtTime(1.0,n);
+      vg.gain.linearRampToValueAtTime(0,n+FADE_OUT);
+      setTimeout(function(){
+        allOscs.forEach(function(o){try{o.stop();}catch(e){}});
+      },(FADE_OUT+1.0)*1000);
+    }
+    return {stop:stop};
   }
 
-  // ── Chord advancement: continuous slow glide, no silence gap
-  var chordIdx=0;
+  // Start first chord
+  activeVoiceSets.push(createVoiceSet(PROG[0],true));
+
   function advanceChord(){
+    activeVoiceSets.forEach(function(vs){vs.stop();});
+    activeVoiceSets=[];
     chordIdx=(chordIdx+1)%PROG.length;
-    var chord=PROG[chordIdx];
-    var now=ctx.currentTime;
-    for(var i=0;i<oscs.length;i++){
-      var vi=oscs[i].voiceIdx;
-      oscs[i].osc.frequency.cancelScheduledValues(now);
-      oscs[i].osc.frequency.setValueAtTime(oscs[i].osc.frequency.value,now);
-      oscs[i].osc.frequency.linearRampToValueAtTime(chord[vi],now+GLIDE);
-    }
+    activeVoiceSets.push(createVoiceSet(PROG[chordIdx],false));
   }
   var timer=setInterval(advanceChord,CHORD_DUR*1000);
 
-  return {ctx,master,oscs,filt,filtLfo,dly1,dly2,shimHp,shimGain,timer};
+  function stopAll(){
+    activeVoiceSets.forEach(function(vs){try{vs.stop();}catch(e){}});
+    activeVoiceSets=[];
+  }
+
+  return {ctx,master,filtLfo,dly1,dly2,shimDly,timer,stopAll:stopAll};
 }
 
 function teardownAmbient(amb){
   if(!amb)return;
   if(amb.timer)clearInterval(amb.timer);
+  if(amb.stopAll)amb.stopAll();
   var now=amb.ctx.currentTime;
   amb.master.gain.setValueAtTime(amb.master.gain.value,now);
   amb.master.gain.linearRampToValueAtTime(0,now+3.0);
-  setTimeout(function(){try{amb.ctx.close();}catch(e){}},3500);
+  setTimeout(function(){try{amb.ctx.close();}catch(e){}},4000);
 }
-
 function loadHighlights(){try{return JSON.parse(localStorage.getItem(HL_KEY)||'{}')}catch{return {}}}
 function loadHlLabels(){try{return JSON.parse(localStorage.getItem(HLL_KEY)||'{}')}catch{return {}}}
 function loadNotes(){try{return JSON.parse(localStorage.getItem(NOTES_KEY)||"{}")}catch{return {}}}

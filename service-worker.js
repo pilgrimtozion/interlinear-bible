@@ -4,8 +4,8 @@
  * Bible data JSON files are cached on first load and served from cache thereafter.
  */
 
-const CACHE_NAME = 'jammin-interlinear-v28';
-const DATA_CACHE  = 'jammin-data-v28';
+const CACHE_NAME = 'jammin-interlinear-v29';
+const DATA_CACHE  = 'jammin-data-v29';
 
 // App shell — files that must be cached immediately on install
 const SHELL_FILES = [

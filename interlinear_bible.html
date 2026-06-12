@@ -1998,136 +1998,105 @@ const HL_COLORS=[
 ];
 const HL_KEY='jm-hl'; const HLL_KEY='jm-hll';
 // ── Ambient Audio ────────────────────────────────────────────────────────────
-// Vintage analog worship pad (Juno-106 / Prophet-5 style).
-// Sawtooth + square sub-osc → warm LP filter → Juno chorus → hall reverb.
-// G Major: I - IVsus2 - V - IV with tight stepwise voice leading.
-// Polyphonic crossfade: 2.0s attack, 4.0s release. No pitch glides.
+// Rhubarb-style devotional pad: detuned sine clusters, per-voice amplitude
+// breathing, cathedral reverb dominates (70% wet). 1.0s attack/release.
 function buildAmbient(){
   var AudioCtx=window.AudioContext||window.webkitAudioContext;
   if(!AudioCtx)return null;
   var ctx=new AudioCtx();
 
-  // G Major — I IVsus2 V IV — voices move by step only
-  // G maj:  G3 B3 D4 G4  =  196  246.94  293.66  392
-  // Csus2:  G3 C4 D4 G4  =  196  261.63  293.66  392  (only B->C, half step)
-  // D maj:  A3 D4 F#4 A4 =  220  293.66  369.99  440  (stepwise from Csus2)
-  // C maj:  G3 C4 E4 G4  =  196  261.63  329.63  392  (all voices step down)
+  // G Major: I - IVsus2 - V - IV (same tight voice leading as before)
   var PROG=[
-    [196,    246.94, 293.66, 392   ],
-    [196,    261.63, 293.66, 392   ],
-    [220,    293.66, 369.99, 440   ],
-    [196,    261.63, 329.63, 392   ],
+    [196,    246.94, 293.66, 392   ], // G  (G3 B3 D4 G4)
+    [196,    261.63, 293.66, 392   ], // Csus2 (only B->C)
+    [220,    293.66, 369.99, 440   ], // D  (A3 D4 F#4 A4)
+    [196,    261.63, 329.63, 392   ], // C  (G3 C4 E4 G4)
   ];
-  var CHORD_DUR=8;
-  var FADE_IN=2.0;
-  var FADE_OUT=4.0;
-  var VOLS=[0.22,0.18,0.16,0.14];
-  var PANS=[-0.38,0.38,-0.20,0.20];
+  var CHORD_DUR=10;
+  var FADE_IN=1.0;
+  var FADE_OUT=1.0;
+  var VOLS=[0.28,0.24,0.20,0.18];
+  var PANS=[-0.45,0.45,-0.24,0.24];
 
-  // ── Master output
+  // ── Master
   var master=ctx.createGain();
   master.gain.setValueAtTime(0,ctx.currentTime);
-  master.gain.linearRampToValueAtTime(0.17,ctx.currentTime+5.0);
+  master.gain.linearRampToValueAtTime(0.18,ctx.currentTime+4.0);
   master.connect(ctx.destination);
 
-  // ── Hall reverb (massive stone cathedral, ~5-second decay)
-  // Lowpass on each feedback path prevents harsh HF buildup in the long tail
-  var revDly1=ctx.createDelay(6.0); revDly1.delayTime.value=2.8;
-  var revLp1=ctx.createBiquadFilter(); revLp1.type='lowpass'; revLp1.frequency.value=3200;
-  var revFb1=ctx.createGain(); revFb1.gain.value=0.64;
-  var revOut1=ctx.createGain(); revOut1.gain.value=0.55;
-  revDly1.connect(revLp1); revLp1.connect(revFb1); revFb1.connect(revDly1);
-  revDly1.connect(revOut1); revOut1.connect(master);
+  // ── Cathedral reverb: two long filtered-feedback delays
+  // Very high wet level — the reverb IS the sound, the direct signal is ghostly
+  var rev1=ctx.createDelay(6.0); rev1.delayTime.value=3.1;
+  var rlp1=ctx.createBiquadFilter(); rlp1.type='lowpass'; rlp1.frequency.value=3000;
+  var rfb1=ctx.createGain(); rfb1.gain.value=0.65;
+  var ro1=ctx.createGain(); ro1.gain.value=0.70;
+  rev1.connect(rlp1); rlp1.connect(rfb1); rfb1.connect(rev1);
+  rev1.connect(ro1); ro1.connect(master);
 
-  var revDly2=ctx.createDelay(6.0); revDly2.delayTime.value=4.13;
-  var revLp2=ctx.createBiquadFilter(); revLp2.type='lowpass'; revLp2.frequency.value=2500;
-  var revFb2=ctx.createGain(); revFb2.gain.value=0.57;
-  var revOut2=ctx.createGain(); revOut2.gain.value=0.42;
-  revDly2.connect(revLp2); revLp2.connect(revFb2); revFb2.connect(revDly2);
-  revDly2.connect(revOut2); revOut2.connect(master);
+  var rev2=ctx.createDelay(6.0); rev2.delayTime.value=4.73;
+  var rlp2=ctx.createBiquadFilter(); rlp2.type='lowpass'; rlp2.frequency.value=2400;
+  var rfb2=ctx.createGain(); rfb2.gain.value=0.58;
+  var ro2=ctx.createGain(); ro2.gain.value=0.54;
+  rev2.connect(rlp2); rlp2.connect(rfb2); rfb2.connect(rev2);
+  rev2.connect(ro2); ro2.connect(master);
 
-  // Pre-delay (40ms): room feels big — sound arrives just after the dry note
-  var preDelay=ctx.createDelay(0.1); preDelay.delayTime.value=0.04;
-  preDelay.connect(revDly1); preDelay.connect(revDly2);
+  // Pre-delay 50ms: sense of physical space before reverb arrives
+  var preDly=ctx.createDelay(0.1); preDly.delayTime.value=0.05;
+  preDly.connect(rev1); preDly.connect(rev2);
 
-  // ── Juno-106 style warm lowpass filter
-  // Sawtooth -> LP at 950 Hz with slight resonance = vintage analog warmth
-  var warmLp=ctx.createBiquadFilter();
-  warmLp.type='lowpass'; warmLp.frequency.value=950; warmLp.Q.value=1.8;
+  // ── Soft lowpass: rolls off harshness, keeps the pad warm and breathy
+  var lp=ctx.createBiquadFilter();
+  lp.type='lowpass'; lp.frequency.value=700; lp.Q.value=0.7;
+  var dryGain=ctx.createGain(); dryGain.gain.value=0.18; // barely audible direct
+  lp.connect(dryGain); dryGain.connect(master);
+  lp.connect(preDly); // main path is into the reverb
 
-  // Very gentle LFO on filter cutoff (barely noticeable breathing, not aggressive)
-  var lpLfo=ctx.createOscillator(); var lpLg=ctx.createGain();
-  lpLfo.type='sine'; lpLfo.frequency.value=0.07;
-  lpLg.gain.value=75; // +-75 Hz around 950 — gentle
-  lpLfo.connect(lpLg); lpLg.connect(warmLp.frequency);
-  lpLfo.start();
-
-  // ── Signal routing: dry + chorus + reverb
-  // Dry path (40% of filtered signal direct to master)
-  var dryGain=ctx.createGain(); dryGain.gain.value=0.40;
-  warmLp.connect(dryGain); dryGain.connect(master);
-
-  // ── Juno-106 style chorus (two LFO-modulated short delays, L/R)
-  // Classic Juno chorus: two delay lines, opposite polarity LFOs, wide stereo image
-  var chorusL=ctx.createDelay(0.025); chorusL.delayTime.value=0.003;
-  var chorusR=ctx.createDelay(0.025); chorusR.delayTime.value=0.003;
-  var cLfoL=ctx.createOscillator(); var cLgL=ctx.createGain();
-  var cLfoR=ctx.createOscillator(); var cLgR=ctx.createGain();
-  cLfoL.type='sine'; cLfoL.frequency.value=0.50; cLgL.gain.value=0.0013;
-  cLfoR.type='sine'; cLfoR.frequency.value=0.51; cLgR.gain.value=0.0013; // slight rate diff
-  cLfoL.connect(cLgL); cLgL.connect(chorusL.delayTime);
-  cLfoR.connect(cLgR); cLgR.connect(chorusR.delayTime);
-  cLfoL.start(); cLfoR.start();
-  warmLp.connect(chorusL); warmLp.connect(chorusR);
-
-  var cPanL=ctx.createStereoPanner(); cPanL.pan.value=-0.68;
-  var cPanR=ctx.createStereoPanner(); cPanR.pan.value=0.68;
-  var cOutGain=ctx.createGain(); cOutGain.gain.value=0.48;
-  chorusL.connect(cPanL); chorusR.connect(cPanR);
-  cPanL.connect(cOutGain); cPanR.connect(cOutGain);
-  cOutGain.connect(master);   // chorus width to output
-  cOutGain.connect(preDelay); // chorus also feeds the hall reverb
-
-  // ── Polyphonic voice management
+  // ── Active voice management
   var activeVoiceSets=[];
   var chordIdx=0;
 
   function createVoiceSet(chord,immediate){
     var vg=ctx.createGain(); vg.gain.value=0;
-    vg.connect(warmLp);
+    vg.connect(lp);
 
     var allOscs=[];
     for(var vi=0;vi<4;vi++){
       (function(freq,vol,pan){
-        // Primary oscillator: sawtooth (bright, rich harmonics -> filtered warm)
-        var sawOsc=ctx.createOscillator();
-        var sawG=ctx.createGain();
-        var sawP=ctx.createStereoPanner();
-        sawOsc.type='sawtooth';
-        sawOsc.frequency.value=freq*(1+(Math.random()-0.5)*0.002);
-        sawG.gain.value=vol*0.65; sawP.pan.value=pan;
-        sawOsc.connect(sawG); sawG.connect(sawP); sawP.connect(vg);
-        sawOsc.start(ctx.currentTime);
-        allOscs.push(sawOsc);
+        // Three detuned sines per voice: creates slow natural beating (Rhubarb feel)
+        // Detune spread chosen so beating period is 1.5-3 seconds
+        var dets=[-7,0,6]; // cents: -7, 0, +6
+        var wts=[0.35,0.38,0.27]; // relative weights
+        for(var di=0;di<3;di++){
+          (function(det,wt){
+            var osc=ctx.createOscillator();
+            var og=ctx.createGain();
+            var panner=ctx.createStereoPanner();
+            osc.type='sine';
+            osc.frequency.value=freq;
+            osc.detune.value=det+(Math.random()-0.5)*2; // tiny extra randomness
+            panner.pan.value=pan*(0.6+di*0.2); // each detune layer slightly different pan
+            og.gain.value=vol*wt;
+            osc.connect(og); og.connect(panner); panner.connect(vg);
 
-        // Sub-oscillator: square wave one octave below (warm, comforting weight)
-        var subOsc=ctx.createOscillator();
-        var subG=ctx.createGain();
-        subOsc.type='square';
-        subOsc.frequency.value=freq*0.5;
-        subG.gain.value=vol*0.30;
-        subOsc.connect(subG); subG.connect(vg);
-        subOsc.start(ctx.currentTime);
-        allOscs.push(subOsc);
+            // Per-oscillator slow amplitude LFO: the "breathing" quality
+            var bLfo=ctx.createOscillator(); var bLg=ctx.createGain();
+            bLfo.type='sine';
+            bLfo.frequency.value=0.06+Math.random()*0.08; // 0.06-0.14 Hz
+            bLg.gain.value=vol*wt*0.22; // gentle depth
+            bLfo.connect(bLg); bLg.connect(og.gain);
+            bLfo.start();
+
+            osc.start(ctx.currentTime);
+            allOscs.push(osc,bLfo);
+          })(dets[di],wts[di]);
+        }
       })(chord[vi],VOLS[vi],PANS[vi]);
     }
 
-    // Amp envelope: slow bloom in
     var now=ctx.currentTime;
     vg.gain.setValueAtTime(0,now);
-    vg.gain.linearRampToValueAtTime(1.0,now+(immediate?1.5:FADE_IN));
+    vg.gain.linearRampToValueAtTime(1.0,now+(immediate?0.8:FADE_IN));
 
-    // Release: old chord rings out naturally over reverb (4.0s)
     function stop(){
       var n=ctx.currentTime;
       vg.gain.cancelScheduledValues(n);
@@ -2135,12 +2104,11 @@ function buildAmbient(){
       vg.gain.linearRampToValueAtTime(0,n+FADE_OUT);
       setTimeout(function(){
         allOscs.forEach(function(o){try{o.stop();}catch(e){}});
-      },(FADE_OUT+1.0)*1000);
+      },(FADE_OUT+0.5)*1000);
     }
     return {stop:stop};
   }
 
-  // Launch first chord
   activeVoiceSets.push(createVoiceSet(PROG[0],true));
 
   function advanceChord(){
@@ -2156,7 +2124,7 @@ function buildAmbient(){
     activeVoiceSets=[];
   }
 
-  return {ctx,master,lpLfo,cLfoL,cLfoR,revDly1,revDly2,timer,stopAll:stopAll};
+  return {ctx,master,rev1,rev2,timer,stopAll:stopAll};
 }
 
 function teardownAmbient(amb){
@@ -2165,8 +2133,8 @@ function teardownAmbient(amb){
   if(amb.stopAll)amb.stopAll();
   var now=amb.ctx.currentTime;
   amb.master.gain.setValueAtTime(amb.master.gain.value,now);
-  amb.master.gain.linearRampToValueAtTime(0,now+3.5);
-  setTimeout(function(){try{amb.ctx.close();}catch(e){}},4500);
+  amb.master.gain.linearRampToValueAtTime(0,now+2.5);
+  setTimeout(function(){try{amb.ctx.close();}catch(e){}},3500);
 }
 function loadHighlights(){try{return JSON.parse(localStorage.getItem(HL_KEY)||'{}')}catch{return {}}}
 function loadHlLabels(){try{return JSON.parse(localStorage.getItem(HLL_KEY)||'{}')}catch{return {}}}
@@ -3067,7 +3035,7 @@ function App(){
   const [showTheo,setShowTheo]=useState(false);
   const [showNotes,setShowNotes]=useState(false);
   const [showPlaces,setShowPlaces]=useState(false);
-  const [translation,setTranslation]=useState("WEB");
+  const [translation,setTranslation]=useState("a761ca71e0b3ddcf-01");
   const [translationCopyright,setTranslationCopyright]=useState("");
   const [highlights,setHighlights]=useState(loadHighlights);
   const [hlLabels,setHlLabels]=useState(loadHlLabels);
@@ -3289,7 +3257,7 @@ function App(){
           {leftVerses.map(v=>(
             <LeftVerse key={v.v} verse={v} isNT={isNT} isActive={activeV===v.v}
               noteItems={getNote(v.v)} onAddNote={vn=>setAddingNote(vn)} onDeleteNoteItem={handleDeleteNoteItem} onNavigate={handleNavigate}
-              onSelect={vn=>{setActiveV(vn);}}
+              onSelect={vn=>{setActiveV(vn);setMobileView("interlinear");}}
               hlMode={hlMode}
               hlBg={(()=>{var hk=nk(test,book,ch,v.v);var hc=highlights[hk];var col=hc?HL_COLORS.find(function(x){return x.k===hc;}):null;return col?col.bg:null;})()}
               hlHex={(()=>{var hk=nk(test,book,ch,v.v);var hc=highlights[hk];var col=hc?HL_COLORS.find(function(x){return x.k===hc;}):null;return col?col.hex:null;})()}

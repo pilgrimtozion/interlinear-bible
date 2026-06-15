@@ -2735,7 +2735,7 @@ function LeftVerse({verse,isNT,isActive,noteItems,onAddNote,onDeleteNoteItem,onN
   var rowStyle={position:"relative"};
   if(hlBg){rowStyle.background=hlBg;rowStyle.borderLeft="3px solid "+(hlHex||'transparent');}
   return(
-    <div className={"lv-row"+(isActive&&!hlMode?(isNT?" active":" active ot"):"")}
+    <div id={"lv-"+verse.v} className={"lv-row"+(isActive&&!hlMode?(isNT?" active":" active ot"):"")}
          style={rowStyle} onClick={handleClick}>
       <div className="lv-header">
         <span className={"lv-num"+(isNT?"":" ot")}>{verse.v}</span>
@@ -4342,6 +4342,8 @@ function App(){
     setTimeout(()=>{
       const el=document.getElementById("rv-"+p.v);
       if(el)el.scrollIntoView({behavior:"smooth",block:"nearest"});
+      const lel=document.getElementById("lv-"+p.v);
+      if(lel)lel.scrollIntoView({behavior:"smooth",block:"nearest"});
     },600);
   }
 

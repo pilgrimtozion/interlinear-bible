@@ -2503,6 +2503,17 @@ function NoteModal({verse,onSave,onClose}){
 // Lazy-loaded Strong's dictionary cache
 const _SD = {}; // { G: {G2316:{l,t,d,k},...}|null, H: {...}|null }
 
+// Patch for words where the source data has s:"" — keyed by normalized Greek/Hebrew form.
+// Normalize: strip text-critical markers (⸀⸁⸂⸃) and trailing punctuation before lookup.
+function _normGreek(s){return s?s.replace(/[⸀⸁⸂⸃]/g,'').replace(/[.,;:!?⸃·]+$/g,'').trim():'';}
+const STRONGS_PATCH={
+  // Matthew data gaps
+  "Βίβλος":"G976","Θαμάρ":"G2283","Ῥαχάβ":"G4477","Ῥούθ":"G4503",
+  "Οὐρίου":"G3774","μνηστευθείσης":"G3423","δειγματίσαι":"G1165",
+  "γεννᾶται":"G1080","ἐξετάσατε":"G1833","φαίνεται":"G5316",
+  "κατωτέρω":"G2736","ἄγριον":"G66",
+};
+
 function shortGloss(s){
   if(!s)return "";
   if(GLOSS[s])return GLOSS[s].l;
@@ -2518,13 +2529,18 @@ function WordCell({word,vNum,isNT,selKey,onClick}){
   const key=vNum+"-"+word.id;
   const sel=selKey===key;
   const heb=!isNT;
-  const hasLxx=!!LXX[word.s];
-  const gloss=(word.b&&word.b.trim())||shortGloss(word.s);
+  // Resolve effective Strong's — fall back to patch table when data has s:""
+  const ws=word.s||STRONGS_PATCH[_normGreek(word.o)]||"";
+  const hasLxx=!!LXX[ws];
+  const _wb=word.b!=null?String(word.b).trim():"";
+  const gloss=_wb||shortGloss(ws);
+  // Pass patched word so the Strong's panel receives a valid number
+  const _word=ws!==word.s?Object.assign({},word,{s:ws}):word;
   return(
-    <div className={"wc"+(sel?" sel"+(isNT?"":" ot"):"")+(hasLxx?" lxx":"")} onClick={()=>onClick(key,word)} title={hasLxx?"LXX bridge — click for details":"Click for Strong's definition"}>
+    <div className={"wc"+(sel?" sel"+(isNT?"":" ot"):"")+(hasLxx?" lxx":"")} onClick={()=>onClick(key,_word)} title={hasLxx?"LXX bridge — click for details":"Click for Strong's definition"}>
       <span className={"w-o"+(heb?" heb":"")}>{word.o}</span>
       <span className="w-t">{word.t}</span>
-      <span className={"w-s "+(isNT?"nt":"ot")}>{word.s}</span>
+      <span className={"w-s "+(isNT?"nt":"ot")}>{ws}</span>
       {hasLxx&&<span className="lxx-dot">◆◆</span>}
       {gloss&&<span className="w-b">{gloss}</span>}
     </div>

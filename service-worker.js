@@ -4,8 +4,8 @@
  * Bible data JSON files are cached on first load and served from cache thereafter.
  */
 
-const CACHE_NAME = 'jammin-interlinear-v43';
-const DATA_CACHE  = 'jammin-data-v43';
+const CACHE_NAME = 'jammin-interlinear-v44';
+const DATA_CACHE  = 'jammin-data-v44';
 
 // App shell — files that must be cached immediately on install
 const SHELL_FILES = [
@@ -18,7 +18,15 @@ self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(SHELL_FILES))
   );
-  self.skipWaiting();
+  // Do NOT skipWaiting here — we wait for the page to prompt the user,
+  // then the page sends SKIP_WAITING when the user taps "Update now".
+});
+
+// ── Message: page tells us to activate ───────────────────────────────────────
+self.addEventListener('message', event => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
 
 // ── Activate: delete old caches ───────────────────────────────────────────────

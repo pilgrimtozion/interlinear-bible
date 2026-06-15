@@ -387,6 +387,8 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:.
 /* OT Quotation badge */
 .qt-badge{display:inline-flex;align-items:center;font-size:.52rem;font-weight:800;color:var(--ot);border:1.5px solid var(--ot);border-radius:3px;padding:0 3px;cursor:pointer;flex-shrink:0;margin-left:4px;line-height:1.7;opacity:.8;vertical-align:middle;}
 .qt-badge:hover{opacity:1;background:var(--ot);color:var(--bg);}
+.nt-badge{display:inline-flex;align-items:center;font-size:.52rem;font-weight:800;color:#4a90d9;border:1.5px solid #4a90d9;border-radius:3px;padding:0 3px;cursor:pointer;flex-shrink:0;margin-left:4px;line-height:1.7;opacity:.8;vertical-align:middle;}
+.nt-badge:hover{opacity:1;background:#4a90d9;color:var(--bg);}
 .qt-pop{position:absolute;left:0;right:0;top:100%;z-index:40;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.85rem 1rem .85rem .85rem;box-shadow:0 4px 24px rgba(0,0,0,.35);margin-top:3px;}
 .qt-pop-src{font-size:.65rem;font-weight:700;color:var(--ot);letter-spacing:.07em;text-transform:uppercase;margin-bottom:.35rem;}
 .qt-pop-text{font-size:.8rem;font-style:italic;color:var(--text2);line-height:1.65;margin-bottom:.5rem;border-left:2px solid var(--ot);padding-left:.5rem;}
@@ -799,6 +801,18 @@ const OT_QUOTES = {
   "Revelation 22:2":[{src:"Ezekiel 47:12",srcText:"Fruit trees of all kinds will grow on both banks of the river... Their fruit will serve for food and their leaves for healing.",note:"The river of life and the tree of life in Revelation 22:1-2 directly echo Ezekiel's vision of the river flowing from the eschatological Temple, with fruit trees on both banks. The new Jerusalem is the fulfilment of Ezekiel's temple-city vision — and the reversal of the Eden expulsion (Gen 3:24).",type:"quotation"}],
 
 };
+
+// NT_QUOTES: reverse index built from OT_QUOTES at runtime
+// Key: "OT Book Ch:V"  →  [{ntRef, note, type}]
+var NT_QUOTES={};
+(function(){
+  Object.keys(OT_QUOTES).forEach(function(ntRef){
+    OT_QUOTES[ntRef].forEach(function(q){
+      if(!NT_QUOTES[q.src])NT_QUOTES[q.src]=[];
+      NT_QUOTES[q.src].push({ntRef:ntRef,note:q.note,type:q.type});
+    });
+  });
+})();
 
 
 const THEO_ARCS = {
@@ -2545,16 +2559,44 @@ function QuotePopover({quotes, onClose, onNavigate}){
   );
 }
 
+function NTQuotePopover({quotes,onClose,onNavigate}){
+  function handleNav(ntRef){
+    if(!onNavigate)return;
+    var m=ntRef.match(/^(.+?)\s+(\d+):(\d+)/);
+    if(m)onNavigate(m[1]+' '+m[2]+':'+m[3]);
+    onClose();
+  }
+  return(
+    <div className="qt-pop" onClick={e=>e.stopPropagation()}>
+      <button className="qt-pop-close" onClick={onClose}>×</button>
+      <div style={{fontSize:'.6rem',fontWeight:700,color:'#4a90d9',marginBottom:'.4rem',textTransform:'uppercase',letterSpacing:'.05em'}}>Quoted in the New Testament</div>
+      {quotes.map(function(q,i){return(
+        <div key={i}>
+          {i>0&&<div className="qt-pop-sep"/>}
+          <div className="qt-pop-src" style={{color:'#4a90d9'}}>📖 {q.ntRef}</div>
+          <div className="qt-pop-note">{q.note}</div>
+          {onNavigate&&<button className="qt-pop-nav" style={{color:'#4a90d9'}} onClick={function(){handleNav(q.ntRef);}}>Open {q.ntRef} →</button>}
+        </div>
+      );})}
+    </div>
+  );
+}
+
 function VerseBlock({verse,isNT,activeV,selKey,onClick,id,hlBg,hlHex,book,ch}){
   const [showQt,setShowQt]=useState(false);
+  const [showNq,setShowNq]=useState(false);
   var qtKey=book&&ch?(book+' '+ch+':'+verse.v):null;
   var qtData=qtKey&&OT_QUOTES[qtKey]?OT_QUOTES[qtKey]:null;
+  var nqKey=(!isNT&&book&&ch)?(book+' '+ch+':'+verse.v):null;
+  var nqData=nqKey&&NT_QUOTES[nqKey]?NT_QUOTES[nqKey]:null;
   return(
     <div id={id} className={"verse-block"+(activeV===verse.v?(isNT?" v-active":" v-active ot"):"")} style={hlBg?{background:hlBg,borderLeft:'3px solid '+(hlHex||'transparent'),paddingLeft:'.5rem'}:{}}>
       <div className="v-head-slim" style={{position:"relative"}}>
         <span className={"v-num-r"+(isNT?"":" ot")}>{verse.v}</span>
         {qtData&&<span className="qt-badge" title="OT Quotation" onClick={function(e){e.stopPropagation();setShowQt(function(p){return !p;});}}>OT</span>}
+        {nqData&&<span className="nt-badge" title="Quoted in NT" onClick={function(e){e.stopPropagation();setShowNq(function(p){return !p;});}}>NT</span>}
         {showQt&&qtData&&<QuotePopover quotes={qtData} onClose={function(){setShowQt(false);}}/>}
+        {showNq&&nqData&&<NTQuotePopover quotes={nqData} onClose={function(){setShowNq(false);}}/>}
       </div>
       <div className="word-grid">
         {verse.words.map(w=><WordCell key={verse.v+"-"+w.id} word={w} vNum={verse.v} isNT={isNT} selKey={selKey} onClick={onClick}/>)}
@@ -2667,6 +2709,9 @@ function LeftVerse({verse,isNT,isActive,noteItems,onAddNote,onDeleteNoteItem,onN
   const hasNote=noteItems&&noteItems.length>0;
   var qtKey=book&&ch?(book+' '+ch+':'+verse.v):null;
   var qtData=qtKey&&OT_QUOTES[qtKey]?OT_QUOTES[qtKey]:null;
+  var nqKey=(!isNT&&book&&ch)?(book+' '+ch+':'+verse.v):null;
+  var nqData=nqKey&&NT_QUOTES[nqKey]?NT_QUOTES[nqKey]:null;
+  const [showNq,setShowNq]=useState(false);
   function handleClick(){
     if(hlMode){onHighlight&&onHighlight(verse.v);return;}
     onSelect&&onSelect(verse.v);
@@ -2684,12 +2729,14 @@ function LeftVerse({verse,isNT,isActive,noteItems,onAddNote,onDeleteNoteItem,onN
           {verse.text}
           {hasNote&&!hlMode&&<span className="note-star" title="View notes" onClick={e=>{e.stopPropagation();setShowPop(p=>!p);}}>&#x2726;</span>}
           {qtData&&!hlMode&&<span className="qt-badge" title="OT Quotation" onClick={e=>{e.stopPropagation();setShowQt(p=>!p);}}>OT</span>}
+          {nqData&&!hlMode&&<span className="nt-badge" title="Quoted in NT" onClick={e=>{e.stopPropagation();setShowNq(p=>!p);}}>NT</span>}
         </span>
         {!hlMode&&<button className="lv-note-btn" title="Add note or link" onClick={e=>{e.stopPropagation();onAddNote(verse.v);}}>+</button>}
         {hlMode&&hlBg&&<span style={{fontSize:'.7rem',opacity:.6,paddingTop:'2px'}}>✓</span>}
       </div>
       {showPop&&hasNote&&<NotePopover items={noteItems} isNT={isNT} onDeleteItem={i=>{onDeleteNoteItem(verse.v,i);if(noteItems.length<=1)setShowPop(false);}} onClose={()=>setShowPop(false)} onNavigate={ref=>{onNavigate&&onNavigate(ref);setShowPop(false);}}/> }
       {showQt&&qtData&&<QuotePopover quotes={qtData} onClose={()=>setShowQt(false)} onNavigate={onNavigate}/>}
+      {showNq&&nqData&&<NTQuotePopover quotes={nqData} onClose={()=>setShowNq(false)} onNavigate={onNavigate}/>}
     </div>
   );
 }

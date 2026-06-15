@@ -2502,16 +2502,6 @@ function NoteModal({verse,onSave,onClose}){
 
 // Lazy-loaded Strong's dictionary cache
 const _SD = {}; // { G: {G2316:{l,t,d,k},...}|null, H: {...}|null }
-// Eagerly load both Strong's dictionaries so glosses appear on first render
-(function(){
-  ['g','h'].forEach(function(kind){
-    var K=kind.toUpperCase();
-    fetch('/interlinear-bible/data/strongs_'+kind+'.json')
-      .then(function(r){return r.ok?r.json():null;})
-      .then(function(data){if(data)_SD[K]=data;})
-      .catch(function(){});
-  });
-})();
 
 function shortGloss(s){
   if(!s)return "";
@@ -4678,7 +4668,14 @@ function App(){
   );
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App,null));
+// Load both Strong's dictionaries before first render so all glosses are available immediately.
+// Files are served from SW cache on repeat visits — effectively instant.
+Promise.all([
+  fetch('/interlinear-bible/data/strongs_g.json').then(function(r){return r.ok?r.json():null;}).then(function(d){if(d)_SD['G']=d;}).catch(function(){}),
+  fetch('/interlinear-bible/data/strongs_h.json').then(function(r){return r.ok?r.json():null;}).then(function(d){if(d)_SD['H']=d;}).catch(function(){})
+]).finally(function(){
+  ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App,null));
+});
 </script>
 <script>
 if ('serviceWorker' in navigator) {

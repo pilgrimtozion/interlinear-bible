@@ -2519,7 +2519,7 @@ function WordCell({word,vNum,isNT,selKey,onClick}){
   const sel=selKey===key;
   const heb=!isNT;
   const hasLxx=!!LXX[word.s];
-  const gloss=word.b||shortGloss(word.s);
+  const gloss=(word.b&&word.b.trim())||shortGloss(word.s);
   return(
     <div className={"wc"+(sel?" sel"+(isNT?"":" ot"):"")+(hasLxx?" lxx":"")} onClick={()=>onClick(key,word)} title={hasLxx?"LXX bridge — click for details":"Click for Strong's definition"}>
       <span className={"w-o"+(heb?" heb":"")}>{word.o}</span>

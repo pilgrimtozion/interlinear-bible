@@ -90,9 +90,6 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:.
 .lv-note-btn:hover{background:var(--border);color:var(--text)}
 .lv-row.hl-verse{border-left:3px solid transparent}
 .hl-mode-strip{padding:.45rem .8rem;display:flex;align-items:center;gap:.5rem;border-bottom:2px solid var(--border);background:var(--surface);flex-shrink:0;flex-wrap:wrap}
-.update-banner{padding:.45rem 1rem;display:flex;align-items:center;gap:.6rem;background:#1e3a5f;color:#e0f0ff;font-size:.78rem;border-bottom:1px solid #2d5a8e;flex-shrink:0}
-.update-banner button{margin-left:auto;padding:3px 12px;border-radius:10px;border:1px solid #4a90d9;background:#2563a8;color:#fff;font-size:.75rem;cursor:pointer}
-.update-banner button:hover{background:#1d4f8a}
 .hl-mode-label{font-size:.72rem;color:var(--text3);font-style:italic;white-space:nowrap}
 .hl-exit-btn{padding:.2rem .55rem;font-size:.72rem;background:none;border:1px solid var(--border);border-radius:10px;cursor:pointer;color:var(--text2);white-space:nowrap}
 .hl-exit-btn:hover{border-color:var(--text2);color:var(--text)}
@@ -4311,20 +4308,10 @@ function App(){
   const [showToolsSheet,setShowToolsSheet]=useState(false);
   const [showCulture,setShowCulture]=useState(false);
   const [playing,setPlaying]=useState(false);
-  const [updateReady,setUpdateReady]=useState(false);
   const [showAbout,setShowAbout]=useState(false);
   const ambientRef=useRef(null);
 
 
-  // SW update: check flag immediately (catches race where event fired before mount)
-  useEffect(()=>{
-    if(!('serviceWorker' in navigator)) return;
-    // Check flag set before React mounted (race condition fix)
-    if(window.__swUpdateReady){ setUpdateReady(true); return; }
-    const onReady = () => setUpdateReady(true);
-    window.addEventListener('swUpdateReady', onReady);
-    return () => window.removeEventListener('swUpdateReady', onReady);
-  },[]);
 
   const isNT=test==="NT";
   function handleNavigate(refStr){
@@ -4521,18 +4508,7 @@ function App(){
           <button className="coffee-btn" onClick={()=>setShowAbout(true)} title="About &amp; Support">☕</button>
         </div>
       </header>
-      {updateReady&&(
-        <div className="update-banner">
-          <span>✦ A new version is available</span>
-          <button onClick={()=>{
-            if(window.__swWaiting){
-              window.__swWaiting.postMessage({type:'SKIP_WAITING'});
-            } else {
-              window.location.reload();
-            }
-          }}>Update now</button>
-        </div>
-      )}
+
       <div className="nav-bar">
         <select className={"nav-select"+(isNT?"":" ot")} value={book} onChange={e=>{setBook(e.target.value);setCh(1);setSel(null);setActiveV(null);}}>
           {bookNames.map(b=><option key={b}>{b}</option>)}
@@ -4696,31 +4672,16 @@ ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(
 </script>
 <script>
 if ('serviceWorker' in navigator) {
-  function _swFireReady(sw) {
-    window.__swWaiting = sw;
-    window.__swUpdateReady = true;
-    window.dispatchEvent(new CustomEvent('swUpdateReady'));
-  }
-  function _swTrack(sw) {
-    sw.addEventListener('statechange', () => {
-      if (sw.state === 'installed' && navigator.serviceWorker.controller) _swFireReady(sw);
-    });
-  }
-  // When new SW takes control → reload so fresh assets are served
+  // New SW takes control → reload immediately with fresh assets
   navigator.serviceWorker.addEventListener('controllerchange', () => window.location.reload());
-
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/interlinear-bible/service-worker.js')
       .then(reg => {
-        // Already waiting on first load
-        if (reg.waiting && navigator.serviceWorker.controller) _swFireReady(reg.waiting);
-        // New SW found while page is open
-        reg.addEventListener('updatefound', () => { if (reg.installing) _swTrack(reg.installing); });
-        // Check on every foreground (critical for mobile PWA — app returns from background)
+        // Check every time app comes to foreground (critical for mobile PWA)
         document.addEventListener('visibilitychange', () => {
           if (document.visibilityState === 'visible') reg.update();
         });
-        // Hourly poll as a backstop
+        // Hourly backstop
         setInterval(() => reg.update(), 60 * 60 * 1000);
       })
       .catch(e => console.warn('SW registration failed:', e));

@@ -4,8 +4,8 @@
  * Bible data JSON files are cached on first load and served from cache thereafter.
  */
 
-const CACHE_NAME = 'jammin-interlinear-v45';
-const DATA_CACHE  = 'jammin-data-v45';
+const CACHE_NAME = 'jammin-interlinear-v47';
+const DATA_CACHE  = 'jammin-data-v47';
 
 // App shell — files that must be cached immediately on install
 const SHELL_FILES = [
@@ -13,20 +13,14 @@ const SHELL_FILES = [
   '/interlinear-bible/manifest.json',
 ];
 
-// ── Install: cache the app shell ─────────────────────────────────────────────
+// ── Install: cache the app shell and activate immediately ────────────────────
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(SHELL_FILES))
   );
-  // Do NOT skipWaiting here — we wait for the page to prompt the user,
-  // then the page sends SKIP_WAITING when the user taps "Update now".
-});
-
-// ── Message: page tells us to activate ───────────────────────────────────────
-self.addEventListener('message', event => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
+  // Skip waiting immediately — no user prompt needed.
+  // The page's controllerchange listener will reload automatically.
+  self.skipWaiting();
 });
 
 // ── Activate: delete old caches ───────────────────────────────────────────────

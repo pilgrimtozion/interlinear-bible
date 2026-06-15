@@ -48,6 +48,8 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:.
 .music-btn{background:var(--bg);border:1px solid var(--border);color:var(--text);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1.05rem;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;line-height:1}
 .music-btn:hover{border-color:var(--text);background:var(--surface)}
 .music-btn.playing{border-color:#f59e0b;color:#f59e0b;background:rgba(245,158,11,.1);animation:music-glow 2.2s ease-in-out infinite}
+.coffee-btn{background:var(--bg);border:1px solid var(--border);color:var(--text2);height:32px;padding:0 10px;border-radius:16px;cursor:pointer;font-size:.78rem;display:flex;align-items:center;gap:4px;transition:all .15s;white-space:nowrap;text-decoration:none}
+.coffee-btn:hover{border-color:#f59e0b;color:#f59e0b;background:rgba(245,158,11,.08)}
 @keyframes music-glow{0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,.35)}50%{box-shadow:0 0 0 7px rgba(245,158,11,0)}}
 /* Nav */
 .nav-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:.55rem 1.4rem;display:flex;align-items:center;gap:.6rem}
@@ -2042,13 +2044,13 @@ function buildAmbient(){
   var FADE_IN=3.0;
   var FADE_OUT=3.0;
   // vi 0-1 = bass (quiet, centred); vi 2-5 = pad (louder, spread)
-  var VOLS=[0.12, 0.10, 0.26, 0.22, 0.19, 0.17];
+  var VOLS=[0.18, 0.15, 0.38, 0.32, 0.28, 0.25];
   var PANS=[0,    0,   -0.45, 0.45, -0.24, 0.24];
 
   // ── Master
   var master=ctx.createGain();
   master.gain.setValueAtTime(0,ctx.currentTime);
-  master.gain.linearRampToValueAtTime(0.18,ctx.currentTime+4.0);
+  master.gain.linearRampToValueAtTime(0.42,ctx.currentTime+4.0);
   master.connect(ctx.destination);
 
   // ── Cathedral reverb: two long filtered-feedback delays
@@ -3745,6 +3747,7 @@ function App(){
             {playing?"♬":"♪"}
           </button>
           <button className="theme-btn" onClick={()=>setDark(d=>!d)} title="Toggle light/dark mode">{dark?"☀️":"🌙"}</button>
+          <a className="coffee-btn" href="https://buymeacoffee.com/pilgrimtozion" target="_blank" rel="noopener" title="Enjoying the Pilgrim's Interlinear? Buy me a coffee!">☕ Support</a>
         </div>
       </header>
       {updateReady&&(

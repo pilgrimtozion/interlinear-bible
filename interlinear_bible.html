@@ -4033,7 +4033,7 @@ function WordStudyResults({strongs, isNT, onNavigate, onClose}){
             (verse.words||[]).forEach(w=>{
               if(w.s===strongs){
                 if(!hits[bk])hits[bk]={test:t,refs:[]};
-                hits[bk].refs.push({ch:parseInt(ch),v:verse.v,o:w.o,t:w.t,b:w.b||shortGloss(w.s)});
+                hits[bk].refs.push({ch:parseInt(ch),v:verse.v,o:w.o,t:w.t,b:w.b||""});
               }
             });
           });
@@ -4696,34 +4696,34 @@ ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(
 </script>
 <script>
 if ('serviceWorker' in navigator) {
+  function _swFireReady(sw) {
+    window.__swWaiting = sw;
+    window.__swUpdateReady = true;
+    window.dispatchEvent(new CustomEvent('swUpdateReady'));
+  }
+  function _swTrack(sw) {
+    sw.addEventListener('statechange', () => {
+      if (sw.state === 'installed' && navigator.serviceWorker.controller) _swFireReady(sw);
+    });
+  }
+  // When new SW takes control → reload so fresh assets are served
+  navigator.serviceWorker.addEventListener('controllerchange', () => window.location.reload());
+
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/interlinear-bible/service-worker.js')
       .then(reg => {
-        // Helper: watch a SW instance and show banner when it reaches 'installed' (waiting)
-        function trackInstalling(sw) {
-          sw.addEventListener('statechange', () => {
-            if (sw.state === 'installed' && navigator.serviceWorker.controller) {
-              // A new version is waiting — show the banner
-              window.__swWaiting = sw;
-              window.__swUpdateReady = true;
-              window.dispatchEvent(new CustomEvent('swUpdateReady'));
-            }
-          });
-        }
-        // Already waiting on first load (user revisited after an update)
-        if (reg.waiting && navigator.serviceWorker.controller) {
-          window.__swWaiting = reg.waiting;
-          window.__swUpdateReady = true;
-          window.dispatchEvent(new CustomEvent('swUpdateReady'));
-        }
-        // New update found while page is open
-        reg.addEventListener('updatefound', () => {
-          if (reg.installing) trackInstalling(reg.installing);
+        // Already waiting on first load
+        if (reg.waiting && navigator.serviceWorker.controller) _swFireReady(reg.waiting);
+        // New SW found while page is open
+        reg.addEventListener('updatefound', () => { if (reg.installing) _swTrack(reg.installing); });
+        // Check on every foreground (critical for mobile PWA — app returns from background)
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'visible') reg.update();
         });
-        // Poll for updates every 60 seconds (catches PWA installs that stay open)
-        setInterval(() => reg.update(), 60000);
+        // Hourly poll as a backstop
+        setInterval(() => reg.update(), 60 * 60 * 1000);
       })
-      .catch(e => console.log('SW registration failed:', e));
+      .catch(e => console.warn('SW registration failed:', e));
   });
 }
 </script>

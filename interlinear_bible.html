@@ -52,7 +52,8 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:.
 .coffee-btn:hover{border-color:var(--nt);color:var(--nt);background:var(--nt-bg)}
 .about-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:1rem}
 .about-modal{background:var(--surface);border-radius:1.1rem;border:1px solid var(--border);width:100%;max-width:420px;overflow:hidden;animation:sheet-up .22s ease-out}
-.about-photo{width:100%;height:180px;object-fit:cover;object-position:center top;display:block}
+.about-photo-wrap{display:flex;justify-content:center;padding:1.4rem 0 .6rem}
+.about-photo{width:88px;height:88px;border-radius:50%;object-fit:cover;object-position:center top;display:block;border:2px solid var(--border)}
 .about-body{padding:1.25rem 1.4rem 1.1rem}
 .about-name{font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:.25rem}
 .about-text{font-size:.84rem;color:var(--text2);line-height:1.65;margin-bottom:1rem}
@@ -3796,10 +3797,12 @@ function AboutModal({onClose}){
   return(
     <div className="about-overlay" onClick={onClose}>
       <div className="about-modal" onClick={e=>e.stopPropagation()}>
-        <img className="about-photo"
-          src="https://pilgrimtozion.github.io/interlinear-bible/ben.jpg"
-          alt="Ben Pluym"
-          onError={e=>{e.target.style.display='none';}}/>
+        <div className="about-photo-wrap">
+          <img className="about-photo"
+            src="https://pilgrimtozion.github.io/interlinear-bible/ben.jpg"
+            alt="Benjamin Pluym"
+            onError={e=>{e.target.parentNode.style.display='none';}}/>
+        </div>
         <div className="about-body">
           <div className="about-name">Benjamin Pluym</div>
           <div className="about-text">I love Jesus, and I want you to know Him better. The Scriptures have so much to offer — and I built this app to help you dig deeper into those riches.</div>

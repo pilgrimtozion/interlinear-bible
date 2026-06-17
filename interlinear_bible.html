@@ -49,16 +49,20 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:.
 .music-btn:hover{border-color:var(--text);background:var(--surface)}
 .music-btn.playing{border-color:#f59e0b;color:#f59e0b;background:rgba(245,158,11,.1);animation:music-glow 2.2s ease-in-out infinite}
 .coffee-btn{background:var(--bg);border:1px solid var(--border);color:var(--text2);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all .15s;text-decoration:none;flex-shrink:0}
-.coffee-btn:hover{border-color:#f59e0b;color:#f59e0b;background:rgba(245,158,11,.08)}
+.coffee-btn:hover{border-color:var(--nt);color:var(--nt);background:var(--nt-bg)}
 .about-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:1rem}
 .about-modal{background:var(--surface);border-radius:1.1rem;border:1px solid var(--border);width:100%;max-width:420px;overflow:hidden;animation:sheet-up .22s ease-out}
-.about-photo{width:100%;height:200px;object-fit:cover;object-position:center top;display:block}
-.about-body{padding:1.4rem 1.4rem 1.2rem}
-.about-name{font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:.25rem}
-.about-text{font-size:.85rem;color:var(--text2);line-height:1.65;margin-bottom:1.1rem}
+.about-photo{width:100%;height:180px;object-fit:cover;object-position:center top;display:block}
+.about-body{padding:1.25rem 1.4rem 1.1rem}
+.about-name{font-size:1.05rem;font-weight:700;color:var(--text);margin-bottom:.25rem}
+.about-text{font-size:.84rem;color:var(--text2);line-height:1.65;margin-bottom:1rem}
+.about-sources{border-top:1px solid var(--border);padding-top:.9rem;margin-bottom:.9rem}
+.about-sources-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:.6rem}
+.about-source-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.4rem}
+.about-source-key{font-size:.75rem;color:var(--text2)}
+.about-source-val{font-size:.75rem;color:var(--text)}
+.about-disclaimer{font-size:.7rem;color:var(--text3);line-height:1.6;margin-bottom:.9rem}
 .about-actions{display:flex;gap:.7rem;align-items:center}
-.about-coffee-btn{display:flex;align-items:center;gap:.45rem;padding:.55rem 1.1rem;background:#f59e0b;color:#fff;border:none;border-radius:20px;font-size:.85rem;font-weight:600;cursor:pointer;text-decoration:none;transition:background .15s}
-.about-coffee-btn:hover{background:#d97706}
 .about-close-btn{margin-left:auto;background:var(--surface2);border:1px solid var(--border);color:var(--text2);padding:.5rem 1rem;border-radius:20px;font-size:.82rem;cursor:pointer}
 @keyframes music-glow{0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,.35)}50%{box-shadow:0 0 0 7px rgba(245,158,11,0)}}
 /* Nav */
@@ -3798,13 +3802,17 @@ function AboutModal({onClose}){
           onError={e=>{e.target.style.display='none';}}/>
         <div className="about-body">
           <div className="about-name">Ben Pluym</div>
-          <div className="about-text">
-            I love Jesus, and I want you to know Him better. The Scriptures have so much to offer — and I built this app to help you dig deeper into those riches. If it's been useful to you, buying me a coffee helps keep the work going. 🙏
+          <div className="about-text">I love Jesus, and I want you to know Him better. The Scriptures have so much to offer — and I built this app to help you dig deeper into those riches.</div>
+          <div className="about-sources">
+            <div className="about-sources-label">Data sources</div>
+            <div className="about-source-row"><span className="about-source-key">Interlinear word data</span><span className="about-source-val">Berean Standard Bible</span></div>
+            <div className="about-source-row"><span className="about-source-key">Strong's lexicon</span><span className="about-source-val">OpenScriptures</span></div>
+            <div className="about-source-row"><span className="about-source-key">Translation text</span><span className="about-source-val">API.Bible · American Bible Society</span></div>
+            <div className="about-source-row"><span className="about-source-key">Geographic data</span><span className="about-source-val">OpenBible.info</span></div>
+            <div className="about-source-row"><span className="about-source-key">Cultural &amp; theological notes</span><span className="about-source-val">AI-assisted synthesis</span></div>
           </div>
+          <div className="about-disclaimer">Cultural and theological notes were written with AI assistance and reflect broadly held positions in biblical scholarship — not a single authoritative source.</div>
           <div className="about-actions">
-            <a className="about-coffee-btn" href="https://buymeacoffee.com/pilgrimtozion" target="_blank" rel="noopener">
-              ☕ Buy me a coffee
-            </a>
             <button className="about-close-btn" onClick={onClose}>Close</button>
           </div>
         </div>
@@ -4524,7 +4532,7 @@ function App(){
             {playing?"♬":"♪"}
           </button>
           <button className="theme-btn" onClick={()=>setDark(d=>!d)} title="Toggle light/dark mode">{dark?"☀️":"🌙"}</button>
-          <button className="coffee-btn" onClick={()=>setShowAbout(true)} title="About &amp; Support">☕</button>
+          <button className="coffee-btn" onClick={()=>setShowAbout(true)} title="About">ℹ</button>
         </div>
       </header>
 

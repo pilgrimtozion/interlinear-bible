@@ -1,25 +1,20 @@
 /**
  * The Pilgrim's Interlinear — Service Worker
- * Caches the app shell for offline use.
- * Bible data JSON files are cached on first load and served from cache thereafter.
+ * HTML: network-first (always fresh when online, cached fallback when offline)
+ * Bible data JSON: cache-first (large files, rarely change)
  */
 
-const CACHE_NAME = 'jammin-interlinear-v69';
-const DATA_CACHE  = 'jammin-data-v69';
+const CACHE_NAME = 'jammin-interlinear-v70';
+const DATA_CACHE  = 'jammin-data-v70';
 
-// App shell — files that must be cached immediately on install
-const SHELL_FILES = [
-  '/interlinear-bible/interlinear_bible.html',
-  '/interlinear-bible/manifest.json',
-];
-
-// ── Install: cache the app shell and activate immediately ────────────────────
+// ── Install ──────────────────────────────────────────────────────────────────
 self.addEventListener('install', event => {
+  // Pre-cache manifest only — HTML is fetched fresh on every load
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(SHELL_FILES))
+    caches.open(CACHE_NAME).then(cache =>
+      cache.addAll(['/interlinear-bible/manifest.json'])
+    )
   );
-  // Skip waiting immediately — no user prompt needed.
-  // The page's controllerchange listener will reload automatically.
   self.skipWaiting();
 });
 
@@ -37,11 +32,11 @@ self.addEventListener('activate', event => {
   self.clients.claim();
 });
 
-// ── Fetch: serve from cache, fall back to network ────────────────────────────
+// ── Fetch ────────────────────────────────────────────────────────────────────
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
 
-  // Bible data JSON files → cache-first with network update
+  // Bible data JSON → cache-first with background network update
   if (url.pathname.includes('/data/') && url.pathname.endsWith('.json')) {
     event.respondWith(
       caches.open(DATA_CACHE).then(cache =>
@@ -49,7 +44,7 @@ self.addEventListener('fetch', event => {
           const networkFetch = fetch(event.request).then(response => {
             if (response.ok) cache.put(event.request, response.clone());
             return response;
-          }).catch(() => cached); // offline fallback
+          }).catch(() => cached);
           return cached || networkFetch;
         })
       )
@@ -57,7 +52,27 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // App shell → cache-first, fall back to network
+  // Main HTML → network-first, fall back to cache for offline use
+  if (event.request.mode === 'navigate' || url.pathname.endsWith('.html')) {
+    event.respondWith(
+      fetch(event.request, { cache: 'no-store' })
+        .then(response => {
+          if (response.ok) {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then(c => c.put(event.request, clone));
+          }
+          return response;
+        })
+        .catch(() =>
+          caches.match(event.request).then(cached =>
+            cached || caches.match('/interlinear-bible/interlinear_bible.html')
+          )
+        )
+    );
+    return;
+  }
+
+  // Everything else → cache-first
   event.respondWith(
     caches.match(event.request).then(cached => {
       if (cached) return cached;

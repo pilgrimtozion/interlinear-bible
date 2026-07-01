@@ -3852,14 +3852,19 @@ function ParallelPanel({book,ch,verseNum,isNT,interlinearVerses,onClose}){
   const [texts,setTexts]=useState({});
 
   useEffect(()=>{
-    // BSB — always fetch from interlinear book data (bookCache prevents repeat network calls)
-    fetchInterlinearBook(isNT?'NT':'OT',book).then(data=>{
-      if(!data||!data.chapters)return;
-      const chData=data.chapters[String(ch)];
-      if(!chData)return;
-      const vd=chData.find(v=>Number(v.v)===Number(verseNum));
-      if(vd&&vd.bsb)setTexts(prev=>({...prev,BSB:vd.bsb}));
-    }).catch(()=>{});
+    // BSB — check interlinearVerses prop first (already loaded), then fall back to fetch
+    const bsbFromProp=interlinearVerses&&interlinearVerses.find(v=>Number(v.v)===Number(verseNum));
+    if(bsbFromProp&&bsbFromProp.bsb){
+      setTexts(prev=>({...prev,BSB:bsbFromProp.bsb}));
+    }else{
+      fetchInterlinearBook(isNT?'NT':'OT',book).then(data=>{
+        if(!data||!data.chapters)return;
+        const chData=data.chapters[String(ch)];
+        if(!chData)return;
+        const vd=chData.find(v=>Number(v.v)===Number(verseNum));
+        if(vd&&vd.bsb)setTexts(prev=>({...prev,BSB:vd.bsb}));
+      }).catch(()=>{});
+    }
     // API translations
     TRANSLATIONS.forEach(t=>{
       const key=t.id+'|'+book+'|'+ch;
@@ -4575,7 +4580,7 @@ function App(){
     setMobileView("interlinear");
   }
 
-  // Scroll to active verse whenever it changes OR interlinear data loads
+  // Scroll to active verse whenever it changes, data loads, or mobile tab switches
   useEffect(()=>{
     if(!activeV)return;
     const timer=setTimeout(()=>{
@@ -4585,7 +4590,7 @@ function App(){
       if(lel)lel.scrollIntoView({behavior:"smooth",block:"nearest"});
     },150);
     return()=>clearTimeout(timer);
-  },[activeV,interlinearVerses,leftVerses]);
+  },[activeV,interlinearVerses,leftVerses,mobileView]);
 
   // Persist position
 

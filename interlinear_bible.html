@@ -29,9 +29,11 @@
   --nt-light:#93c5fd;--ot-light:#fcd34d;
   --lxx:#0d9488;--lxx-bg:#0f3032;--lxx-border:#0d9488;
   --word-hover:#0f172a;--sel-nt:#172554;--sel-ot:#431407;
+  --overlay-bg:rgba(255,255,255,0.10);
 }
 body.light{
   --bg:#f1f5f9;--surface:#ffffff;--surface2:#f8fafc;--border:#e2e8f0;
+  --overlay-bg:rgba(0,0,0,0.28);
   --text:#0f172a;--text2:#1e293b;--text3:#475569;
   --nt:#1d4ed8;--ot:#b45309;--nt-bg:#dbeafe;--ot-bg:#fef3c7;
   --nt-light:#1d4ed8;--ot-light:#b45309;
@@ -54,7 +56,7 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:.
 .music-btn.playing{border-color:#f59e0b;color:#f59e0b;background:rgba(245,158,11,.1);animation:music-glow 2.2s ease-in-out infinite}
 .coffee-btn{background:var(--bg);border:1px solid var(--border);color:var(--text2);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all .15s;text-decoration:none;flex-shrink:0}
 .coffee-btn:hover{border-color:var(--nt);color:var(--nt);background:var(--nt-bg)}
-.parallel-overlay{position:fixed;inset:0;z-index:310;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;padding:1rem}
+.parallel-overlay{position:fixed;inset:0;z-index:310;background:var(--overlay-bg);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:1rem}
 .parallel-modal{background:var(--surface);border-radius:1rem;border:1px solid var(--border);width:100%;max-width:820px;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;animation:sheet-up .22s ease-out}
 .parallel-hdr{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1.1rem;border-bottom:1px solid var(--border);flex-shrink:0}
 .parallel-ref{font-size:.95rem;font-weight:700;color:var(--text)}
@@ -70,7 +72,7 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:.
 .parallel-col-text{font-size:.9rem;color:var(--text);line-height:1.75;font-style:italic}
 .parallel-col-bsb{font-size:.9rem;color:var(--text);line-height:1.75;font-style:italic}
 @media(max-width:600px){.parallel-grid{grid-template-columns:1fr!important}.parallel-col{border-right:none;border-bottom:1px solid var(--border)}.parallel-col:last-child{border-bottom:none}}
-.about-overlay{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:1rem}
+.about-overlay{position:fixed;inset:0;z-index:300;background:var(--overlay-bg);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;padding:1rem}
 .about-modal{background:var(--surface);border-radius:1.1rem;border:1px solid var(--border);width:100%;max-width:420px;overflow:hidden;animation:sheet-up .22s ease-out}
 .about-photo-wrap{display:flex;justify-content:center;padding:1.4rem 0 .6rem}
 .about-photo{width:88px;height:88px;border-radius:50%;object-fit:cover;object-position:center top;display:block;border:2px solid var(--border)}
@@ -158,7 +160,7 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:.
 .w-b{font-size:.68rem;color:var(--text2);margin-top:3px;word-break:break-word;font-style:italic;text-align:center;max-width:120px}
 .no-interlinear{background:var(--surface2);border:1px dashed var(--border);border-radius:9px;padding:2rem;text-align:center;color:var(--text3);font-size:.85rem;line-height:1.8}
 /* Strong's panel */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;justify-content:flex-end}
+.overlay{position:fixed;inset:0;background:var(--overlay-bg);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);z-index:200;display:flex;justify-content:flex-end}
 .sp{background:var(--surface);width:360px;max-width:96vw;height:100%;border-left:1px solid var(--border);padding:1.5rem 1.3rem 1.3rem;overflow-y:auto;display:flex;flex-direction:column;gap:.8rem;position:relative}
 .sp-num{font-size:1.7rem;font-weight:700;font-family:"Courier New",monospace;color:var(--nt)}
 .sp-num.ot{color:var(--ot)}
@@ -176,7 +178,9 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:.
 .close-btn{position:absolute;top:.9rem;right:.9rem;background:none;border:1px solid var(--border);color:var(--text2);width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:.85rem;display:flex;align-items:center;justify-content:center}
 .close-btn:hover{background:var(--border);color:var(--text)}
 /* Note modal */
-.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:300;display:flex;align-items:center;justify-content:center}
+.modal-backdrop{position:fixed;inset:0;background:var(--overlay-bg);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);z-index:300;display:flex;align-items:center;justify-content:center}
+.modal-overlay{position:fixed;inset:0;background:var(--overlay-bg);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);z-index:3000;display:flex;align-items:center;justify-content:center;padding:1rem}
+.modal-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;width:100%;animation:sheet-up .22s ease-out}
 .modal{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1.5rem;width:400px;max-width:94vw;display:flex;flex-direction:column;gap:1rem}
 .modal-title{font-size:1rem;font-weight:600;color:var(--text)}
 .modal-sub{font-size:.78rem;color:var(--text3);margin-top:2px}
@@ -292,7 +296,7 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:.
 }
 
 /* ── Theological Arc Navigator ────────────────────────────────────── */
-.theo-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:300;display:flex;align-items:flex-end;justify-content:center}
+.theo-overlay{position:fixed;inset:0;background:var(--overlay-bg);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);z-index:300;display:flex;align-items:flex-end;justify-content:center}
 @media(min-width:641px){.theo-overlay{align-items:center}}
 .theo-panel{background:var(--surface);width:100%;max-width:780px;max-height:92vh;border-radius:16px 16px 0 0;display:flex;flex-direction:column;overflow:hidden}
 @media(min-width:641px){.theo-panel{border-radius:12px;max-height:88vh}}
@@ -367,7 +371,7 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:.
 .geo-event-ref{font-size:.7rem;font-weight:600;color:#2ecc71;background:none;border:1px solid rgba(46,204,113,.35);border-radius:4px;padding:1px 6px;cursor:pointer;white-space:nowrap;font-family:Georgia,serif}
 .geo-event-ref:hover{background:rgba(46,204,113,.12)}
 .geo-event-text{font-size:.74rem;line-height:1.5;color:var(--text2)}
-.geo-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:300;display:flex;justify-content:flex-end}
+.geo-overlay{position:fixed;inset:0;background:var(--overlay-bg);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);z-index:300;display:flex;justify-content:flex-end}
 .geo-panel{background:var(--surface);width:520px;max-width:98vw;height:100%;border-left:1px solid var(--border);display:flex;flex-direction:column;position:relative;overflow:hidden}
 .geo-header{padding:.9rem 1.1rem .7rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:.6rem;flex-shrink:0}
 .geo-title{font-size:1rem;font-weight:700;flex:1}
@@ -3909,6 +3913,25 @@ function ParallelPanel({book,ch,verseNum,isNT,interlinearVerses,onClose}){
   );
 }
 
+function AccountModal({user,onSignOut,onClose}){
+  return(
+    <div className="modal-overlay" onClick={onClose} style={{zIndex:3100}}>
+      <div className="modal-box" onClick={e=>e.stopPropagation()} style={{maxWidth:320,textAlign:'center',padding:'1.8rem 1.5rem 1.4rem'}}>
+        {user.photoURL
+          ? <img src={user.photoURL} alt="" style={{width:72,height:72,borderRadius:'50%',objectFit:'cover',border:'2px solid var(--border)',marginBottom:'0.8rem'}}/>
+          : <div style={{width:72,height:72,borderRadius:'50%',background:'var(--nt)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'2rem',margin:'0 auto 0.8rem'}}>👤</div>
+        }
+        {user.displayName&&<div style={{fontWeight:600,fontSize:'1rem',marginBottom:'0.25rem'}}>{user.displayName}</div>}
+        <div style={{fontSize:'0.8rem',color:'var(--muted)',marginBottom:'1.4rem',wordBreak:'break-all'}}>{user.email}</div>
+        <div style={{display:'flex',gap:'0.6rem',justifyContent:'center'}}>
+          <button className="coffee-btn" onClick={onSignOut} style={{background:'var(--danger,#c0392b)',color:'#fff',border:'none',padding:'0.45rem 1.1rem',borderRadius:6,cursor:'pointer',fontSize:'0.85rem'}}>Sign out</button>
+          <button className="coffee-btn" onClick={onClose} style={{padding:'0.45rem 1.1rem',borderRadius:6,cursor:'pointer',fontSize:'0.85rem'}}>Cancel</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function WhatsNewModal({onClose}){
   return(
     <div className="about-overlay" onClick={onClose}>
@@ -4494,6 +4517,7 @@ function App(){
   const [parallelV,setParallelV]=useState(null);
   const [fbUser,setFbUser]=useState(null);
   const [fbSyncing,setFbSyncing]=useState(false);
+  const [showAccountModal,setShowAccountModal]=useState(false);
   const [showWhatsNew,setShowWhatsNew]=useState(()=>!localStorage.getItem('jm-seen-v65'));
   const ambientRef=useRef(null);
 
@@ -4532,6 +4556,7 @@ function App(){
   function fbSignOut(){
     if(!_fbAuth)return;
     _fbAuth.signOut();
+    setShowAccountModal(false);
   }
 
   const isNT=test==="NT";
@@ -4739,7 +4764,7 @@ function App(){
           </button>
           <button className="theme-btn" onClick={()=>setDark(d=>!d)} title="Toggle light/dark mode">{dark?"☀️":"🌙"}</button>
           {_fbAuth&&(fbUser
-            ? <img src={fbUser.photoURL||''} alt={fbUser.displayName||'Account'} title={"Signed in as "+(fbUser.displayName||fbUser.email)+"\nClick to sign out"} onClick={fbSignOut} style={{width:28,height:28,borderRadius:'50%',cursor:'pointer',border:'2px solid var(--nt)',objectFit:'cover',flexShrink:0}} onError={e=>{e.target.style.display='none';}}/>
+            ? <img src={fbUser.photoURL||''} alt={fbUser.displayName||'Account'} title={"Signed in as "+(fbUser.displayName||fbUser.email)} onClick={()=>setShowAccountModal(true)} style={{width:28,height:28,borderRadius:'50%',cursor:'pointer',border:'2px solid var(--nt)',objectFit:'cover',flexShrink:0}} onError={e=>{e.target.style.display='none';}}/>
             : <button className="coffee-btn" onClick={fbSignIn} title="Sign in to sync notes &amp; highlights across devices">👤</button>
           )}
           {fbSyncing&&<span style={{fontSize:'.65rem',color:'var(--text3)'}}>syncing…</span>}
@@ -4918,6 +4943,7 @@ function App(){
       {showCulture&&<CulturePanel book={book} ch={ch} onClose={()=>setShowCulture(false)}/>}
       {showAbout&&<AboutModal onClose={()=>setShowAbout(false)}/>}
       {showWhatsNew&&<WhatsNewModal onClose={()=>{setShowWhatsNew(false);localStorage.setItem('jm-seen-v65','1');}}/>}
+      {showAccountModal&&fbUser&&<AccountModal user={fbUser} onSignOut={fbSignOut} onClose={()=>setShowAccountModal(false)}/>}
       {parallelV&&<ParallelPanel book={book} ch={ch} verseNum={parallelV} isNT={isNT} interlinearVerses={interlinearVerses} onClose={()=>setParallelV(null)}/>}
       {sel&&<StrongsPanel entry={entry} strongs={sel.word.s} word={sel.word} isNT={isNT} onClose={()=>setSel(null)} onNavigate={ref=>{handleNavigate(ref);setSel(null);}}/>}
       {addingNote&&<NoteModal verse={addingNote} onSave={data=>handleSaveNote(addingNote,data)} onClose={()=>setAddingNote(null)}/>}

@@ -4394,7 +4394,7 @@ function BookIntroPanel({book, onClose, inline}){
             <div style={{fontSize:'.78rem',fontWeight:700,color:'var(--fg-muted)',textTransform:'uppercase',letterSpacing:'.04em',marginBottom:'.4rem'}}>Key Themes</div>
             <div style={{display:'flex',flexWrap:'wrap',gap:'.3rem'}}>
               {info.themes.map(function(t){return(
-                <span key={t} style={{background:'var(--accent)',color:'var(--accent-fg,#fff)',borderRadius:'999px',padding:'.15rem .55rem',fontSize:'.75rem',fontWeight:500}}>{t}</span>
+                <span key={t} style={{background:'var(--accent,#818cf8)',color:'var(--accent-fg,#fff)',borderRadius:'999px',padding:'.15rem .55rem',fontSize:'.75rem',fontWeight:500}}>{t}</span>
               );},[])}
             </div>
           </div>
@@ -4429,7 +4429,7 @@ function HotTopicsPanel({onClose, onNavigate, inline}){
       <div style={{position:'relative',zIndex:3200,display:'flex',flexDirection:'column',height:'100%'}}>
         <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'1rem 1rem .8rem',borderBottom:'1px solid var(--border)',flexShrink:0}}>
           {topic
-            ? <button onClick={function(){setSel(null);}} style={{background:'none',border:'none',color:'var(--accent)',cursor:'pointer',fontSize:'.9rem',padding:'0 .3rem 0 0',display:'flex',alignItems:'center',gap:'.3rem'}}>
+            ? <button onClick={function(){setSel(null);}} style={{background:'none',border:'none',color:'var(--accent,#818cf8)',cursor:'pointer',fontSize:'.9rem',padding:'0 .3rem 0 0',display:'flex',alignItems:'center',gap:'.3rem'}}>
                 <span style={{fontSize:'1.1em'}}>←</span>
                 <span style={{fontWeight:700,fontSize:'1rem'}}>🔥 {topic.icon} {topic.title}</span>
               </button>
@@ -4461,8 +4461,8 @@ function HotTopicsPanel({onClose, onNavigate, inline}){
             {topic.verses.map(function(v,i){return(
               <div key={i} style={{padding:'.75rem 1rem',borderBottom:'1px solid var(--border)'}}>
                 <button onClick={function(){handleVerse(v.ref);}}
-                  style={{display:'block',background:'none',border:'none',cursor:'pointer',textAlign:'left',padding:0,width:'100%'}}>
-                  <span style={{fontWeight:700,fontSize:'.88rem',color:'var(--accent)'}}>{v.ref}</span>
+                  style={{display:'block',background:'none',border:'none',cursor:'pointer',textAlign:'left',padding:0,width:'100%',color:'var(--fg)'}}>
+                  <span style={{fontWeight:700,fontSize:'.88rem',color:'var(--accent,#818cf8)'}}>{v.ref}</span>
                 </button>
                 <div style={{fontSize:'.8rem',color:'var(--fg-muted)',marginTop:'.25rem',lineHeight:1.5}}>{v.note}</div>
               </div>

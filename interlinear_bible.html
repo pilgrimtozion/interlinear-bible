@@ -4406,6 +4406,16 @@ function BookIntroPanel({book, onClose}){
 function HotTopicsPanel({onClose, onNavigate}){
   const [sel,setSel]=useState(null);
   const topic=sel!=null?HOT_TOPICS[sel]:null;
+  const bodyRef=useRef(null);
+
+  function goSel(i){
+    setSel(i);
+    if(bodyRef.current)bodyRef.current.scrollTop=0;
+  }
+  function goBack(){
+    setSel(null);
+    if(bodyRef.current)bodyRef.current.scrollTop=0;
+  }
 
   function handleVerse(ref){
     if(onNavigate){
@@ -4419,18 +4429,18 @@ function HotTopicsPanel({onClose, onNavigate}){
     <div className="theo-overlay" onClick={onClose}>
       <div className="theo-panel" onClick={function(e){e.stopPropagation();}}>
         <div className="theo-header">
-          {topic&&<button className="theo-back" onClick={function(){setSel(null);}}>←</button>}
+          {topic&&<button className="theo-back" onClick={goBack}>←</button>}
           <span className="theo-title">{topic ? topic.icon+" "+topic.title : "🔥 Hot Topics"}</span>
           <button className="theo-close" onClick={onClose}>×</button>
         </div>
-        <div className="theo-body" style={{padding:0}}>
+        <div className="theo-body" style={{padding:0}} ref={bodyRef}>
           {!topic&&(
             <>
               <p style={{fontSize:'.8rem',color:'var(--text3)',margin:'0',lineHeight:1.6,padding:'1rem 1rem .5rem'}}>
                 Passages cited across Christian traditions on debated topics. Presented neutrally — explore Scripture yourself.
               </p>
               {HOT_TOPICS.map(function(t,i){return(
-                <div key={t.id} className="arc-verse" style={{cursor:'pointer'}} onClick={function(){setSel(i);}}>
+                <div key={t.id} className="arc-verse" style={{cursor:'pointer'}} onClick={function(){goSel(i);}}>
                   <span style={{fontSize:'1.3rem',width:'1.6rem',textAlign:'center',flexShrink:0}}>{t.icon}</span>
                   <div style={{flex:1}}>
                     <div style={{fontWeight:600,fontSize:'.9rem'}}>{t.title}</div>
@@ -4919,6 +4929,8 @@ function App(){
   const [showHotTopics,setShowHotTopics]=useState(false);
   const [showWhatsNew,setShowWhatsNew]=useState(()=>!localStorage.getItem('jm-seen-v65'));
   const ambientRef=useRef(null);
+  const posTimerRef=useRef(null);
+  const transTimerRef=useRef(null);
 
   // ── Firebase auth listener ──────────────────────────────────────────────
   useEffect(()=>{
@@ -4934,6 +4946,13 @@ function App(){
             if(d.notes){setNotes(d.notes);saveNotes(d.notes);}
             if(d.highlights){setHighlights(d.highlights);localStorage.setItem(HL_KEY,JSON.stringify(d.highlights));}
             if(d.hlLabels){setHlLabels(d.hlLabels);localStorage.setItem(HLL_KEY,JSON.stringify(d.hlLabels));}
+            if(d.position){
+              const pos=d.position;
+              if(pos.test)setTest(pos.test);
+              if(pos.book)setBook(pos.book);
+              if(pos.ch)setCh(Number(pos.ch));
+            }
+            if(d.translation){setTranslation(d.translation);}
           }
         }catch(e){console.warn("Firestore load failed:",e);}
         setFbSyncing(false);
@@ -4941,6 +4960,26 @@ function App(){
     });
     return unsub;
   },[]);
+
+  // ── Save position to Firestore (debounced 2s) ───────────────────────────
+  useEffect(()=>{
+    if(!fbUser)return;
+    clearTimeout(posTimerRef.current);
+    posTimerRef.current=setTimeout(()=>{
+      fbSave({position:{book,ch,test}});
+    },2000);
+    return()=>clearTimeout(posTimerRef.current);
+  },[book,ch,test,fbUser]);
+
+  // ── Save translation preference to Firestore (debounced 1.5s) ──────────
+  useEffect(()=>{
+    if(!fbUser)return;
+    clearTimeout(transTimerRef.current);
+    transTimerRef.current=setTimeout(()=>{
+      fbSave({translation});
+    },1500);
+    return()=>clearTimeout(transTimerRef.current);
+  },[translation,fbUser]);
 
   function fbSave(updates){
     if(!_fbDb||!fbUser)return;
@@ -5045,6 +5084,7 @@ function App(){
   function saveHlLabels(labels){
     setHlLabels(labels);
     localStorage.setItem(HLL_KEY,JSON.stringify(labels));
+    fbSave({hlLabels:labels});
   }
   var activeHlColor=HL_COLORS.find(function(c){return c.k===hlColor;})||HL_COLORS[2];
 

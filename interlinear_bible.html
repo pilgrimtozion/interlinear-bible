@@ -3017,6 +3017,296 @@ function PlacesPanel({book, ch, onClose, onNavigate, inline}){
 }
 
 
+// ── Book Introductions ────────────────────────────────────────────────────────
+const BOOK_INTROS = {
+  "Genesis":{author:"Moses (traditional)",date:"c. 1400 BC (or 5th c. BC in critical scholarship)",genre:"Narrative / Origins",themes:["Creation","Fall","Covenant","Election","Providence"],overview:"Genesis answers the foundational questions: Where did everything come from? Why is there evil? How did Israel begin? It traces God's purposes from creation through the lives of Abraham, Isaac, Jacob, and Joseph, establishing the covenant promises that drive the rest of Scripture."},
+  "Exodus":{author:"Moses (traditional)",date:"c. 1400 BC",genre:"Narrative / Law",themes:["Redemption","Law","Tabernacle","Covenant at Sinai","God's presence"],overview:"Exodus records Israel's liberation from Egyptian slavery and the birth of the nation at Sinai. The giving of the Torah and the construction of the Tabernacle reveal that God's ultimate goal is not just freedom but dwelling with his people."},
+  "Leviticus":{author:"Moses (traditional)",date:"c. 1400 BC",genre:"Law / Ritual",themes:["Holiness","Sacrifice","Priesthood","Atonement","Clean and unclean"],overview:"Leviticus is the handbook for Israel's worship, detailing sacrificial laws, priestly duties, and the annual calendar of feasts. Its central refrain — 'Be holy, because I am holy' — shaped Israel's entire life as a covenant people set apart for God."},
+  "Numbers":{author:"Moses (traditional)",date:"c. 1400 BC",genre:"Narrative / Law",themes:["Wilderness wandering","Faithfulness","Rebellion","God's patience","Census"],overview:"Numbers covers Israel's forty years in the wilderness, bookended by two census counts. It honestly records a generation's failure to trust God, yet also God's persistent faithfulness in keeping his covenant despite repeated rebellion."},
+  "Deuteronomy":{author:"Moses (traditional)",date:"c. 1400 BC",genre:"Law / Covenant renewal",themes:["Love for God","Covenant","Obedience","Land","Memory"],overview:"Deuteronomy is Moses' farewell address on the plains of Moab, renewing the Sinai covenant with the second generation before they enter Canaan. Its call to love God with heart, soul, and strength (6:4-5) became the heartbeat of Jewish faith and was cited by Jesus as the greatest commandment."},
+  "Joshua":{author:"Joshua / later editor",date:"c. 1380–1050 BC",genre:"Narrative / Military history",themes:["Fulfillment of promise","Conquest","Faithfulness","Inheritance","Holy war"],overview:"Joshua records the fulfilment of God's four-century-old promise of land, as Israel enters and settles Canaan under Joshua's leadership. The book wrestles with the tension between God's total faithfulness and Israel's partial obedience."},
+  "Judges":{author:"Unknown (possibly Samuel)",date:"c. 1000 BC",genre:"Narrative",themes:["Cycle of sin","Deliverance","Leadership failure","Covenant unfaithfulness"],overview:"Judges traces a grim downward spiral — Israel sins, suffers, cries out, is delivered by a judge, then repeats the cycle. Figures like Deborah, Gideon, and Samson reveal both God's grace and the chaos that results when 'everyone does what is right in their own eyes.'"},
+  "Ruth":{author:"Unknown",date:"c. 10th–6th c. BC",genre:"Narrative / Short story",themes:["Loyalty (hesed)","Providence","Redemption","Inclusion of Gentiles","Lineage of David"],overview:"Ruth is a gem of narrative art set in the time of the Judges, following a Moabite widow who clings to her Israelite mother-in-law and finds refuge under the wings of Israel's God. Its climax — Ruth's inclusion in the lineage of David and ultimately of Christ — makes it a story about the reach of covenant love."},
+  "1 Samuel":{author:"Unknown; possibly Samuel, Nathan, Gad",date:"c. 10th–9th c. BC",genre:"Narrative / Political history",themes:["Kingship","Covenant","Obedience","Rise of David","Transition"],overview:"1 Samuel narrates Israel's transition from tribal confederacy to monarchy, tracing the careers of Samuel, Saul, and the young David. It shows that Israel's desire for a king 'like the nations' both fulfilled and complicated God's purposes."},
+  "2 Samuel":{author:"Unknown",date:"c. 10th–9th c. BC",genre:"Narrative / Political history",themes:["Davidic covenant","Sin and consequences","Kingship","Lament","God's grace"],overview:"2 Samuel follows David's reign — his triumphs in uniting Israel, the Davidic covenant promising an eternal throne, and his devastating moral failure with Bathsheba. The rest of the book shows how sin unravels a kingdom even as God's covenant faithfulness endures."},
+  "1 Kings":{author:"Unknown (traditionally Jeremiah)",date:"c. 6th c. BC",genre:"Narrative / Political history",themes:["Wisdom","Temple","Apostasy","Prophetic word","Divided kingdom"],overview:"1 Kings covers Solomon's magnificent reign — the Temple, his wisdom, his fall into idolatry — and then the tragic split of the kingdom under Rehoboam. Elijah emerges as the great prophetic voice of the northern kingdom's apostasy under Ahab."},
+  "2 Kings":{author:"Unknown (traditionally Jeremiah)",date:"c. 6th c. BC",genre:"Narrative / Political history",themes:["Prophetic fulfillment","Exile","Covenant consequences","Idolatry","God's judgment"],overview:"2 Kings traces the decline of both Israel (north) and Judah (south) through relentless apostasy, despite the ministry of prophets like Elisha. It ends with the catastrophe of Jerusalem's fall and the Babylonian exile — the covenant curses of Deuteronomy realized."},
+  "1 Chronicles":{author:"Traditionally Ezra",date:"c. 450–400 BC",genre:"Narrative / Theological history",themes:["Davidic dynasty","Temple","Worship","Israel's identity","Post-exilic hope"],overview:"Chronicles retells Israel's history from a priestly, post-exilic perspective. Written for returnees from Babylon, it focuses on David and the Temple to affirm that the covenant community still has a future — their identity is rooted in worship, not political power."},
+  "2 Chronicles":{author:"Traditionally Ezra",date:"c. 450–400 BC",genre:"Narrative / Theological history",themes:["Temple","Reform","Covenant","Worship","Judgment and restoration"],overview:"2 Chronicles continues from Solomon's Temple dedication through the exile, emphasizing the cycles of faithfulness, reform, and apostasy in Judah. It ends, uniquely, with Cyrus's decree allowing the exiles to return — a note of hope pointing to restoration."},
+  "Ezra":{author:"Traditionally Ezra",date:"c. 450–400 BC",genre:"Narrative / Post-exilic history",themes:["Restoration","Torah","Purity","Community identity","Persian period"],overview:"Ezra records two waves of return from Babylon and the rebuilding of the Temple (chapters 1–6) and Ezra's own arrival to teach the Torah (chapters 7–10). It wrestles with the question of what it means to be God's people after judgment."},
+  "Nehemiah":{author:"Traditionally Nehemiah",date:"c. 445–420 BC",genre:"Memoir / Post-exilic narrative",themes:["Rebuilding","Leadership","Prayer","Covenant renewal","Opposition"],overview:"Nehemiah combines a personal memoir of courageous leadership with a community story of Jerusalem's walls being rebuilt in 52 days against fierce opposition. The climactic public reading of the Torah and covenant renewal show that the community's ultimate wall is Scripture."},
+  "Esther":{author:"Unknown",date:"c. 5th–4th c. BC",genre:"Narrative / Diaspora story",themes:["Providence","Courage","Jewish identity","Reversal","God's hiddenness"],overview:"Esther is famously the one biblical book that never names God, yet divine providence permeates every reversal of fortune. Set in the Persian court, it follows a Jewish queen who risks her life to save her people from genocide — a story of hidden sovereignty."},
+  "Job":{author:"Unknown",date:"Unknown; possibly patriarchal era or 5th c. BC",genre:"Wisdom / Drama",themes:["Suffering","Divine sovereignty","Retribution theology","Lament","Restoration"],overview:"Job is the Bible's most sustained engagement with the problem of innocent suffering. The prose frame surrounds a poetic dialogue in which Job's friends insist suffering equals sin, while Job demands an audience with God — and God ultimately vindicates Job's honesty over his friends' tidy theology."},
+  "Psalms":{author:"David (73 psalms), Asaph, Sons of Korah, Solomon, Moses, and others",date:"c. 1400–400 BC (compiled)",genre:"Poetry / Hymns / Lament",themes:["Praise","Lament","Kingship","Trust","Torah","Messianic hope"],overview:"The 150 Psalms are Israel's hymnbook and prayer book, spanning every human emotion from ecstatic praise to raw despair. Organized into five books mirroring the Pentateuch, they shaped Jewish worship for centuries and are the most-quoted OT book in the NT."},
+  "Proverbs":{author:"Solomon and others (Agur, Lemuel)",date:"c. 10th–6th c. BC",genre:"Wisdom",themes:["Wisdom","Folly","Speech","Work","Fear of the LORD","Character"],overview:"Proverbs is practical wisdom for everyday life, rooted not in abstract philosophy but in 'the fear of the LORD.' It addresses speech, relationships, money, work, and character, presenting wisdom as a way of living that aligns with God's created order."},
+  "Ecclesiastes":{author:"Qoheleth ('the Teacher'); traditionally Solomon",date:"c. 10th–4th c. BC",genre:"Wisdom / Philosophy",themes:["Vanity","Meaning","Death","Enjoyment","Fear of God"],overview:"Ecclesiastes is the Bible's most searingly honest book about the limits of human wisdom and the frustration of life 'under the sun.' The Teacher tests every avenue of meaning — work, pleasure, wisdom, wealth — and finds all of it hebel (vapor). Its conclusion: fear God, keep his commands, enjoy his gifts."},
+  "Song of Solomon":{author:"Traditionally Solomon",date:"c. 10th c. BC or later",genre:"Poetry / Love song",themes:["Human love","Desire","Beauty","Covenant love","Marriage"],overview:"The Song celebrates the beauty of romantic love and physical desire between a man and a woman, affirming that sexuality is God's good gift. Read across the centuries as an allegory of God's love for Israel or Christ's love for the church, it also stands as Israel's most frank affirmation of embodied human love."},
+  "Isaiah":{author:"Isaiah ben Amoz; critical scholarship posits multiple authors",date:"c. 740–700 BC (chs. 1–39); c. 550–540 BC (chs. 40–66) per critical view",genre:"Prophecy / Poetry",themes:["Holiness of God","Judgment","Servant of the LORD","New creation","Comfort"],overview:"Isaiah is the 'fifth gospel' of the OT — no prophet more fully anticipates the work of Jesus. Its first half thunders judgment against Israel and the nations; its second half opens with 'Comfort, comfort my people' and rises to the vision of a new heavens and new earth. The Servant Songs (42, 49, 50, 52–53) are the heart of NT Christology."},
+  "Jeremiah":{author:"Jeremiah ben Hilkiah; Baruch served as his scribe",date:"c. 627–585 BC",genre:"Prophecy / Memoir",themes:["Judgment","New covenant","Lament","Suffering","Faithful remnant"],overview:"Jeremiah prophesied during Judah's final decades before the Babylonian exile, faithfully announcing judgment at enormous personal cost. His most luminous promise — a new covenant written on hearts, not stone — is quoted more extensively in the NT than any other OT passage (Heb 8:8-12)."},
+  "Lamentations":{author:"Traditionally Jeremiah",date:"c. 586 BC (shortly after Jerusalem's fall)",genre:"Lament / Acrostic poetry",themes:["Grief","Confession","Hope in desolation","God's faithfulness","Suffering"],overview:"Five exquisitely crafted acrostic poems mourn the destruction of Jerusalem, giving voice to communal grief without flinching from the reality of divine judgment. At its center, amid the ruins, the poet declares: 'The steadfast love of the LORD never ceases; his mercies never come to an end.'"},
+  "Ezekiel":{author:"Ezekiel ben Buzi, priest",date:"c. 593–571 BC",genre:"Prophecy / Apocalyptic",themes:["Glory of God","Judgment","Restoration","Spirit","New temple","Resurrection"],overview:"Ezekiel prophesied to the exiles in Babylon through overwhelming visions — the chariot-throne of God, the valley of dry bones, the new Temple. His central concern is God's honor and the vindication of his name among the nations through Israel's judgment and ultimate restoration."},
+  "Daniel":{author:"Traditionally Daniel",date:"6th c. BC (traditional); 2nd c. BC per critical scholarship",genre:"Narrative / Apocalyptic",themes:["Faithfulness under pressure","Divine sovereignty","Kingdom of God","Prophecy","Resurrection"],overview:"Daniel divides into two halves: six court stories of Hebrews remaining faithful under foreign empire (furnace, lions' den), and four apocalyptic visions of world empires giving way to God's eternal kingdom. The Son of Man vision (ch. 7) was central to Jesus's own self-understanding."},
+  "Hosea":{author:"Hosea ben Beeri",date:"c. 750–722 BC",genre:"Prophecy",themes:["Covenant love","Israel's unfaithfulness","Judgment","Restoration","Marriage as metaphor"],overview:"Hosea's marriage to the unfaithful Gomer becomes a living parable of God's relationship with Israel. His ministry spans Israel's final decades before Assyrian conquest, and his anguished love for his wayward wife mirrors God's persistent covenant commitment to a nation that keeps abandoning him."},
+  "Joel":{author:"Joel ben Pethuel",date:"Debated: 9th–4th c. BC",genre:"Prophecy",themes:["Day of the LORD","Repentance","Spirit outpouring","Judgment","Restoration"],overview:"A locust plague becomes the entry point for Joel's proclamation of the coming Day of the LORD — both as judgment and as the dawn of a new era when God pours his Spirit on all flesh. Peter cites Joel 2:28-32 at Pentecost as the text that explains what the disciples are experiencing."},
+  "Amos":{author:"Amos of Tekoa",date:"c. 760–750 BC",genre:"Prophecy",themes:["Social justice","Judgment","Covenant","True worship","Day of the LORD"],overview:"Amos, a shepherd from Judah, was sent to preach to the prosperous, complacent northern kingdom of Israel. His message was radical: wealth built on oppression of the poor cannot coexist with true worship of God. His vision of justice 'rolling on like a river' shaped the prophetic tradition and the civil rights movement alike."},
+  "Obadiah":{author:"Obadiah",date:"c. 586 BC (most likely)",genre:"Prophecy",themes:["Judgment on Edom","Day of the LORD","Pride","Brotherhood","Restoration"],overview:"The shortest OT book, Obadiah pronounces judgment on Edom — Israel's cousin-nation (descendants of Esau) — for gloating over Jerusalem's fall. It stands as a warning that pride in any nation's security or ancestry is misplaced, and that the day of the LORD will set all wrongs right."},
+  "Jonah":{author:"Unknown; set in Jonah ben Amittai's era",date:"c. 8th c. BC (setting); later composition possible",genre:"Narrative / Prophetic",themes:["Grace for the nations","Repentance","Divine compassion","Flight from God","Second chances"],overview:"Jonah is not primarily a story about a fish but about a prophet who flees God's command to preach to Israel's enemy, Nineveh. When Nineveh repents and God relents from judgment, Jonah's anger reveals the scandal of grace — that God's mercy extends beyond Israel's borders, a truth Jonah struggles to accept."},
+  "Micah":{author:"Micah of Moresheth",date:"c. 735–700 BC",genre:"Prophecy",themes:["Justice","Corruption","Messianic hope","Remnant","Covenant"],overview:"Micah alternates between oracles of judgment and promises of restoration, indicting corrupt leaders, false prophets, and economic exploitation. He distills true religion into its simplest form (6:8) and prophesies that the coming ruler of Israel will be born in Bethlehem."},
+  "Nahum":{author:"Nahum the Elkoshite",date:"c. 660–612 BC",genre:"Prophecy",themes:["God's justice","Judgment on Nineveh","Comfort for the oppressed","Divine sovereignty"],overview:"Where Jonah called Nineveh to repentance and they responded, Nahum — a century later — announces Nineveh's fall with no offer of reprieve. Violent Assyria, which had devastated Israel, will itself be devastated. Nahum's vision of a messenger 'bringing good news of peace' is quoted in Romans 10:15."},
+  "Habakkuk":{author:"Habakkuk",date:"c. 605–598 BC",genre:"Prophecy / Lament",themes:["Why does God allow evil?","Faith","Divine sovereignty","Prayer","Justice"],overview:"Habakkuk is structured as a dialogue — the prophet asks God why he tolerates injustice, God answers (using Babylon), Habakkuk asks again (why use a worse nation?), and God answers again. The book resolves not in explanation but in trust: 'The righteous shall live by faith' — the text Paul builds Galatians and Romans around."},
+  "Zephaniah":{author:"Zephaniah ben Cushi",date:"c. 640–609 BC",genre:"Prophecy",themes:["Day of the LORD","Judgment on all nations","Remnant","Restoration","Joy"],overview:"Zephaniah opens with one of the most sweeping judgment oracles in all prophecy — a reversal of creation — and ends with one of the most tender restoration promises: God himself will rejoice over his people with singing. The contrast defines the prophetic movement from wrath to redemption."},
+  "Haggai":{author:"Haggai",date:"520 BC",genre:"Prophecy",themes:["Temple rebuilding","Priorities","God's glory","Covenant faithfulness","Messianic hope"],overview:"Haggai's four brief messages were delivered in 520 BC to motivate the discouraged post-exilic community to resume building the Temple. His argument: their economic hardship is connected to their neglect of God's house. His vision of the Temple's future glory — greater than Solomon's — anticipates Christ's presence."},
+  "Zechariah":{author:"Zechariah ben Berechiah",date:"c. 520–480 BC",genre:"Prophecy / Apocalyptic",themes:["Messianic hope","Temple","Spirit","Cosmic battle","Restoration"],overview:"Zechariah combines encouraging messages for the post-exilic community with eight elaborate night visions and two major apocalyptic sections. The NT quotes Zechariah more than any other Minor Prophet — his king entering on a donkey, the thirty pieces of silver, the pierced one — all find their fulfilment in Christ."},
+  "Malachi":{author:"Malachi ('my messenger')",date:"c. 450–430 BC",genre:"Prophecy / Disputation",themes:["Covenant faithfulness","Worship","Marriage","Tithing","Coming of Elijah"],overview:"The last OT book addresses a post-exilic community grown cynical and perfunctory in worship. Using a unique disputation format, God challenges Israel's rationalizations. Malachi ends with the promise of Elijah's return before the Day of the LORD — a promise the NT sees fulfilled in John the Baptist."},
+  "Matthew":{author:"Matthew (Levi), apostle",date:"c. AD 50–90",genre:"Gospel",themes:["Jesus as Messiah","Kingdom of heaven","Fulfillment of OT","Discipleship","New Torah"],overview:"Matthew is the most Jewish of the four Gospels, presenting Jesus as the fulfillment of Israel's story — the new Moses, the true Israel, the long-awaited Messiah. Five major discourses (including the Sermon on the Mount) mirror the five books of Moses, and the Great Commission opens the kingdom to all nations."},
+  "Mark":{author:"John Mark; Peter as primary source (Papias)",date:"c. AD 50–70",genre:"Gospel",themes:["Servant Messiah","Urgency","Suffering","Discipleship","Hidden identity"],overview:"The shortest Gospel moves at breathtaking speed — the word 'immediately' appears 41 times. Mark presents Jesus as the suffering Servant whose identity is gradually unveiled and who must be understood through the cross. Its abrupt ending (16:8 in the earliest manuscripts) throws readers back into a world where the resurrection demands a response."},
+  "Luke":{author:"Luke, physician and companion of Paul",date:"c. AD 60–80",genre:"Gospel",themes:["Universal salvation","The poor and outsiders","Prayer","Holy Spirit","Joy"],overview:"Luke is the most literary of the Gospels, addressed to Theophilus as a carefully researched account. His Jesus consistently reaches toward those the religious establishment excludes — women, tax collectors, Samaritans, Gentiles. Luke and Acts form a two-volume work tracing the gospel from Bethlehem to Rome."},
+  "John":{author:"John the apostle (traditional); 'the Beloved Disciple'",date:"c. AD 85–95",genre:"Gospel",themes:["Incarnation","Life","Light","Belief","Father and Son","I AM"],overview:"John's Gospel operates at a different register than the Synoptics — deeply theological, structured around seven signs and seven 'I AM' declarations. Written that readers 'may believe that Jesus is the Messiah, the Son of God,' it opens in deliberate echo of Genesis: 'In the beginning was the Word.'"},
+  "Acts":{author:"Luke, physician",date:"c. AD 62–80",genre:"Narrative / History",themes:["Holy Spirit","Mission","Church growth","Witness","Gentile inclusion"],overview:"Acts is the sequel to Luke's Gospel, tracing the gospel's spread from Jerusalem to Rome through the Spirit-empowered witness of the early church. Its two primary figures — Peter (chs. 1–12) and Paul (chs. 13–28) — show how the good news crosses every boundary of ethnicity, class, and culture."},
+  "Romans":{author:"Paul",date:"c. AD 57",genre:"Letter / Theological treatise",themes:["Gospel","Justification by faith","Sin","Grace","Israel and Gentiles","Ethics"],overview:"Romans is Paul's most systematic exposition of the gospel — the righteousness of God revealed in the death and resurrection of Jesus for all who believe. Chapters 1–8 trace condemnation to glorification; chapters 9–11 wrestle with Israel's place in God's plan; chapters 12–16 map the ethical life of grace."},
+  "1 Corinthians":{author:"Paul",date:"c. AD 54–55",genre:"Letter",themes:["Unity","Spiritual gifts","Resurrection","Ethics","Wisdom vs. foolishness"],overview:"Written to a gifted but fractured congregation in Corinth, 1 Corinthians addresses division, sexual immorality, lawsuits, idol food, worship disorder, and the resurrection. Paul's brilliant chapter on love (ch. 13) sits at the structural heart of a letter about what genuine spiritual life looks like in community."},
+  "2 Corinthians":{author:"Paul",date:"c. AD 55–57",genre:"Letter",themes:["Suffering and glory","Ministry","New covenant","Generosity","Weakness"],overview:"The most personal of Paul's letters, 2 Corinthians is a passionate defense of his apostleship against rivals who questioned his authority. Its theology of suffering — that weakness is the vessel through which God's power works — is forged in the fire of Paul's own experience."},
+  "Galatians":{author:"Paul",date:"c. AD 48–55",genre:"Letter",themes:["Justification by faith","Freedom","Law and gospel","Spirit","One in Christ"],overview:"Galatians is Paul's most urgent letter, written in anger and love to communities being told they must be circumcised to complete their salvation. His argument: justification is by faith alone, not works of the Law — the same faith that Abraham exercised before circumcision existed. Freedom in Christ is the gospel's gift."},
+  "Ephesians":{author:"Paul (some scholars: a Pauline disciple)",date:"c. AD 60–62",genre:"Letter",themes:["Church as body of Christ","Cosmic reconciliation","Spiritual armor","Unity","Grace"],overview:"Ephesians operates on the grandest scale of any Pauline letter — God's eternal plan to unite all things in Christ, gathering Jews and Gentiles into one body. The second half applies this cosmic vision to household life, community ethics, and spiritual warfare. The armor of God (ch. 6) is armor for a community, not just an individual."},
+  "Philippians":{author:"Paul",date:"c. AD 61–62",genre:"Letter",themes:["Joy","Humility","Partnership","Christ-hymn","Contentment"],overview:"Written from prison, Philippians is Paul's warmest letter — full of joy, partnership language, and personal affection. The great Christ-hymn (2:6-11), tracing Jesus's descent into servanthood and exaltation, provides the theological foundation for Paul's call to humble, others-centered living."},
+  "Colossians":{author:"Paul (some scholars: a Pauline disciple)",date:"c. AD 60–62",genre:"Letter",themes:["Supremacy of Christ","False teaching","New humanity","Cosmic powers","Fullness"],overview:"Colossians counters a 'philosophy' that diminished Christ by adding angelic intermediaries and ascetic practices. Paul's response: in Christ 'all the fullness of the Deity lives in bodily form' — nothing needs to be added to him. The second half grounds this high Christology in everyday relationships."},
+  "1 Thessalonians":{author:"Paul",date:"c. AD 50–51",genre:"Letter",themes:["Second coming","Holiness","Encouragement","Grief","Faith, hope, love"],overview:"Probably Paul's earliest surviving letter, 1 Thessalonians pastors a young congregation anxious about believers who have died before Christ's return. Paul reassures them with the church's first detailed account of the resurrection and return of Christ, and calls them to lives of holiness while they wait."},
+  "2 Thessalonians":{author:"Paul (some scholars debate authenticity)",date:"c. AD 51–52",genre:"Letter",themes:["Day of the LORD","Man of lawlessness","Perseverance","Work ethic","Vindication"],overview:"2 Thessalonians corrects a misunderstanding that the Day of the LORD had already arrived, describing events that must first occur (the 'man of lawlessness'). It also addresses members who, expecting the imminent end, had stopped working — with Paul's blunt counter: 'If anyone is not willing to work, let him not eat.'"},
+  "1 Timothy":{author:"Paul",date:"c. AD 62–64",genre:"Letter / Pastoral",themes:["Church order","Leadership qualifications","Sound doctrine","Prayer","Godliness"],overview:"The first of Paul's Pastoral Letters, 1 Timothy guides a young leader managing a congregation beset by false teachers and disorder. It covers qualifications for elders and deacons, proper worship, the role of women, care for widows, and the danger of wealth — the nuts and bolts of healthy church life."},
+  "2 Timothy":{author:"Paul",date:"c. AD 64–67",genre:"Letter / Pastoral",themes:["Faithfulness","Suffering","Scripture","Passing the baton","Endurance"],overview:"Paul's final letter, written from prison as he awaits execution, is his most personal farewell. He urges Timothy to guard the gospel, endure suffering, and trust in Scripture's power to equip for every good work (3:16-17). Its tone is both urgent and peaceful — a dying man sure of what he has believed."},
+  "Titus":{author:"Paul",date:"c. AD 63–65",genre:"Letter / Pastoral",themes:["Church order","Sound doctrine","Good works","Grace","Gospel ethics"],overview:"Written to Titus organizing the church in Crete, this brief letter connects sound doctrine with transformed behavior. Paul's great summary of the gospel (2:11-14) — grace training us to renounce ungodliness — grounds the practical instructions in the good news rather than mere moralism."},
+  "Philemon":{author:"Paul",date:"c. AD 60–62",genre:"Letter / Personal appeal",themes:["Reconciliation","Slavery","Brotherhood in Christ","Grace","Forgiveness"],overview:"The most personal of Paul's letters, Philemon appeals for the slave Onesimus to be received back — no longer as a slave but as 'a dear brother.' Paul stops short of demanding Onesimus's freedom but the logic of Christian brotherhood points unmistakably in that direction, planting a seed that would eventually abolish slavery."},
+  "Hebrews":{author:"Unknown; Paul, Apollos, Priscilla, and Barnabas all proposed",date:"c. AD 60–90",genre:"Sermon / Letter",themes:["Superiority of Christ","High priesthood","Faith","Old and new covenant","Endurance"],overview:"Hebrews is a sophisticated theological sermon urging Jewish-Christian readers not to drift back into Judaism. Its argument: Jesus is superior to angels, Moses, the Levitical priesthood, and the old covenant — he is the final, perfect high priest whose sacrifice accomplishes what the tabernacle only foreshadowed. Its hall of faith (ch. 11) is the greatest meditation on faith in all Scripture."},
+  "James":{author:"James, brother of Jesus",date:"c. AD 45–50",genre:"Letter / Wisdom",themes:["Faith and works","Wisdom","Speech","Trials","Care for the poor"],overview:"James is the most practical book of the NT, functioning like a Christian Proverbs. Its famous challenge — 'Faith without works is dead' — is not a contradiction of Paul but a challenge to a different error: using grace as a license for moral indifference. James insists that genuine faith transforms how we speak, act, and treat the poor."},
+  "1 Peter":{author:"Peter the apostle; Silas as scribe",date:"c. AD 64–68",genre:"Letter",themes:["Suffering","Hope","Holy living","Identity","Witness in a hostile world"],overview:"Written to scattered Christians facing social hostility across Asia Minor, 1 Peter calls them to embrace their identity as 'a holy nation, a royal priesthood' and to live such good lives among the pagans that even their suffering becomes a witness. The letter draws deeply on Isaiah's Servant Songs."},
+  "2 Peter":{author:"Peter the apostle (some scholars debate)",date:"c. AD 64–68",genre:"Letter",themes:["False teachers","Knowledge","Day of the LORD","Scripture","Growth"],overview:"2 Peter warns against false teachers who exploit believers and deny Christ's return. Its description of Scripture's divine origin (1:20-21) and its cosmic vision of the Day of the LORD and the new heavens and earth make it a foundational document for Christian epistemology and eschatology."},
+  "1 John":{author:"John the apostle",date:"c. AD 85–100",genre:"Letter",themes:["Love","Light","Assurance","Truth","Fellowship"],overview:"1 John is a pastoral letter addressing a community shattered by a split — some have left, denying that Jesus came in the flesh. John's response weaves together tests of genuine faith: right belief about Jesus, love for fellow believers, and keeping God's commands. 'God is love' (4:8) is perhaps the most loaded theological statement in all Scripture."},
+  "2 John":{author:"John the apostle ('the Elder')",date:"c. AD 85–100",genre:"Letter",themes:["Truth","Love","False teaching","Hospitality"],overview:"This brief letter to 'the chosen lady and her children' (a congregation) warns against welcoming traveling teachers who deny the incarnation of Christ. It balances the command to love with the command to guard truth — hospitality without discernment enables error."},
+  "3 John":{author:"John the apostle ('the Elder')",date:"c. AD 85–100",genre:"Letter",themes:["Hospitality","Leadership","Truth","Support of missionaries"],overview:"Addressed to Gaius, 3 John commends generous hospitality toward traveling missionaries and rebukes Diotrephes — a domineering leader who refuses to welcome them. It is the most private letter in the NT and one of the clearest NT glimpses of early church leadership tensions."},
+  "Jude":{author:"Jude, brother of Jesus",date:"c. AD 65–80",genre:"Letter",themes:["False teachers","Contending for the faith","Judgment","Mercy","Perseverance"],overview:"Jude is an urgent call to 'contend for the faith once for all delivered to the saints' against teachers who have crept in and turned grace into a license for immorality. Drawing on Jewish apocalyptic tradition, Jude lines up historical examples of God's judgment on similar rebellions, ending with one of the NT's greatest doxologies."},
+  "Revelation":{author:"John the apostle (traditional) or a different John",date:"c. AD 95–96",genre:"Apocalypse / Prophecy / Letter",themes:["Sovereignty of God","Worship","Persecution","Judgment","New creation"],overview:"Revelation is addressed to seven real congregations under Roman imperial pressure — it is a pastoral letter written in the apocalyptic genre, using symbolic language to declare that Caesar is not lord, Christ is. Its visions of judgment and cosmic warfare ultimately culminate in the New Jerusalem — God dwelling with humanity forever, all things made new."}
+};
+
+// ── Hot Topics ────────────────────────────────────────────────────────────────
+const HOT_TOPICS = [
+  {id:"abortion",icon:"🤱",title:"Abortion & the Unborn",desc:"Passages cited in discussions about personhood, life, and the status of the unborn.",verses:[
+    {ref:"Psalm 139:13-16",note:"God knitting a person together in the womb — widely cited for the personhood of the unborn."},
+    {ref:"Jeremiah 1:5",note:"God knowing and appointing Jeremiah before birth — used to argue for prenatal personhood."},
+    {ref:"Luke 1:41-44",note:"John the Baptist leaping in the womb at Mary's greeting — cited for fetal awareness and personhood."},
+    {ref:"Exodus 21:22-25",note:"Injury to a pregnant woman — the legal status of the unborn has been debated extensively from this text."},
+    {ref:"Psalm 51:5",note:"'Sinful from conception' — cited for personhood beginning at conception."},
+    {ref:"Genesis 2:7",note:"Life begins when God breathes breath into the nostrils — cited by some as marking the start of personhood at birth."},
+    {ref:"Numbers 5:11-31",note:"A priest-administered test that could end a pregnancy — cited in debates about how the OT law treated fetal life."},
+    {ref:"Job 3:3,16",note:"Job cursing the day of his birth and mourning stillbirths — cited in discussions of fetal life and personhood."},
+    {ref:"Isaiah 49:1",note:"The Servant called from the womb — another prenatal calling passage."},
+    {ref:"Proverbs 24:11-12",note:"'Rescue those being led away to death' — cited in arguments about speaking for the vulnerable."}
+  ]},
+  {id:"homosexuality",icon:"🫂",title:"Homosexuality",desc:"Passages cited across traditions in discussions about same-sex relationships.",verses:[
+    {ref:"Genesis 1:27-28",note:"Male and female created in God's image, blessed and called to multiply — cited for male-female as the created norm."},
+    {ref:"Genesis 2:24",note:"Man and woman united as one flesh — cited as the foundational definition of marriage."},
+    {ref:"Leviticus 18:22",note:"Male same-sex intercourse prohibited — the primary Levitical text; context and application debated."},
+    {ref:"Romans 1:26-27",note:"Paul describes same-sex relations as contrary to nature — the most discussed NT text on this topic."},
+    {ref:"1 Corinthians 6:9-11",note:"A list including arsenokoitai and malakoi — translation and meaning of these terms is actively debated."},
+    {ref:"Matthew 19:4-6",note:"Jesus defines marriage with reference to Genesis male/female — cited for the traditional view."},
+    {ref:"Genesis 19:1-11",note:"The men of Sodom — whether the sin was sexual violence, inhospitality, or homosexuality specifically is debated."},
+    {ref:"Ezekiel 16:49-50",note:"Sodom's sin described as pride and neglect of the poor — cited by those who question a primarily sexual reading."},
+    {ref:"Galatians 3:28",note:"'Neither male nor female in Christ' — cited in affirming arguments about the inclusivity of the new covenant."},
+    {ref:"Acts 10:15",note:"'What God has made clean, do not call unclean' — cited in some affirming arguments about moral revision."}
+  ]},
+  {id:"transgenderism",icon:"🌈",title:"Gender Identity",desc:"Passages cited in discussions about biological sex, gender, and identity.",verses:[
+    {ref:"Genesis 1:27",note:"'Male and female he created them' — the primary text cited for the binary nature of biological sex."},
+    {ref:"Deuteronomy 22:5",note:"Prohibition on cross-dressing — cited in traditional arguments; applicability to gender identity is debated."},
+    {ref:"Psalm 139:13-16",note:"'Fearfully and wonderfully made' — cited both for the goodness of embodiment and for affirmation of gender diverse experience."},
+    {ref:"Matthew 19:4",note:"Jesus references 'male and female at the beginning' — cited for the creational norm of binary sex."},
+    {ref:"Isaiah 56:3-5",note:"Eunuchs given 'a name better than sons and daughters' — cited in affirming arguments about gender non-conformity."},
+    {ref:"Matthew 19:12",note:"'Eunuchs born that way' — cited by some as acknowledging biological sex variations."},
+    {ref:"Galatians 3:28",note:"'Neither male nor female in Christ' — cited for the diminished significance of gender distinctions in the new covenant."},
+    {ref:"2 Corinthians 5:17",note:"'New creation' in Christ — cited in arguments about identity being redefined by the gospel."},
+    {ref:"1 Corinthians 6:19-20",note:"Body as temple of the Holy Spirit — cited in discussions about the significance of the body."}
+  ]},
+  {id:"marriage",icon:"💍",title:"Marriage & Divorce",desc:"What Scripture says about the nature, purpose, and dissolution of marriage.",verses:[
+    {ref:"Genesis 2:18-24",note:"The first marriage — used as the template for marriage across the traditions."},
+    {ref:"Matthew 19:3-9",note:"Jesus on divorce: allows it for sexual immorality (πορνεία), affirms the original creational design."},
+    {ref:"1 Corinthians 7:1-16",note:"Paul on marriage, celibacy, and divorce — includes the 'Pauline privilege' for mixed marriages."},
+    {ref:"Ephesians 5:22-33",note:"Husband and wife as a picture of Christ and the church — foundational but interpretation of roles is widely debated."},
+    {ref:"Malachi 2:14-16",note:"'God hates divorce' — a strong statement requiring context; the exact Hebrew is also debated."},
+    {ref:"Song of Solomon 2:3-6",note:"Romantic and erotic love celebrated as God's good gift within covenant relationship."},
+    {ref:"Hebrews 13:4",note:"'Marriage should be honored by all, and the marriage bed kept pure.'"},
+    {ref:"1 Corinthians 7:32-35",note:"Paul commends singleness as freeing one for undivided devotion to God."},
+    {ref:"Proverbs 31:10-31",note:"The capable wife — a poem celebrating a woman of strength and dignity, not passivity."}
+  ]},
+  {id:"slavery",icon:"⛓️",title:"Slavery",desc:"The Bible's complex engagement with slavery — from regulation to liberation.",verses:[
+    {ref:"Exodus 21:1-11",note:"Hebrew slave laws — provide rights and release, but also permit certain forms of bondservitude."},
+    {ref:"Deuteronomy 23:15-16",note:"'Do not return a runaway slave' — remarkable protection for escaped slaves in the ancient world."},
+    {ref:"1 Timothy 1:10",note:"'Enslavers' (ἀνδραποδισταῖς) listed among the lawless — cited as a condemnation of slave-trading."},
+    {ref:"Philemon 1:8-21",note:"Paul's letter urging Philemon to receive Onesimus as a 'dear brother' — the seed of abolition in the NT."},
+    {ref:"Galatians 3:28",note:"'Neither slave nor free in Christ' — cited as undermining slavery's fundamental premise."},
+    {ref:"Ephesians 6:5-9",note:"Instructions to slaves and masters — cited both to justify and to critique slavery, depending on the reading."},
+    {ref:"1 Corinthians 7:21",note:"'If you can gain your freedom, do so' — Paul encouraging slaves to seek freedom when possible."},
+    {ref:"Exodus 21:16",note:"Kidnapping someone for enslavement is punishable by death — cited against the Atlantic slave trade."},
+    {ref:"Leviticus 25:39-43",note:"Fellow Israelites not to be treated as slaves — a principle with wider implications."}
+  ]},
+  {id:"eschatology",icon:"⏳",title:"End Times & Eschatology",desc:"Passages central to the major views on what happens at the end of history.",verses:[
+    {ref:"Matthew 24:1-51",note:"The Olivet Discourse — Jesus's teaching on the destruction of Jerusalem and the end of the age; fulfilled vs. future readings debated."},
+    {ref:"1 Thessalonians 4:13-18",note:"The 'rapture' passage — believers caught up to meet the Lord; pre/mid/post-tribulation debates center here."},
+    {ref:"Revelation 20:1-6",note:"The thousand-year reign — the key text dividing pre-, post-, and amillennialists."},
+    {ref:"Daniel 9:24-27",note:"The 70 weeks — one of the most interpreted prophetic passages; various 'gap' and 'no gap' readings exist."},
+    {ref:"2 Peter 3:10-13",note:"The Day of the LORD and the new heavens and earth — annihilation or renewal of the cosmos?"},
+    {ref:"Isaiah 65:17-25",note:"The new creation — wolves and lambs together; cited by premillennialists for a literal future kingdom."},
+    {ref:"Acts 1:11",note:"'He will come back in the same way you have seen him go' — the bodily return of Christ."},
+    {ref:"Zechariah 14:1-9",note:"Apocalyptic battle at Jerusalem — interpreted literally by some, symbolically by others."},
+    {ref:"Matthew 16:28",note:"'Some standing here will not taste death before they see the Son of Man coming' — fuels preterist readings."},
+    {ref:"Revelation 21:1-5",note:"New Jerusalem descending from heaven — the goal of all history; God dwells with humanity."}
+  ]},
+  {id:"predestination",icon:"🎯",title:"Predestination & Free Will",desc:"The great debate between divine sovereignty and human responsibility.",verses:[
+    {ref:"Romans 8:28-30",note:"'Foreknew, predestined, called, justified, glorified' — the golden chain of Calvinist soteriology."},
+    {ref:"Ephesians 1:4-5",note:"Chosen in Christ before the foundation of the world — foundational for Reformed election theology."},
+    {ref:"John 6:44",note:"'No one can come to me unless the Father draws them' — cited for unconditional election."},
+    {ref:"Romans 9:14-21",note:"Jacob and Esau, the potter and clay — Paul's strongest argument for God's sovereign choice."},
+    {ref:"Acts 13:48",note:"'As many as were appointed to eternal life believed' — a key Calvinist proof text."},
+    {ref:"2 Peter 3:9",note:"God is 'not wishing that any should perish, but that all should reach repentance' — central to Arminian arguments."},
+    {ref:"John 3:16",note:"'Whoever believes' — the open invitation of the gospel cited for human responsibility."},
+    {ref:"1 Timothy 2:3-4",note:"God desires all people to be saved — cited for universal salvific will."},
+    {ref:"Revelation 22:17",note:"'Let the one who desires take the water of life without price' — the open invitation."},
+    {ref:"Ezekiel 18:23",note:"God takes no pleasure in the death of the wicked — cited for genuine divine desire for all to turn."}
+  ]},
+  {id:"trinity",icon:"☘️",title:"The Trinity",desc:"Passages foundational to Trinitarian theology and debates about God's nature.",verses:[
+    {ref:"Matthew 28:19",note:"Baptism in 'the name of the Father, Son, and Holy Spirit' — one name, three persons; foundational Trinitarian text."},
+    {ref:"John 1:1",note:"'The Word was God' — the full deity of the Son; Arians translate 'a god,' Trinitarians 'God.'"},
+    {ref:"John 10:30",note:"'The Father and I are one' — unity of essence claimed by Trinitarians; others read it as functional unity."},
+    {ref:"Genesis 1:26",note:"'Let us make man in our image' — the plural debated as royal plural, angels, or intra-Trinitarian address."},
+    {ref:"Isaiah 9:6",note:"The child called 'Mighty God, Everlasting Father' — applied to Jesus in NT; key Trinitarian text."},
+    {ref:"Deuteronomy 6:4",note:"'The LORD our God, the LORD is one' — the Shema; the bedrock monotheism Trinitarians claim to preserve."},
+    {ref:"2 Corinthians 13:14",note:"The Trinitarian benediction — Father, Son, and Holy Spirit coordinated as equal sources of grace."},
+    {ref:"John 14:16-17",note:"Jesus sends 'another Helper' — the Spirit as a distinct person alongside the Son."},
+    {ref:"Colossians 2:9",note:"'In him the whole fullness of deity dwells bodily' — the incarnation of the full Godhead."},
+    {ref:"John 17:5",note:"Jesus asking to be restored to the glory he had 'before the world existed' — pre-existence of the Son."}
+  ]},
+  {id:"water-baptism",icon:"💧",title:"Water Baptism",desc:"The mode, meaning, and necessity of baptism across Christian traditions.",verses:[
+    {ref:"Matthew 28:19",note:"'Go and baptize' — the command foundational to all traditions of Christian baptism."},
+    {ref:"Acts 2:38",note:"'Repent and be baptized for the forgiveness of sins' — cited for baptismal regeneration."},
+    {ref:"Romans 6:3-4",note:"Baptism as dying and rising with Christ — the participatory/symbolic meaning."},
+    {ref:"1 Peter 3:21",note:"'Baptism now saves you' — one of the strongest baptismal regeneration texts; the parenthetical context is disputed."},
+    {ref:"Galatians 3:27",note:"'Clothed with Christ through baptism' — union with Christ through the rite."},
+    {ref:"Acts 10:44-48",note:"The Spirit falls before baptism — cited by those who see baptism as a response to grace, not its vehicle."},
+    {ref:"Luke 23:43",note:"The thief on the cross promised paradise without baptism — cited against baptism as strictly necessary."},
+    {ref:"Colossians 2:11-12",note:"Baptism linked to circumcision — a key text for paedobaptists (infant baptism)."},
+    {ref:"Matthew 3:11",note:"John's water baptism contrasted with the Spirit baptism Jesus brings — raises questions about the two."}
+  ]},
+  {id:"holy-spirit-baptism",icon:"🕊️",title:"Baptism in the Holy Spirit",desc:"What Spirit-baptism is, when it occurs, and whether tongues are its evidence.",verses:[
+    {ref:"Acts 1:4-5",note:"Jesus commands the disciples to wait for the baptism of the Holy Spirit — the initiating promise."},
+    {ref:"Acts 2:1-4",note:"Pentecost — the Spirit poured out with tongues of fire; tongues as first sign."},
+    {ref:"Acts 10:44-46",note:"The 'Gentile Pentecost' — Spirit falls on Cornelius's household with tongues before water baptism."},
+    {ref:"Acts 8:14-17",note:"Samaritans receive the Spirit through the laying on of hands — a distinct second experience."},
+    {ref:"Acts 19:1-6",note:"Ephesian disciples rebaptized and Spirit received with tongues and prophecy."},
+    {ref:"1 Corinthians 12:13",note:"'By one Spirit we were all baptized into one body' — cited by those who see Spirit-baptism as conversion."},
+    {ref:"1 Corinthians 14:2-5",note:"Tongues as prayer and edification — Paul's nuanced treatment of the gift."},
+    {ref:"John 7:38-39",note:"'Rivers of living water' — referring to the Spirit not yet given; anticipates Pentecost."},
+    {ref:"Luke 11:13",note:"'How much more will your Father give the Holy Spirit to those who ask' — ongoing prayer for the Spirit."}
+  ]},
+  {id:"sabbath",icon:"🕯️",title:"Sabbath Rest",desc:"Whether Christians are bound to the Sabbath, and what rest means in Christ.",verses:[
+    {ref:"Genesis 2:2-3",note:"God rests on the seventh day and hallows it — the creational foundation of Sabbath."},
+    {ref:"Exodus 20:8-11",note:"The fourth commandment — Sabbath as covenant sign; its continuing applicability is debated."},
+    {ref:"Mark 2:27-28",note:"'The Sabbath was made for man, not man for the Sabbath' — Jesus relativizes the Sabbath institution."},
+    {ref:"Colossians 2:16-17",note:"Sabbath described as a 'shadow' of what was to come; its observance not required — key text for fulfilled-Sabbath view."},
+    {ref:"Romans 14:5-6",note:"Each person should be 'fully convinced in their own mind' about observing days."},
+    {ref:"Hebrews 4:1-11",note:"A 'Sabbath rest remains for the people of God' — interpreted as rest in Christ or a literal future rest."},
+    {ref:"Acts 20:7",note:"The church meeting on the first day of the week — the basis for Sunday as the Christian gathering day."},
+    {ref:"Isaiah 58:13-14",note:"Sabbath as delight, not burden — God's vision of joyful rest."},
+    {ref:"Matthew 12:8",note:"'The Son of Man is lord of the Sabbath' — Jesus's authority over the institution."}
+  ]},
+  {id:"tithing",icon:"💰",title:"Tithing & Giving",desc:"Whether the tithe is a binding Christian obligation or a guide for generous giving.",verses:[
+    {ref:"Malachi 3:10",note:"'Bring the full tithe into the storehouse' — the most-quoted tithing text; context is OT covenant."},
+    {ref:"Genesis 14:18-20",note:"Abraham tithing to Melchizedek before the Mosaic law — cited for tithing as a pre-law principle."},
+    {ref:"Matthew 23:23",note:"Jesus commends tithing 'mint and dill' while not neglecting justice and mercy — affirmation of tithing in principle."},
+    {ref:"2 Corinthians 9:6-7",note:"'Give what you have decided in your heart, not reluctantly or under compulsion' — cited against mandatory tithing."},
+    {ref:"Hebrews 7:4-10",note:"Melchizedek's tithe shows the superiority of Melchizedek's priesthood — used to argue for tithing in the new covenant."},
+    {ref:"Luke 21:1-4",note:"The widow's offering — Jesus commends sacrificial giving beyond a mere percentage."},
+    {ref:"1 Corinthians 16:2",note:"Regular proportional giving on the first day of the week — the NT giving principle."},
+    {ref:"Acts 2:44-45",note:"Early church sharing everything — a model of radical generosity beyond the tithe."},
+    {ref:"Leviticus 27:30",note:"'A tenth of everything from the land belongs to the LORD' — the Mosaic tithe's original context."}
+  ]},
+  {id:"church-leadership",icon:"👑",title:"Church Leadership",desc:"Who may lead, how authority works, and the shape of healthy church governance.",verses:[
+    {ref:"1 Timothy 3:1-13",note:"Qualifications for overseers and deacons — the most detailed NT leadership criteria."},
+    {ref:"Titus 1:5-9",note:"Elder qualifications for local churches — parallel to 1 Timothy 3; character-centred."},
+    {ref:"1 Peter 5:1-4",note:"Elders to 'shepherd the flock' as undershepherds under Christ; servant leadership, not dominance."},
+    {ref:"Matthew 20:25-28",note:"Jesus defines greatness as servanthood — the counter-cultural leadership model."},
+    {ref:"Acts 14:23",note:"Paul appointing elders in every church — plurality of elders as the Pauline pattern."},
+    {ref:"1 Timothy 2:11-12",note:"'I do not permit a woman to teach or exercise authority over a man' — central to complementarian arguments."},
+    {ref:"Galatians 3:28",note:"'Neither male nor female in Christ' — central to egalitarian arguments about leadership."},
+    {ref:"Romans 16:1-2",note:"Phoebe as διάκονος (deacon/minister) — evidence of women in formal church roles."},
+    {ref:"Romans 16:7",note:"Junia 'outstanding among the apostles' — debated: was Junia an apostle, or notable to the apostles?"},
+    {ref:"Acts 18:26",note:"Priscilla (listed first) explains the way of God to Apollos — a woman teaching a man in Acts."}
+  ]},
+  {id:"healing",icon:"🙌",title:"Divine Healing",desc:"Whether miraculous healing is in the atonement, promised for today, and how to pray for the sick.",verses:[
+    {ref:"Isaiah 53:4-5",note:"'By his stripes we are healed' — cited for healing in the atonement; Matthew applies it to Jesus's healing ministry."},
+    {ref:"Matthew 8:16-17",note:"Jesus heals all who are sick to 'fulfill what was spoken by Isaiah the prophet' — Matthew's application of Isaiah 53."},
+    {ref:"James 5:14-15",note:"'Is any among you sick? Let the elders pray' — the primary NT text for healing prayer."},
+    {ref:"1 Peter 2:24",note:"'By his wounds you have been healed' — Peter quotes Isaiah 53 in the context of spiritual healing (from sin)."},
+    {ref:"Mark 16:17-18",note:"Signs including healing will follow believers — the longer ending; text-critical issues noted."},
+    {ref:"2 Corinthians 12:7-9",note:"Paul's thorn was not healed despite three prayers — cited to balance triumphalist healing theology."},
+    {ref:"1 Timothy 5:23",note:"Paul advises Timothy to take wine for his stomach — medical means not excluded by faith."},
+    {ref:"Philippians 2:25-27",note:"Epaphroditus nearly died — illness is not always rebuked or immediately healed."},
+    {ref:"John 9:1-3",note:"Man blind from birth — Jesus says it was not due to sin; corrects the equation of suffering with faithlessness."}
+  ]},
+  {id:"women-in-ministry",icon:"👩‍🏫",title:"Women in Ministry",desc:"A central debate: may women preach, teach, and lead in the church?",verses:[
+    {ref:"Galatians 3:28",note:"'Neither male nor female — all are one in Christ Jesus' — the foundational egalitarian text."},
+    {ref:"1 Timothy 2:11-12",note:"Paul does not permit a woman to teach or have authority over a man — the foundational complementarian text."},
+    {ref:"1 Corinthians 14:34-35",note:"Women to be silent in churches — context (asking questions vs. all speech) and application are debated."},
+    {ref:"1 Corinthians 11:5",note:"Women praying and prophesying in church — assumes women speak publicly, just with head covered."},
+    {ref:"Acts 2:17",note:"'Your daughters will prophesy' — the Spirit's outpouring explicitly includes women as proclaimers."},
+    {ref:"Acts 21:9",note:"Philip's four daughters were prophetesses — acknowledged female prophetic ministry."},
+    {ref:"Romans 16:1-2",note:"Phoebe commended as a deacon and benefactor — evidence of a woman in formal church ministry."},
+    {ref:"Judges 4:4-10",note:"Deborah as both prophet and judge of all Israel — a woman exercising the highest leadership in the OT."},
+    {ref:"Proverbs 31:26",note:"The capable woman 'speaks with wisdom' and teaches — wisdom as a feminine voice in Proverbs."}
+  ]},
+  {id:"capital-punishment",icon:"⚖️",title:"Capital Punishment",desc:"Biblical teaching on whether the state may lawfully take a life as punishment.",verses:[
+    {ref:"Genesis 9:6",note:"'Whoever sheds the blood of man, by man shall his blood be shed' — the foundational text for capital punishment."},
+    {ref:"Exodus 21:12-14",note:"Death for murder in Mosaic law — intentional vs. unintentional distinctions."},
+    {ref:"Romans 13:1-4",note:"Government 'does not bear the sword in vain' — widely cited for state authority to execute."},
+    {ref:"Numbers 35:30-31",note:"No ransom accepted for murder — the death penalty is mandatory in the Mosaic system."},
+    {ref:"John 8:1-11",note:"The woman caught in adultery — Jesus does not enforce the death penalty; cited for its abolition."},
+    {ref:"Matthew 5:38-39",note:"'You have heard eye for eye…but I say turn the other cheek' — Jesus's revision of retributive justice."},
+    {ref:"Romans 12:19",note:"'Vengeance is mine, says the Lord' — cited for entrusting justice to God rather than human execution."},
+    {ref:"Acts 25:11",note:"Paul acknowledges that if he deserves death, he will not resist it — implicit affirmation of the state's right."},
+    {ref:"Proverbs 17:15",note:"Acquitting the guilty and condemning the innocent are both abominations to God."}
+  ]},
+  {id:"just-war",icon:"🛡️",title:"Just War & Pacifism",desc:"May a Christian fight? When, if ever, is war justifiable?",verses:[
+    {ref:"Romans 13:1-7",note:"Governing authorities bear the sword against evil — the primary text for Christian participation in state force."},
+    {ref:"Matthew 5:9",note:"'Blessed are the peacemakers' — the beatitude foundational to pacifist ethics."},
+    {ref:"Matthew 5:39",note:"'Do not resist the evil person' — the non-resistance command at the heart of pacifism."},
+    {ref:"Luke 3:14",note:"Soldiers told to be content with their pay, not to quit the army — John the Baptist does not condemn military service."},
+    {ref:"John 15:13",note:"'Greater love has no one than to lay down his life for his friends' — cited for soldiers' sacrifice."},
+    {ref:"Isaiah 2:4",note:"'They will beat their swords into plowshares' — the eschatological vision of universal peace."},
+    {ref:"Ecclesiastes 3:8",note:"'A time for war and a time for peace' — cited for the legitimacy of war in a fallen world."},
+    {ref:"Luke 22:36",note:"Jesus tells the disciples to buy swords — variously interpreted as literal, symbolic, or a limited provision."},
+    {ref:"Revelation 19:11-16",note:"Christ himself returns as a warrior king — cited for just-war theology's divine legitimacy."}
+  ]},
+  {id:"alcohol",icon:"🍷",title:"Alcohol & Sobriety",desc:"From wine at Cana to warnings about drunkenness — what the Bible says about drinking.",verses:[
+    {ref:"John 2:1-11",note:"Jesus turns water into wine at a wedding — and the headwaiter praises its quality; cited for moderate drinking."},
+    {ref:"Proverbs 20:1",note:"'Wine is a mocker, strong drink a brawler' — a strong warning against alcohol's dangers."},
+    {ref:"Ephesians 5:18",note:"'Do not get drunk with wine… but be filled with the Spirit' — the NT's clearest prohibition of drunkenness."},
+    {ref:"1 Timothy 5:23",note:"Paul tells Timothy to drink a little wine for his stomach — medicinal use of wine affirmed."},
+    {ref:"Proverbs 31:6-7",note:"'Give wine to those who are bitter in soul' — wine as comfort for the suffering; not absolute prohibition."},
+    {ref:"Romans 14:21",note:"It is good not to drink wine if it causes a brother to stumble — conscience and community over personal freedom."},
+    {ref:"Numbers 6:3",note:"The Nazirite vow requires abstaining from all wine — total abstinence as a form of holy consecration."},
+    {ref:"Galatians 5:19-21",note:"Drunkenness listed among the works of the flesh that exclude from God's kingdom."},
+    {ref:"Psalm 104:14-15",note:"'Wine that gladdens human hearts' — creation's gift; God's good provision for joy."}
+  ]},
+  {id:"wealth-poverty",icon:"💸",title:"Wealth & Poverty",desc:"Does God promise prosperity? How should Christians relate to money?",verses:[
+    {ref:"Matthew 19:23-24",note:"'Easier for a camel to go through the eye of a needle than for a rich man to enter God's kingdom' — Jesus's radical warning."},
+    {ref:"1 Timothy 6:6-10",note:"'The love of money is a root of all kinds of evil' — not money itself, but love of it."},
+    {ref:"Luke 12:13-21",note:"The rich fool who stored up earthly goods but was not rich toward God."},
+    {ref:"Luke 16:19-31",note:"Rich man and Lazarus — the reversal of fortune after death; a warning against indifference to the poor."},
+    {ref:"James 5:1-6",note:"'Weep and howl, you rich people' — James's most severe address to the wealthy who exploit workers."},
+    {ref:"Proverbs 10:4",note:"'Lazy hands make for poverty' — work and diligence as paths to provision."},
+    {ref:"2 Corinthians 9:6-11",note:"'God loves a cheerful giver' and will make grace abound for generous giving."},
+    {ref:"Acts 2:44-45",note:"The early church held everything in common and distributed to any who had need."},
+    {ref:"Deuteronomy 8:17-18",note:"'Do not say to yourself, my power produced this wealth' — God gives the ability to produce wealth."},
+    {ref:"Proverbs 19:17",note:"'Whoever is kind to the poor lends to the LORD' — generosity to the poor is generosity to God."}
+  ]}
+];
+
 const CULTURE_DATA = {
   // ── GENESIS ──────────────────────────────────────────────────────────────
   "Genesis":[
@@ -4070,6 +4360,120 @@ function CulturePanel({book, ch, onClose}){
   );
 }
 
+// ── Book Introduction Panel ────────────────────────────────────────────────
+function BookIntroPanel({book, onClose, inline}){
+  const info=BOOK_INTROS[book];
+  const panelStyle=inline?{}:{position:'fixed',top:0,right:0,bottom:0,width:'min(380px,100vw)',background:'var(--surface)',borderLeft:'1px solid var(--border)',zIndex:3200,display:'flex',flexDirection:'column',overflowY:'auto'};
+  if(!info) return(
+    <div style={panelStyle}>
+      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'1rem',borderBottom:'1px solid var(--border)'}}>
+        <span style={{fontWeight:700,fontSize:'1rem'}}>📖 Book Introduction</span>
+        <button onClick={onClose} style={{background:'none',border:'none',fontSize:'1.4rem',cursor:'pointer',color:'var(--fg)',lineHeight:1}}>×</button>
+      </div>
+      <div style={{padding:'1.2rem',color:'var(--fg-muted)',fontSize:'.9rem'}}>No introduction available for <strong>{book}</strong>.</div>
+    </div>
+  );
+  return(
+    <div style={panelStyle}>
+      {!inline&&<div style={{position:'fixed',inset:0,zIndex:3199,background:'var(--overlay-bg)',backdropFilter:'blur(3px)',WebkitBackdropFilter:'blur(3px)'}} onClick={onClose}/>}
+      <div style={{position:'relative',zIndex:3200,display:'flex',flexDirection:'column',height:'100%'}}>
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'1rem 1rem .8rem',borderBottom:'1px solid var(--border)',flexShrink:0}}>
+          <span style={{fontWeight:700,fontSize:'1.05rem'}}>📖 {book}</span>
+          <button onClick={onClose} style={{background:'none',border:'none',fontSize:'1.4rem',cursor:'pointer',color:'var(--fg)',lineHeight:1}}>×</button>
+        </div>
+        <div style={{padding:'1rem 1rem 1.5rem',overflowY:'auto',flex:1}}>
+          <div style={{display:'grid',gridTemplateColumns:'auto 1fr',gap:'.3rem .7rem',marginBottom:'1rem',fontSize:'.82rem'}}>
+            <span style={{color:'var(--fg-muted)',fontWeight:600}}>Author</span>
+            <span style={{color:'var(--fg)'}}>{info.author}</span>
+            <span style={{color:'var(--fg-muted)',fontWeight:600}}>Date</span>
+            <span style={{color:'var(--fg)'}}>{info.date}</span>
+            <span style={{color:'var(--fg-muted)',fontWeight:600}}>Genre</span>
+            <span style={{color:'var(--fg)'}}>{info.genre}</span>
+          </div>
+          <div style={{marginBottom:'.9rem'}}>
+            <div style={{fontSize:'.78rem',fontWeight:700,color:'var(--fg-muted)',textTransform:'uppercase',letterSpacing:'.04em',marginBottom:'.4rem'}}>Key Themes</div>
+            <div style={{display:'flex',flexWrap:'wrap',gap:'.3rem'}}>
+              {info.themes.map(function(t){return(
+                <span key={t} style={{background:'var(--accent)',color:'var(--accent-fg,#fff)',borderRadius:'999px',padding:'.15rem .55rem',fontSize:'.75rem',fontWeight:500}}>{t}</span>
+              );},[])}
+            </div>
+          </div>
+          <div>
+            <div style={{fontSize:'.78rem',fontWeight:700,color:'var(--fg-muted)',textTransform:'uppercase',letterSpacing:'.04em',marginBottom:'.4rem'}}>Overview</div>
+            <p style={{margin:0,fontSize:'.88rem',lineHeight:1.6,color:'var(--fg)'}}>{info.overview}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Hot Topics Panel ───────────────────────────────────────────────────────
+function HotTopicsPanel({onClose, onNavigate, inline}){
+  const [sel,setSel]=useState(null);
+  const topic=sel!=null?HOT_TOPICS[sel]:null;
+  const panelStyle=inline?{}:{position:'fixed',top:0,right:0,bottom:0,width:'min(400px,100vw)',background:'var(--surface)',borderLeft:'1px solid var(--border)',zIndex:3200,display:'flex',flexDirection:'column'};
+
+  function handleVerse(ref){
+    if(onNavigate){
+      // ref is like "Romans 1:26-27" — navigate to the first verse
+      var m=ref.match(/^(.*)\s(\d+):(\d+)/);
+      if(m) onNavigate(m[1]+" "+m[2]+":"+m[3]);
+    }
+    if(!inline) onClose();
+  }
+
+  return(
+    <div style={panelStyle}>
+      {!inline&&<div style={{position:'fixed',inset:0,zIndex:3199,background:'var(--overlay-bg)',backdropFilter:'blur(3px)',WebkitBackdropFilter:'blur(3px)'}} onClick={onClose}/>}
+      <div style={{position:'relative',zIndex:3200,display:'flex',flexDirection:'column',height:'100%'}}>
+        <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'1rem 1rem .8rem',borderBottom:'1px solid var(--border)',flexShrink:0}}>
+          {topic
+            ? <button onClick={function(){setSel(null);}} style={{background:'none',border:'none',color:'var(--accent)',cursor:'pointer',fontSize:'.9rem',padding:'0 .3rem 0 0',display:'flex',alignItems:'center',gap:'.3rem'}}>
+                <span style={{fontSize:'1.1em'}}>←</span>
+                <span style={{fontWeight:700,fontSize:'1rem'}}>🔥 {topic.icon} {topic.title}</span>
+              </button>
+            : <span style={{fontWeight:700,fontSize:'1.05rem'}}>🔥 Hot Topics</span>
+          }
+          <button onClick={onClose} style={{background:'none',border:'none',fontSize:'1.4rem',cursor:'pointer',color:'var(--fg)',lineHeight:1}}>×</button>
+        </div>
+        {!topic&&(
+          <div style={{overflowY:'auto',flex:1,padding:'.5rem 0'}}>
+            <div style={{padding:'.4rem 1rem .8rem',fontSize:'.78rem',color:'var(--fg-muted)',lineHeight:1.5}}>
+              Passages cited across Christian traditions on debated topics. Presented neutrally — explore Scripture yourself.
+            </div>
+            {HOT_TOPICS.map(function(t,i){return(
+              <button key={t.id} onClick={function(){setSel(i);}}
+                style={{display:'flex',alignItems:'center',gap:'.7rem',width:'100%',padding:'.75rem 1rem',background:'none',border:'none',borderBottom:'1px solid var(--border)',cursor:'pointer',textAlign:'left',color:'var(--fg)'}}>
+                <span style={{fontSize:'1.4rem',width:'1.8rem',textAlign:'center',flexShrink:0}}>{t.icon}</span>
+                <div>
+                  <div style={{fontWeight:600,fontSize:'.92rem'}}>{t.title}</div>
+                  <div style={{fontSize:'.76rem',color:'var(--fg-muted)',marginTop:'.1rem'}}>{t.verses.length} passages</div>
+                </div>
+                <span style={{marginLeft:'auto',color:'var(--fg-muted)',fontSize:'1rem'}}>›</span>
+              </button>
+            );})}
+          </div>
+        )}
+        {topic&&(
+          <div style={{overflowY:'auto',flex:1,padding:'.5rem 0'}}>
+            <div style={{padding:'.4rem 1rem .8rem',fontSize:'.78rem',color:'var(--fg-muted)',lineHeight:1.5}}>{topic.desc}</div>
+            {topic.verses.map(function(v,i){return(
+              <div key={i} style={{padding:'.75rem 1rem',borderBottom:'1px solid var(--border)'}}>
+                <button onClick={function(){handleVerse(v.ref);}}
+                  style={{display:'block',background:'none',border:'none',cursor:'pointer',textAlign:'left',padding:0,width:'100%'}}>
+                  <span style={{fontWeight:700,fontSize:'.88rem',color:'var(--accent)'}}>{v.ref}</span>
+                </button>
+                <div style={{fontSize:'.8rem',color:'var(--fg-muted)',marginTop:'.25rem',lineHeight:1.5}}>{v.note}</div>
+              </div>
+            );})}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ── Theological Arc Navigator ──────────────────────────────────────────────
 const PHASE_LABELS = {seed:"🌱 The Seed — OT Foundation", promise:"🔥 The Promise — Prophetic", fruit:"🌿 The Fulfillment — NT"};
 function TheologyPanel({onClose, onNavigate, inline}){
@@ -4527,6 +4931,8 @@ function App(){
   const [fbUser,setFbUser]=useState(null);
   const [fbSyncing,setFbSyncing]=useState(false);
   const [showAccountModal,setShowAccountModal]=useState(false);
+  const [showBookIntro,setShowBookIntro]=useState(false);
+  const [showHotTopics,setShowHotTopics]=useState(false);
   const [showWhatsNew,setShowWhatsNew]=useState(()=>!localStorage.getItem('jm-seen-v65'));
   const ambientRef=useRef(null);
 
@@ -4862,6 +5268,10 @@ function App(){
           }
         </div>
         <div className="side-toolbar">
+          <button className={"side-tool-btn"+(showBookIntro?" active":"")} title="Book Introduction" onClick={()=>{setShowBookIntro(true);}}>📖</button>
+          <div className="side-tool-sep"/>
+          <button className={"side-tool-btn"+(showHotTopics?" active":"")} title="Hot Topics" onClick={()=>{setShowHotTopics(true);}}>🔥</button>
+          <div className="side-tool-sep"/>
           <button className={"side-tool-btn"+(showNotes?" active":"")} title="Notes" onClick={()=>{setShowNotes(true);}}>📝</button>
           <div className="side-tool-sep"/>
           <button className={"side-tool-btn"+(showPlaces?" active":"")} title="Places" onClick={()=>{setShowPlaces(true);}}>📍</button>
@@ -4888,7 +5298,7 @@ function App(){
           <span className="mob-tab-icon">{isNT?"α":"א"}</span>
           <span>Interlinear</span>
         </button>
-        <button className={"mob-tab"+((showNotes||showPlaces||showTheo||showHighlights||hlMode)?" mob-on"+(isNT?"":" mob-ot"):"")}
+        <button className={"mob-tab"+((showNotes||showPlaces||showTheo||showHighlights||hlMode||showBookIntro||showHotTopics)?" mob-on"+(isNT?"":" mob-ot"):"")}
                 onClick={()=>setShowToolsSheet(true)}>
           <span className="mob-tab-icon">⚙</span>
           <span>Tools</span>
@@ -4900,6 +5310,20 @@ function App(){
           <div className="tools-sheet">
             <div className="tools-sheet-handle"/>
             <div className="tools-sheet-title">Tools</div>
+            <div className="tools-sheet-row" onClick={()=>{setShowBookIntro(true);setShowToolsSheet(false);}}>
+              <span className="tools-sheet-icon">📖</span>
+              <div className="tools-sheet-info">
+                <div className="tools-sheet-label">Book Introduction</div>
+                <div className="tools-sheet-desc">Author, date, genre, themes and overview for {book}</div>
+              </div>
+            </div>
+            <div className="tools-sheet-row" onClick={()=>{setShowHotTopics(true);setShowToolsSheet(false);}}>
+              <span className="tools-sheet-icon">🔥</span>
+              <div className="tools-sheet-info">
+                <div className="tools-sheet-label">Hot Topics</div>
+                <div className="tools-sheet-desc">Key verses on debated theological and ethical questions</div>
+              </div>
+            </div>
             <div className="tools-sheet-row" onClick={()=>{setShowNotes(true);setShowToolsSheet(false);}}>
               <span className="tools-sheet-icon">📝</span>
               <div className="tools-sheet-info">
@@ -4948,6 +5372,8 @@ function App(){
         onNavigate={handleNavigate}/>}
       {showNotes&&<NotesPanel notes={notes} onClose={()=>setShowNotes(false)} onNavigate={handleNavigate}/>}
       {showPlaces&&<PlacesPanel book={book} ch={ch} onClose={()=>setShowPlaces(false)} onNavigate={ref=>{handleNavigate(ref);setShowPlaces(false);}}/>}
+      {showBookIntro&&<BookIntroPanel book={book} onClose={()=>setShowBookIntro(false)}/>}
+      {showHotTopics&&<HotTopicsPanel onClose={()=>setShowHotTopics(false)} onNavigate={ref=>{handleNavigate(ref);setShowHotTopics(false);}}/>}
       {showTheo&&<TheologyPanel onClose={()=>setShowTheo(false)} onNavigate={ref=>{handleNavigate(ref);setShowTheo(false);}}/>}
       {showCulture&&<CulturePanel book={book} ch={ch} onClose={()=>setShowCulture(false)}/>}
       {showAbout&&<AboutModal onClose={()=>setShowAbout(false)}/>}

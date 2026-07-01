@@ -3844,10 +3844,19 @@ function ParallelPanel({book,ch,verseNum,isNT,interlinearVerses,onClose}){
   const [texts,setTexts]=useState({});
 
   useEffect(()=>{
-    // BSB from interlinear data
-    if(interlinearVerses){
-      const vd=interlinearVerses.find(v=>v.v===verseNum);
-      if(vd&&vd.bsb)setTexts(prev=>({...prev,BSB:vd.bsb}));
+    // BSB — try from already-loaded interlinear data first, then fetch if needed
+    function tryBSBFromChapter(chData){
+      if(!chData)return false;
+      const vd=chData.find(v=>v.v===verseNum);
+      if(vd&&vd.bsb){setTexts(prev=>({...prev,BSB:vd.bsb}));return true;}
+      return false;
+    }
+    if(!tryBSBFromChapter(interlinearVerses)){
+      fetchInterlinearBook(isNT?'NT':'OT',book).then(data=>{
+        if(data&&data.chapters){
+          tryBSBFromChapter(data.chapters[String(ch)]);
+        }
+      }).catch(()=>{});
     }
     // API translations
     TRANSLATIONS.forEach(t=>{
@@ -4742,7 +4751,7 @@ function App(){
           {bookNames.map(b=><option key={b}>{b}</option>)}
         </select>
         <select className={"nav-select"+(isNT?"":" ot")} value={ch} onChange={e=>{setCh(+e.target.value);setSel(null);setActiveV(null);}}>
-          {chapters.map(c=><option key={c} value={c}>Ch. {c}</option>)}
+          {chapters.map(c=><option key={c} value={c}>Chapter {c}</option>)}
         </select>
         {(()=>{
           const vNums=leftVerses.length>0?leftVerses.map(v=>v.v):(interlinearVerses?interlinearVerses.map(v=>v.v):[]);
@@ -4758,8 +4767,8 @@ function App(){
                 if(lel)lel.scrollIntoView({behavior:"smooth",block:"nearest"});
               },100);
             }}>
-              <option value="">v.</option>
-              {vNums.map(v=><option key={v} value={v}>{v}</option>)}
+              <option value="">Verse</option>
+              {vNums.map(v=><option key={v} value={v}>Verse {v}</option>)}
             </select>
           );
         })()}

@@ -415,7 +415,7 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:.
 .qt-badge:hover{opacity:1;background:var(--ot);color:var(--bg);}
 .nt-badge{display:inline-flex;align-items:center;font-size:.52rem;font-weight:800;color:#4a90d9;border:1.5px solid #4a90d9;border-radius:3px;padding:0 3px;cursor:pointer;flex-shrink:0;margin-left:4px;line-height:1.7;opacity:.8;vertical-align:middle;}
 .nt-badge:hover{opacity:1;background:#4a90d9;color:var(--bg);}
-.qt-pop{position:absolute;left:0;right:0;top:100%;z-index:40;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.85rem 1rem .85rem .85rem;box-shadow:0 4px 24px rgba(0,0,0,.35);margin-top:3px;}
+.qt-pop{position:absolute;left:0;right:0;top:100%;z-index:40;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.85rem 1rem .85rem .85rem;box-shadow:0 4px 24px rgba(0,0,0,.35);margin-top:3px;z-index:50;}
 .qt-pop-src{font-size:.65rem;font-weight:700;color:var(--ot);letter-spacing:.07em;text-transform:uppercase;margin-bottom:.35rem;}
 .qt-pop-text{font-size:.8rem;font-style:italic;color:var(--text2);line-height:1.65;margin-bottom:.5rem;border-left:2px solid var(--ot);padding-left:.5rem;}
 .qt-pop-note{font-size:.77rem;color:var(--text2);line-height:1.65;}
@@ -2649,21 +2649,23 @@ function NTQuotePopover({quotes,onClose,onNavigate}){
   );
 }
 
-function VerseBlock({verse,isNT,activeV,selKey,onClick,id,hlBg,hlHex,book,ch}){
+function VerseBlock({verse,isNT,activeV,selKey,onClick,id,hlBg,hlHex,book,ch,onNavigate}){
   const [showQt,setShowQt]=useState(false);
   const [showNq,setShowNq]=useState(false);
   var qtKey=book&&ch?(book+' '+ch+':'+verse.v):null;
   var qtData=qtKey&&OT_QUOTES[qtKey]?OT_QUOTES[qtKey]:null;
   var nqKey=(!isNT&&book&&ch)?(book+' '+ch+':'+verse.v):null;
   var nqData=nqKey&&NT_QUOTES[nqKey]?NT_QUOTES[nqKey]:null;
+  var anyPop=showQt||showNq;
   return(
     <div id={id} className={"verse-block"+(activeV===verse.v?(isNT?" v-active":" v-active ot"):"")} style={hlBg?{background:hlBg,borderLeft:'3px solid '+(hlHex||'transparent'),paddingLeft:'.5rem'}:{}}>
+      {anyPop&&<div style={{position:'fixed',inset:0,zIndex:39,background:'var(--overlay-bg)',backdropFilter:'blur(3px)',WebkitBackdropFilter:'blur(3px)'}} onClick={function(){setShowQt(false);setShowNq(false);}}/>}
       <div className="v-head-slim" style={{position:"relative"}}>
         <span className={"v-num-r"+(isNT?"":" ot")}>{verse.v}</span>
         {qtData&&<span className="qt-badge" title="OT Quotation" onClick={function(e){e.stopPropagation();setShowQt(function(p){return !p;});}}>OT</span>}
         {nqData&&<span className="nt-badge" title="Quoted in NT" onClick={function(e){e.stopPropagation();setShowNq(function(p){return !p;});}}>NT</span>}
-        {showQt&&qtData&&<QuotePopover quotes={qtData} onClose={function(){setShowQt(false);}}/>}
-        {showNq&&nqData&&<NTQuotePopover quotes={nqData} onClose={function(){setShowNq(false);}}/>}
+        {showQt&&qtData&&<QuotePopover quotes={qtData} onClose={function(){setShowQt(false);}} onNavigate={onNavigate}/>}
+        {showNq&&nqData&&<NTQuotePopover quotes={nqData} onClose={function(){setShowNq(false);}} onNavigate={onNavigate}/>}
       </div>
       <div className="word-grid">
         {verse.words.map(w=><WordCell key={verse.v+"-"+w.id} word={w} vNum={verse.v} isNT={isNT} selKey={selKey} onClick={onClick}/>)}
@@ -2787,9 +2789,11 @@ function LeftVerse({verse,isNT,isActive,noteItems,onAddNote,onDeleteNoteItem,onN
   }
   var rowStyle={position:"relative"};
   if(hlBg){rowStyle.background=hlBg;rowStyle.borderLeft="3px solid "+(hlHex||'transparent');}
+  var anyPop=showPop||showQt||showNq;
   return(
     <div id={"lv-"+verse.v} className={"lv-row"+(isActive&&!hlMode?(isNT?" active":" active ot"):"")}
          style={rowStyle} onClick={handleClick}>
+      {anyPop&&<div style={{position:'fixed',inset:0,zIndex:39,background:'var(--overlay-bg)',backdropFilter:'blur(3px)',WebkitBackdropFilter:'blur(3px)'}} onClick={function(e){e.stopPropagation();setShowPop(false);setShowQt(false);setShowNq(false);}}/>}
       <div className="lv-header">
         <span className={"lv-num"+(isNT?"":" ot")}>{verse.v}</span>
         <span className="lv-text">
@@ -4841,7 +4845,7 @@ function App(){
         </div>
         <div className={"right-col"+(mobileView==="list"?" mob-hide":"")}>
           {interlinearVerses
-            ?interlinearVerses.map(v=>{var _hk=nk(test,book,ch,v.v);var _hc=highlights[_hk];var _hcol=_hc?HL_COLORS.find(function(x){return x.k===_hc;}):null;return <VerseBlock key={v.v} id={"rv-"+v.v} verse={v} isNT={isNT} activeV={activeV} selKey={sel?sel.key:null} onClick={handleWord} hlBg={_hcol?_hcol.bg:null} hlHex={_hcol?_hcol.hex:null} book={book} ch={ch}/>;})
+            ?interlinearVerses.map(v=>{var _hk=nk(test,book,ch,v.v);var _hc=highlights[_hk];var _hcol=_hc?HL_COLORS.find(function(x){return x.k===_hc;}):null;return <VerseBlock key={v.v} id={"rv-"+v.v} verse={v} isNT={isNT} activeV={activeV} selKey={sel?sel.key:null} onClick={handleWord} hlBg={_hcol?_hcol.bg:null} hlHex={_hcol?_hcol.hex:null} book={book} ch={ch} onNavigate={handleNavigate}/>;})
             :<div className="no-interlinear">
               {fetchingInterlinear
                 ?"Loading interlinear data…"

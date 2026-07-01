@@ -3906,6 +3906,44 @@ function ParallelPanel({book,ch,verseNum,isNT,interlinearVerses,onClose}){
   );
 }
 
+function WhatsNewModal({onClose}){
+  return(
+    <div className="about-overlay" onClick={onClose}>
+      <div className="about-modal" onClick={e=>e.stopPropagation()} style={{maxWidth:380}}>
+        <div className="about-body">
+          <div style={{fontSize:'1.05rem',fontWeight:700,color:'var(--text)',marginBottom:'.9rem'}}>✨ What's New</div>
+          <div style={{display:'flex',flexDirection:'column',gap:'.75rem',marginBottom:'1.2rem'}}>
+            <div style={{display:'flex',gap:'.75rem',alignItems:'flex-start'}}>
+              <span style={{fontSize:'1.1rem',flexShrink:0}}>👤</span>
+              <div>
+                <div style={{fontSize:'.84rem',fontWeight:600,color:'var(--text)',marginBottom:'.15rem'}}>Save across devices</div>
+                <div style={{fontSize:'.78rem',color:'var(--text2)',lineHeight:1.6}}>Create an account to sync your notes and highlights across devices and browsers.</div>
+              </div>
+            </div>
+            <div style={{display:'flex',gap:'.75rem',alignItems:'flex-start'}}>
+              <span style={{fontSize:'1.1rem',flexShrink:0}}>⇄</span>
+              <div>
+                <div style={{fontSize:'.84rem',fontWeight:600,color:'var(--text)',marginBottom:'.15rem'}}>Compare translations</div>
+                <div style={{fontSize:'.78rem',color:'var(--text2)',lineHeight:1.6}}>Hover any verse and tap ⇄ to view English translations side by side.</div>
+              </div>
+            </div>
+            <div style={{display:'flex',gap:'.75rem',alignItems:'flex-start'}}>
+              <span style={{fontSize:'1.1rem',flexShrink:0}}>📖</span>
+              <div>
+                <div style={{fontSize:'.84rem',fontWeight:600,color:'var(--text)',marginBottom:'.15rem'}}>Jump to a verse</div>
+                <div style={{fontSize:'.78rem',color:'var(--text2)',lineHeight:1.6}}>Use the new verse dropdown in the nav bar to go directly to any verse in the chapter.</div>
+              </div>
+            </div>
+          </div>
+          <div className="about-actions">
+            <button className="about-close-btn" style={{marginLeft:'auto'}} onClick={onClose}>Got it</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function AboutModal({onClose}){
   return(
     <div className="about-overlay" onClick={onClose}>
@@ -4453,6 +4491,7 @@ function App(){
   const [parallelV,setParallelV]=useState(null);
   const [fbUser,setFbUser]=useState(null);
   const [fbSyncing,setFbSyncing]=useState(false);
+  const [showWhatsNew,setShowWhatsNew]=useState(()=>!localStorage.getItem('jm-seen-v61'));
   const ambientRef=useRef(null);
 
   // ── Firebase auth listener ──────────────────────────────────────────────
@@ -4868,6 +4907,7 @@ function App(){
       {showTheo&&<TheologyPanel onClose={()=>setShowTheo(false)} onNavigate={ref=>{handleNavigate(ref);setShowTheo(false);}}/>}
       {showCulture&&<CulturePanel book={book} ch={ch} onClose={()=>setShowCulture(false)}/>}
       {showAbout&&<AboutModal onClose={()=>setShowAbout(false)}/>}
+      {showWhatsNew&&<WhatsNewModal onClose={()=>{setShowWhatsNew(false);localStorage.setItem('jm-seen-v61','1');}}/>}
       {parallelV&&<ParallelPanel book={book} ch={ch} verseNum={parallelV} isNT={isNT} interlinearVerses={interlinearVerses} onClose={()=>setParallelV(null)}/>}
       {sel&&<StrongsPanel entry={entry} strongs={sel.word.s} word={sel.word} isNT={isNT} onClose={()=>setSel(null)} onNavigate={ref=>{handleNavigate(ref);setSel(null);}}/>}
       {addingNote&&<NoteModal verse={addingNote} onSave={data=>handleSaveNote(addingNote,data)} onClose={()=>setAddingNote(null)}/>}

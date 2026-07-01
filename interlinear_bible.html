@@ -2186,6 +2186,35 @@ const OSIS_ID = {
   Zechariah:"ZEC",Malachi:"MAL"
 };
 const translationCache = {};
+const bsbCache = {};
+
+function extractBSBText(content) {
+  return (content||[]).map(item=>{
+    if(typeof item==='string') return item;
+    if(item && item.text) return item.text;
+    return '';
+  }).join('').replace(/\s+/g,' ').trim();
+}
+
+async function fetchBSBChapter(book, ch) {
+  const osisId = OSIS_ID[book];
+  if(!osisId) return null;
+  const key = osisId+'|'+ch;
+  if(bsbCache[key]) return bsbCache[key];
+  try {
+    const r = await fetch('https://bible.helloao.org/api/BSB/'+osisId+'/'+ch+'.json');
+    if(!r.ok) return null;
+    const data = await r.json();
+    const verses = {};
+    if(data.chapter && data.chapter.content){
+      data.chapter.content.forEach(item=>{
+        if(item.type==='verse') verses[item.number]=extractBSBText(item.content);
+      });
+    }
+    bsbCache[key] = verses;
+    return verses;
+  } catch(e){ return null; }
+}
 
 async function fetchChapterFromApiBible(bibleId, book, ch) {
   const key = bibleId+"|"+book+"|"+ch;
@@ -4146,17 +4175,10 @@ function ParallelPanel({book,ch,verseNum,isNT,interlinearVerses,onClose}){
   const [texts,setTexts]=useState({});
 
   useEffect(()=>{
-    // BSB — use prop instantly if available, AND always fetch in parallel as fallback
-    const bsbFromProp=interlinearVerses&&interlinearVerses.find(v=>Number(v.v)===Number(verseNum));
-    if(bsbFromProp&&bsbFromProp.bsb){
-      setTexts(prev=>({...prev,BSB:bsbFromProp.bsb}));
-    }
-    fetchInterlinearBook(isNT?'NT':'OT',book).then(data=>{
-      if(!data||!data.chapters)return;
-      const chData=data.chapters[String(ch)];
-      if(!chData)return;
-      const vd=chData.find(v=>Number(v.v)===Number(verseNum));
-      if(vd&&vd.bsb)setTexts(prev=>({...prev,BSB:vd.bsb}));
+    setTexts({});
+    // BSB — fetch from bible.helloao.org (github data files have empty bsb fields)
+    fetchBSBChapter(book,ch).then(verses=>{
+      if(verses&&verses[verseNum]) setTexts(prev=>({...prev,BSB:verses[verseNum]}));
     }).catch(()=>{});
     // API translations
     TRANSLATIONS.forEach(t=>{

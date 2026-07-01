@@ -3844,20 +3844,14 @@ function ParallelPanel({book,ch,verseNum,isNT,interlinearVerses,onClose}){
   const [texts,setTexts]=useState({});
 
   useEffect(()=>{
-    // BSB — try from already-loaded interlinear data first, then fetch if needed
-    function tryBSBFromChapter(chData){
-      if(!chData)return false;
-      const vd=chData.find(v=>v.v===verseNum);
-      if(vd&&vd.bsb){setTexts(prev=>({...prev,BSB:vd.bsb}));return true;}
-      return false;
-    }
-    if(!tryBSBFromChapter(interlinearVerses)){
-      fetchInterlinearBook(isNT?'NT':'OT',book).then(data=>{
-        if(data&&data.chapters){
-          tryBSBFromChapter(data.chapters[String(ch)]);
-        }
-      }).catch(()=>{});
-    }
+    // BSB — always fetch from interlinear book data (bookCache prevents repeat network calls)
+    fetchInterlinearBook(isNT?'NT':'OT',book).then(data=>{
+      if(!data||!data.chapters)return;
+      const chData=data.chapters[String(ch)];
+      if(!chData)return;
+      const vd=chData.find(v=>Number(v.v)===Number(verseNum));
+      if(vd&&vd.bsb)setTexts(prev=>({...prev,BSB:vd.bsb}));
+    }).catch(()=>{});
     // API translations
     TRANSLATIONS.forEach(t=>{
       const key=t.id+'|'+book+'|'+ch;

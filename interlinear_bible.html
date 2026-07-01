@@ -4494,7 +4494,7 @@ function App(){
   const [parallelV,setParallelV]=useState(null);
   const [fbUser,setFbUser]=useState(null);
   const [fbSyncing,setFbSyncing]=useState(false);
-  const [showWhatsNew,setShowWhatsNew]=useState(()=>!localStorage.getItem('jm-seen-v61'));
+  const [showWhatsNew,setShowWhatsNew]=useState(()=>!localStorage.getItem('jm-seen-v65'));
   const ambientRef=useRef(null);
 
   // ── Firebase auth listener ──────────────────────────────────────────────
@@ -4543,13 +4543,20 @@ function App(){
     setCh(p.ch);
     setSel(null);
     setActiveV(p.v);
-    setTimeout(()=>{
-      const el=document.getElementById("rv-"+p.v);
-      if(el)el.scrollIntoView({behavior:"smooth",block:"nearest"});
-      const lel=document.getElementById("lv-"+p.v);
-      if(lel)lel.scrollIntoView({behavior:"smooth",block:"nearest"});
-    },600);
+    setMobileView("interlinear");
   }
+
+  // Scroll to active verse whenever it changes OR interlinear data loads
+  useEffect(()=>{
+    if(!activeV)return;
+    const timer=setTimeout(()=>{
+      const el=document.getElementById("rv-"+activeV);
+      if(el)el.scrollIntoView({behavior:"smooth",block:"nearest"});
+      const lel=document.getElementById("lv-"+activeV);
+      if(lel)lel.scrollIntoView({behavior:"smooth",block:"nearest"});
+    },150);
+    return()=>clearTimeout(timer);
+  },[activeV,interlinearVerses,leftVerses]);
 
   // Persist position
 
@@ -4910,7 +4917,7 @@ function App(){
       {showTheo&&<TheologyPanel onClose={()=>setShowTheo(false)} onNavigate={ref=>{handleNavigate(ref);setShowTheo(false);}}/>}
       {showCulture&&<CulturePanel book={book} ch={ch} onClose={()=>setShowCulture(false)}/>}
       {showAbout&&<AboutModal onClose={()=>setShowAbout(false)}/>}
-      {showWhatsNew&&<WhatsNewModal onClose={()=>{setShowWhatsNew(false);localStorage.setItem('jm-seen-v61','1');}}/>}
+      {showWhatsNew&&<WhatsNewModal onClose={()=>{setShowWhatsNew(false);localStorage.setItem('jm-seen-v65','1');}}/>}
       {parallelV&&<ParallelPanel book={book} ch={ch} verseNum={parallelV} isNT={isNT} interlinearVerses={interlinearVerses} onClose={()=>setParallelV(null)}/>}
       {sel&&<StrongsPanel entry={entry} strongs={sel.word.s} word={sel.word} isNT={isNT} onClose={()=>setSel(null)} onNavigate={ref=>{handleNavigate(ref);setSel(null);}}/>}
       {addingNote&&<NoteModal verse={addingNote} onSave={data=>handleSaveNote(addingNote,data)} onClose={()=>setAddingNote(null)}/>}

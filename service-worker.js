@@ -4,15 +4,15 @@
  * Bible data JSON: cache-first (large files, rarely change)
  */
 
-const CACHE_NAME = 'jammin-interlinear-v74';
-const DATA_CACHE  = 'jammin-data-v74';
+const CACHE_NAME = 'jammin-interlinear-v75';
+const DATA_CACHE  = 'jammin-data-v75';
 
 // ── Install ──────────────────────────────────────────────────────────────────
 self.addEventListener('install', event => {
   // Pre-cache manifest only — HTML is fetched fresh on every load
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache =>
-      cache.addAll(['/interlinear-bible/manifest.json'])
+      cache.addAll(['/manifest.json'])
     )
   );
   self.skipWaiting();
@@ -53,7 +53,7 @@ self.addEventListener('fetch', event => {
   }
 
   // Main HTML → network-first, fall back to cache for offline use
-  if (event.request.mode === 'navigate' || url.pathname.endsWith('.html')) {
+  if (event.request.mode === 'navigate' || url.pathname.endsWith('.html') || url.pathname === '/') {
     event.respondWith(
       fetch(event.request, { cache: 'no-store' })
         .then(response => {
@@ -65,7 +65,7 @@ self.addEventListener('fetch', event => {
         })
         .catch(() =>
           caches.match(event.request).then(cached =>
-            cached || caches.match('/interlinear-bible/interlinear_bible.html')
+            cached || caches.match('/')
           )
         )
     );
@@ -83,7 +83,7 @@ self.addEventListener('fetch', event => {
         return response;
       }).catch(() => {
         if (event.request.mode === 'navigate') {
-          return caches.match('/interlinear-bible/interlinear_bible.html');
+          return caches.match('/');
         }
       });
     })

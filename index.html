@@ -3341,6 +3341,7 @@ let HOT_TOPICS=[];
 
 
 let CULTURE_DATA={};
+let CHARACTER_DATA=[];
 
 
 
@@ -4326,8 +4327,50 @@ function AboutModal({onClose}){
 }
 
 // ── Cultural Context Panel ─────────────────────────────────────────────────
-function CulturePanel({book, ch, onClose}){
+// Format a culture tag slug into a nice display name.
+// e.g. "head-coverings" → "Head Coverings", "honor-shame" → "Honor & Shame"
+const CULTURE_TAG_LABELS={
+  "honor-shame":"Honor & Shame",
+  "purity-laws":"Purity Laws",
+  "head-coverings":"Head Coverings",
+  "women-roles":"Women's Roles",
+  "family-household":"Family & Household",
+  "trade-commerce":"Trade & Commerce",
+  "money-exchange":"Money & Exchange",
+  "table-fellowship":"Table Fellowship",
+  "burial-customs":"Burial Customs",
+  "prayer-practices":"Prayer Practices",
+  "water-ritual":"Water Ritual",
+  "jewish-calendar":"Jewish Calendar",
+  "creation-cosmology":"Creation & Cosmology",
+  "prophecy-fulfillment":"Prophecy & Fulfillment",
+  "greek-culture":"Greek Culture",
+  "roman-culture":"Roman Culture",
+  "roman-law":"Roman Law",
+  "ane":"ANE Context",
+};
+function fmtCultureTag(t){
+  if(CULTURE_TAG_LABELS[t]) return CULTURE_TAG_LABELS[t];
+  return t.split("-").map(function(w){return w.charAt(0).toUpperCase()+w.slice(1);}).join(" ");
+}
+// Find all passages in CULTURE_DATA with at least one note carrying `tag`.
+function findCultureByTag(tag){
+  var out=[];
+  Object.keys(CULTURE_DATA).forEach(function(key){
+    var notes=CULTURE_DATA[key];
+    if(!Array.isArray(notes))return;
+    notes.forEach(function(n){
+      if(n&&n.tags&&n.tags.indexOf(tag)>=0){
+        out.push({passage:key, title:n.title, icon:n.icon});
+      }
+    });
+  });
+  return out;
+}
+
+function CulturePanel({book, ch, onClose, onNavigate}){
   const [expanded,setExpanded]=React.useState(null);
+  const [tagView,setTagView]=React.useState(null); // active tag slug for cross-ref view
 
   // Build the entry list: chapter-specific first, then book-level fallback
   const chKey=book+" "+ch;
@@ -4339,22 +4382,49 @@ function CulturePanel({book, ch, onClose}){
     ? [{label:book+" "+ch, entries:chEntries}, {label:"Book Context", entries:bookEntries}].filter(g=>g.entries.length)
     : [];
 
+  function goPassage(ref){
+    if(onNavigate){ onNavigate(ref); onClose(); }
+  }
+
+  const tagResults=tagView?findCultureByTag(tagView):null;
+
   return(
     <div className="theo-overlay" onClick={onClose}>
       <div className="theo-panel" onClick={e=>e.stopPropagation()}>
         <div className="theo-header">
-          <span className="theo-title">🏺 Cultural Context</span>
+          {tagView&&<button className="theo-back" onClick={()=>setTagView(null)}>←</button>}
+          <span className="theo-title">{tagView ? "🏷 "+fmtCultureTag(tagView) : "🏺 Cultural Context"}</span>
           <button className="theo-close" onClick={onClose}>×</button>
         </div>
         <div className="theo-body">
-          {all.length===0&&(
+          {tagView&&(
+            <>
+              <p style={{fontSize:".8rem",color:"var(--text3)",margin:"0 0 1rem",lineHeight:1.6}}>
+                Passages tagged <strong>{fmtCultureTag(tagView)}</strong> ({tagResults.length}).
+              </p>
+              {tagResults.map((r,i)=>(
+                <div key={i} className="arc-verse" style={{cursor:"pointer"}} onClick={()=>goPassage(r.passage)} title="Open in interlinear">
+                  <span style={{fontSize:"1.2rem",width:"1.6rem",textAlign:"center",flexShrink:0}}>{r.icon}</span>
+                  <div style={{flex:1}}>
+                    <div style={{fontWeight:700,fontSize:".84rem",color:"var(--accent,#818cf8)"}}>{r.passage}</div>
+                    <div style={{fontSize:".78rem",color:"var(--text3)",marginTop:".1rem"}}>{r.title}</div>
+                  </div>
+                  <span style={{color:"var(--text3)"}}>›</span>
+                </div>
+              ))}
+              {tagResults.length===0&&(
+                <p style={{fontSize:".85rem",color:"var(--text3)",textAlign:"center"}}>No other passages with this tag.</p>
+              )}
+            </>
+          )}
+          {!tagView&&all.length===0&&(
             <div className="culture-empty">
               <div style={{fontSize:"2rem",marginBottom:".5rem"}}>🏺</div>
               <strong>No entries for {book} {ch}</strong>
               <p style={{marginTop:".4rem"}}>Cultural context notes are being added continuously. Check back as more passages are covered.</p>
             </div>
           )}
-          {all.map((group,gi)=>(
+          {!tagView&&all.map((group,gi)=>(
             <div key={gi}>
               {all.length>1&&<div className="culture-passage-label">{group.label}</div>}
               <div className="culture-list" style={{paddingTop:gi===0?'1rem':'.25rem'}}>
@@ -4373,6 +4443,15 @@ function CulturePanel({book, ch, onClose}){
                         <span style={{color:"var(--text3)",fontSize:".85rem",flexShrink:0,marginTop:".15rem"}}>{open?"▲":"▼"}</span>
                       </div>
                       {open&&<div className="culture-card-body">{entry.body}</div>}
+                      {open&&entry.tags&&entry.tags.length>0&&(
+                        <div style={{display:"flex",flexWrap:"wrap",gap:".3rem",padding:".2rem .9rem .8rem"}} onClick={e=>e.stopPropagation()}>
+                          {entry.tags.map(t=>(
+                            <span key={t} onClick={()=>{setTagView(t);}}
+                              style={{cursor:"pointer",fontSize:".72rem",fontWeight:600,color:"var(--accent,#818cf8)",background:"var(--accent,#818cf8)18",border:"1px solid var(--accent,#818cf8)44",borderRadius:"999px",padding:".12rem .55rem"}}
+                              title={"See all passages tagged "+fmtCultureTag(t)}>{fmtCultureTag(t)}</span>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   );
                 })}
@@ -4483,6 +4562,141 @@ function HotTopicsPanel({onClose, onNavigate}){
                 </div>
               );})}
             </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Character Study Panel ──────────────────────────────────────────────────
+function CharacterStudyPanel({onClose, onNavigate}){
+  const [sel,setSel]=useState(null);
+  const [tab,setTab]=useState("OT");
+  const bodyRef=useRef(null);
+  const person=sel?CHARACTER_DATA.find(c=>c.id===sel):null;
+
+  function goSel(id){
+    setSel(id);
+    if(bodyRef.current)bodyRef.current.scrollTop=0;
+  }
+  function goBack(){
+    setSel(null);
+    if(bodyRef.current)bodyRef.current.scrollTop=0;
+  }
+  function handleVerse(ref){
+    if(onNavigate){
+      // Strip verse ranges (e.g. "Gen 12:1-4" → "Gen 12:1"), matching Hot Topics pattern
+      var m=ref.match(/^(.*?)\s(\d+):(\d+)/);
+      if(m){ onNavigate(m[1]+" "+m[2]+":"+m[3]); onClose(); return; }
+      // Chapter-only refs (e.g. "Gen 12")
+      var mc=ref.match(/^(.*?)\s(\d+)$/);
+      if(mc){ onNavigate(mc[1]+" "+mc[2]+":1"); onClose(); return; }
+    }
+  }
+
+  const list=CHARACTER_DATA.filter(c=>c.testament===tab);
+
+  return(
+    <div className="theo-overlay" onClick={onClose}>
+      <div className="theo-panel" onClick={function(e){e.stopPropagation();}}>
+        <div className="theo-header">
+          {person&&<button className="theo-back" onClick={goBack}>←</button>}
+          <span className="theo-title">{person ? person.icon+" "+person.name : "👤 Character Study"}</span>
+          <button className="theo-close" onClick={onClose}>×</button>
+        </div>
+        <div className="theo-body" style={{padding:0}} ref={bodyRef}>
+          {!person&&(
+            <>
+              <p style={{fontSize:'.8rem',color:'var(--text3)',margin:'0',lineHeight:1.6,padding:'1rem 1rem .5rem'}}>
+                Trace the lives of key biblical figures — their story arc, defining verses, and how the New Testament reflects on them.
+              </p>
+              <div style={{display:'flex',gap:'.4rem',padding:'0 1rem .75rem'}}>
+                {["OT","NT"].map(function(t){return(
+                  <button key={t} onClick={function(){setTab(t);}}
+                    style={{flex:1,padding:'.45rem 0',borderRadius:'8px',border:'1px solid var(--border,#333)',cursor:'pointer',fontSize:'.8rem',fontWeight:600,
+                      background: tab===t?'var(--accent,#818cf8)':'transparent',
+                      color: tab===t?'#fff':'var(--text3)'}}>
+                    {t==="OT"?"Old Testament":"New Testament"}
+                  </button>
+                );})}
+              </div>
+              {list.map(function(c){return(
+                <div key={c.id} className="arc-verse" style={{cursor:'pointer'}} onClick={function(){goSel(c.id);}}>
+                  <span style={{fontSize:'1.3rem',width:'1.6rem',textAlign:'center',flexShrink:0}}>{c.icon}</span>
+                  <div style={{flex:1}}>
+                    <div style={{fontWeight:600,fontSize:'.9rem'}}>{c.name}</div>
+                    <div style={{fontSize:'.74rem',color:'var(--text3)',marginTop:'.1rem'}}>{c.era}</div>
+                  </div>
+                  <span style={{color:'var(--text3)'}}>›</span>
+                </div>
+              );})}
+              {list.length===0&&(
+                <p style={{fontSize:'.85rem',color:'var(--text3)',padding:'1rem',textAlign:'center'}}>No characters loaded yet.</p>
+              )}
+            </>
+          )}
+          {person&&(
+            <div style={{padding:'1rem'}}>
+              <div style={{fontSize:'.74rem',color:'var(--text3)',fontWeight:600,marginBottom:'.4rem'}}>{person.era}</div>
+              <p style={{margin:'0 0 1.2rem',fontSize:'.88rem',lineHeight:1.65}}>{person.summary}</p>
+
+              <div style={{fontSize:'.72rem',fontWeight:700,color:'var(--text3)',textTransform:'uppercase',letterSpacing:'.05em',marginBottom:'.6rem'}}>Story Arc</div>
+              <div style={{position:'relative',paddingLeft:'1.3rem',marginBottom:'1.3rem'}}>
+                <div style={{position:'absolute',left:'.34rem',top:'.35rem',bottom:'.35rem',width:'2px',background:'var(--border,#333)'}}/>
+                {person.arc.map(function(stage,i){return(
+                  <div key={i} style={{position:'relative',marginBottom:i===person.arc.length-1?0:'1rem'}}>
+                    <div style={{position:'absolute',left:'-1.15rem',top:'.25rem',width:'.7rem',height:'.7rem',borderRadius:'50%',background:'var(--accent,#818cf8)',border:'2px solid var(--bg,#111)'}}/>
+                    <div style={{fontWeight:600,fontSize:'.87rem',marginBottom:'.2rem'}}>{stage.stage}</div>
+                    {stage.note&&<div style={{fontSize:'.78rem',color:'var(--text3)',lineHeight:1.5,marginBottom:'.3rem'}}>{stage.note}</div>}
+                    <div style={{display:'flex',flexWrap:'wrap',gap:'.3rem'}}>
+                      {(stage.refs||[]).map(function(r){return(
+                        <span key={r} onClick={function(){handleVerse(r);}}
+                          style={{cursor:'pointer',fontSize:'.74rem',fontWeight:600,color:'var(--accent,#818cf8)',background:'var(--accent,#818cf8)18',border:'1px solid var(--accent,#818cf8)44',borderRadius:'6px',padding:'.1rem .45rem'}}
+                          title="Open in interlinear">{r}</span>
+                      );})}
+                    </div>
+                  </div>
+                );})}
+              </div>
+
+              {person.keyVerses&&person.keyVerses.length>0&&(
+                <>
+                  <div style={{fontSize:'.72rem',fontWeight:700,color:'var(--text3)',textTransform:'uppercase',letterSpacing:'.05em',marginBottom:'.5rem'}}>Key Verses</div>
+                  <div style={{display:'flex',flexWrap:'wrap',gap:'.35rem',marginBottom:'1.3rem'}}>
+                    {person.keyVerses.map(function(r){return(
+                      <span key={r} onClick={function(){handleVerse(r);}}
+                        style={{cursor:'pointer',fontSize:'.78rem',fontWeight:600,color:'var(--accent,#818cf8)',background:'var(--accent,#818cf8)18',border:'1px solid var(--accent,#818cf8)44',borderRadius:'6px',padding:'.18rem .55rem'}}
+                        title="Open in interlinear">{r}</span>
+                    );})}
+                  </div>
+                </>
+              )}
+
+              {person.ntConnections&&person.ntConnections.length>0&&(
+                <>
+                  <div style={{fontSize:'.72rem',fontWeight:700,color:'var(--text3)',textTransform:'uppercase',letterSpacing:'.05em',marginBottom:'.5rem'}}>New Testament Connections</div>
+                  <div style={{display:'flex',flexWrap:'wrap',gap:'.35rem',marginBottom:'1.3rem'}}>
+                    {person.ntConnections.map(function(r){return(
+                      <span key={r} onClick={function(){handleVerse(r);}}
+                        style={{cursor:'pointer',fontSize:'.78rem',fontWeight:600,color:'#a78bfa',background:'#a78bfa18',border:'1px solid #a78bfa44',borderRadius:'6px',padding:'.18rem .55rem'}}
+                        title="Open in interlinear">{r}</span>
+                    );})}
+                  </div>
+                </>
+              )}
+
+              {person.themes&&person.themes.length>0&&(
+                <>
+                  <div style={{fontSize:'.72rem',fontWeight:700,color:'var(--text3)',textTransform:'uppercase',letterSpacing:'.05em',marginBottom:'.5rem'}}>Themes</div>
+                  <div style={{display:'flex',flexWrap:'wrap',gap:'.3rem'}}>
+                    {person.themes.map(function(t){return(
+                      <span key={t} style={{fontSize:'.74rem',fontWeight:500,color:'var(--text3)',background:'var(--border,#333)44',border:'1px solid var(--border,#333)',borderRadius:'999px',padding:'.15rem .6rem'}}>{t}</span>
+                    );})}
+                  </div>
+                </>
+              )}
+            </div>
           )}
         </div>
       </div>
@@ -4771,7 +4985,7 @@ function StrongsPanel({entry,strongs,word,isNT,onClose,onNavigate}){
 
 
 const BOOK_MAP = {
-  "gen":"Genesis","ex":"Exodus","exo":"Exodus","lev":"Leviticus","num":"Numbers","deut":"Deuteronomy","deu":"Deuteronomy",
+  "gen":"Genesis","ex":"Exodus","exo":"Exodus","exod":"Exodus","lev":"Leviticus","num":"Numbers","deut":"Deuteronomy","deu":"Deuteronomy",
   "josh":"Joshua","jdg":"Judges","judg":"Judges","ruth":"Ruth","1sam":"1 Samuel","2sam":"2 Samuel",
   "1kgs":"1 Kings","1ki":"1 Kings","2kgs":"2 Kings","2ki":"2 Kings","1chr":"1 Chronicles","2chr":"2 Chronicles",
   "ezra":"Ezra","neh":"Nehemiah","esth":"Esther","job":"Job","ps":"Psalms","psa":"Psalms","prov":"Proverbs",
@@ -4948,6 +5162,7 @@ function App(){
   const [fbSyncing,setFbSyncing]=useState(false);
   const [showAccountModal,setShowAccountModal]=useState(false);
   const [showBookIntro,setShowBookIntro]=useState(false);
+  const [showCharacters,setShowCharacters]=useState(false);
 
   // Load external data files
   const [_appDataV,_setAppDataV]=useState(0);
@@ -4957,6 +5172,7 @@ function App(){
       fetch('/data/book-intros.json').then(r=>r.json()).then(d=>{BOOK_INTROS=d;}),
       fetch('/data/hot-topics.json').then(r=>r.json()).then(d=>{HOT_TOPICS=d;}),
       fetch('/data/culture.json').then(r=>r.json()).then(d=>{CULTURE_DATA=d;}),
+      fetch('/data/characters.json').then(r=>r.json()).then(d=>{CHARACTER_DATA=d;}),
     ]).then(()=>_setAppDataV(v=>v+1)).catch(()=>_setAppDataV(v=>v+1));
   },[]);
   const [showHotTopics,setShowHotTopics]=useState(false);
@@ -5335,6 +5551,8 @@ function App(){
           <div className="side-tool-sep"/>
           <button className={"side-tool-btn"+(showTheo?" active":"")} title="Topics" onClick={()=>{setShowTheo(true);}}>⧁</button>
           <div className="side-tool-sep"/>
+          <button className={"side-tool-btn"+(showCharacters?" active":"")} title="Character Study" onClick={()=>{setShowCharacters(true);}}>👤</button>
+          <div className="side-tool-sep"/>
           <button className={"side-tool-btn"+(showCulture?" active":"")} title="Cultural Context" onClick={()=>{setShowCulture(true);}}>🏺</button>
           <div className="side-tool-sep"/>
           <button className={"side-tool-btn"+(showHighlights||hlMode?" active":"")}
@@ -5355,7 +5573,7 @@ function App(){
           <span className="mob-tab-icon">{isNT?"α":"א"}</span>
           <span>Interlinear</span>
         </button>
-        <button className={"mob-tab"+((showNotes||showPlaces||showTheo||showHighlights||hlMode||showBookIntro||showHotTopics)?" mob-on"+(isNT?"":" mob-ot"):"")}
+        <button className={"mob-tab"+((showNotes||showPlaces||showTheo||showHighlights||hlMode||showBookIntro||showHotTopics||showCharacters)?" mob-on"+(isNT?"":" mob-ot"):"")}
                 onClick={()=>setShowToolsSheet(true)}>
           <span className="mob-tab-icon">⚙</span>
           <span>Tools</span>
@@ -5402,6 +5620,13 @@ function App(){
                 <div className="tools-sheet-desc">Theological arcs traced from seed to fulfillment</div>
               </div>
             </div>
+            <div className="tools-sheet-row" onClick={()=>{setShowCharacters(true);setShowToolsSheet(false);}}>
+              <span className="tools-sheet-icon">👤</span>
+              <div className="tools-sheet-info">
+                <div className="tools-sheet-label">Character Study</div>
+                <div className="tools-sheet-desc">Life arcs, key verses, and NT connections of biblical figures</div>
+              </div>
+            </div>
             <div className="tools-sheet-row" onClick={()=>{setShowCulture(true);setShowToolsSheet(false);}}>
               <span className="tools-sheet-icon">🏺</span>
               <div className="tools-sheet-info">
@@ -5432,7 +5657,8 @@ function App(){
       {showBookIntro&&<BookIntroPanel book={book} onClose={()=>setShowBookIntro(false)}/>}
       {showHotTopics&&<HotTopicsPanel onClose={()=>setShowHotTopics(false)} onNavigate={ref=>{handleNavigate(ref);setShowHotTopics(false);}}/>}
       {showTheo&&<TheologyPanel onClose={()=>setShowTheo(false)} onNavigate={ref=>{handleNavigate(ref);setShowTheo(false);}}/>}
-      {showCulture&&<CulturePanel book={book} ch={ch} onClose={()=>setShowCulture(false)}/>}
+      {showCharacters&&<CharacterStudyPanel onClose={()=>setShowCharacters(false)} onNavigate={ref=>{handleNavigate(ref);setShowCharacters(false);}}/>}
+      {showCulture&&<CulturePanel book={book} ch={ch} onClose={()=>setShowCulture(false)} onNavigate={ref=>{handleNavigate(ref);setShowCulture(false);}}/>}
       {showAbout&&<AboutModal onClose={()=>setShowAbout(false)}/>}
       {showWhatsNew&&<WhatsNewModal onClose={()=>{setShowWhatsNew(false);localStorage.setItem('jm-seen-v65','1');}}/>}
       {showAccountModal&&fbUser&&<AccountModal user={fbUser} onSignOut={fbSignOut} onClose={()=>setShowAccountModal(false)}/>}

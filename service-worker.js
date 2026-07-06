@@ -4,8 +4,8 @@
  * Bible data JSON: cache-first (large files, rarely change)
  */
 
-const CACHE_NAME = 'jammin-interlinear-v75';
-const DATA_CACHE  = 'jammin-data-v75';
+const CACHE_NAME = 'jammin-interlinear-v76';
+const DATA_CACHE  = 'jammin-data-v76';
 
 // ── Install ──────────────────────────────────────────────────────────────────
 self.addEventListener('install', event => {

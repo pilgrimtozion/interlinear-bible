@@ -4570,11 +4570,31 @@ function HotTopicsPanel({onClose, onNavigate}){
 }
 
 // ── Character Study Panel ──────────────────────────────────────────────────
-function CharacterStudyPanel({onClose, onNavigate}){
+function CharacterStudyPanel({onClose, onNavigate, book, ch}){
   const [sel,setSel]=useState(null);
   const [tab,setTab]=useState("OT");
   const bodyRef=useRef(null);
   const person=sel?CHARACTER_DATA.find(c=>c.id===sel):null;
+
+  // On open, auto-select the character whose arc touches the current passage
+  useEffect(function(){
+    if(!book||!ch||!CHARACTER_DATA.length)return;
+    for(var i=0;i<CHARACTER_DATA.length;i++){
+      var char=CHARACTER_DATA[i];
+      for(var j=0;j<char.arc.length;j++){
+        var stage=char.arc[j];
+        for(var k=0;k<stage.refs.length;k++){
+          var cleanRef=stage.refs[k].replace(/-\d+$/,""); // strip range "Gen 12:1-4" → "Gen 12:1"
+          var parsed=parseRef(cleanRef);
+          if(parsed&&parsed.book===book&&parsed.ch===ch){
+            setSel(char.id);
+            setTab(char.testament);
+            return;
+          }
+        }
+      }
+    }
+  },[]);
 
   function goSel(id){
     setSel(id);
@@ -5657,7 +5677,7 @@ function App(){
       {showBookIntro&&<BookIntroPanel book={book} onClose={()=>setShowBookIntro(false)}/>}
       {showHotTopics&&<HotTopicsPanel onClose={()=>setShowHotTopics(false)} onNavigate={ref=>{handleNavigate(ref);setShowHotTopics(false);}}/>}
       {showTheo&&<TheologyPanel onClose={()=>setShowTheo(false)} onNavigate={ref=>{handleNavigate(ref);setShowTheo(false);}}/>}
-      {showCharacters&&<CharacterStudyPanel onClose={()=>setShowCharacters(false)} onNavigate={ref=>{handleNavigate(ref);setShowCharacters(false);}}/>}
+      {showCharacters&&<CharacterStudyPanel onClose={()=>setShowCharacters(false)} onNavigate={ref=>{handleNavigate(ref);setShowCharacters(false);}} book={book} ch={ch}/>}
       {showCulture&&<CulturePanel book={book} ch={ch} onClose={()=>setShowCulture(false)} onNavigate={ref=>{handleNavigate(ref);setShowCulture(false);}}/>}
       {showAbout&&<AboutModal onClose={()=>setShowAbout(false)}/>}
       {showWhatsNew&&<WhatsNewModal onClose={()=>{setShowWhatsNew(false);localStorage.setItem('jm-seen-v65','1');}}/>}

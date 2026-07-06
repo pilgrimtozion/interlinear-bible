@@ -5548,6 +5548,18 @@ function App(){
           </div>
         </div>
         <div className={"right-col"+(mobileView==="list"?" mob-hide":"")}>
+          {(()=>{
+            var hasCult=(CULTURE_DATA[book+" "+ch]||[]).length>0||(CULTURE_DATA[book]||[]).length>0;
+            var hasPl=Object.values(PLACES_DATA||{}).some(function(p){return p.events&&p.events.some(function(e){return e.book===book&&Number(e.ch)===ch;});});
+            var hasCh=(CHARACTER_DATA||[]).some(function(c){return c.arc&&c.arc.some(function(s){return s.refs&&s.refs.some(function(r){var cl=r.replace(/-\d+$/,"");var p=parseRef(cl);return p&&p.book===book&&p.ch===ch;});});});
+            if(!hasCult&&!hasPl&&!hasCh)return null;
+            var cs={display:"flex",alignItems:"center",gap:".3rem",background:"var(--accent,#818cf8)18",border:"1px solid var(--accent,#818cf8)44",borderRadius:"999px",padding:".22rem .65rem",cursor:"pointer",fontSize:".71rem",fontWeight:600,color:"var(--accent,#818cf8)"};
+            return <div style={{display:"flex",gap:".4rem",padding:".45rem .6rem",borderBottom:"1px solid var(--border)",flexShrink:0,flexWrap:"wrap"}}>
+              {hasCult&&<button style={cs} onClick={function(){setShowCulture(true);}}>🏺 Cultural Context</button>}
+              {hasPl&&<button style={cs} onClick={function(){setShowPlaces(true);}}>📍 Places</button>}
+              {hasCh&&<button style={cs} onClick={function(){setShowCharacters(true);}}>👤 Characters</button>}
+            </div>;
+          })()}
           {interlinearVerses
             ?interlinearVerses.map(v=>{var _hk=nk(test,book,ch,v.v);var _hc=highlights[_hk];var _hcol=_hc?HL_COLORS.find(function(x){return x.k===_hc;}):null;return <VerseBlock key={v.v} id={"rv-"+v.v} verse={v} isNT={isNT} activeV={activeV} selKey={sel?sel.key:null} onClick={handleWord} hlBg={_hcol?_hcol.bg:null} hlHex={_hcol?_hcol.hex:null} book={book} ch={ch} onNavigate={handleNavigate}/>;})
             :<div className="no-interlinear">

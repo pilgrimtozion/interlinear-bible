@@ -5714,10 +5714,33 @@ function _buildTlit(dict,target){
 }
 
 // Load both Strong's dictionaries before first render so all glosses are available immediately.
-// Files are served from SW cache on repeat visits — effectively instant.
+// Fetched from jsDelivr CDN (full 5500+ Greek / 8600+ Hebrew entries); SW caches after first load.
+function _parseStrongsJs(text, prefix){
+  try{
+    var i=text.indexOf('{"'+prefix);
+    if(i<0)return null;
+    var raw=JSON.parse(text.slice(i,text.lastIndexOf('}')+1));
+    var out={};
+    Object.keys(raw).forEach(function(k){
+      var v=raw[k]; var e={};
+      if(v.lemma)e.l=v.lemma;
+      if(v.xlit)e.t=v.xlit;
+      var d=(v.strongs_def||'').trim(); if(d)e.d=d;
+      var kv=(v.kjv_def||'').trim(); if(kv)e.k=kv;
+      out[k.startsWith(prefix)?k:prefix+k]=e;
+    });
+    return out;
+  }catch(err){return null;}
+}
 Promise.all([
-  fetch('/data/strongs_g.json').then(function(r){return r.ok?r.json():null;}).then(function(d){if(d){_SD['G']=d;_buildTlit(d,_SD_TLIT_G);}}).catch(function(){}),
-  fetch('/data/strongs_h.json').then(function(r){return r.ok?r.json():null;}).then(function(d){if(d){_SD['H']=d;_buildTlit(d,_SD_TLIT_H);}}).catch(function(){})
+  fetch('https://cdn.jsdelivr.net/npm/strongs@1.0.2/greek/strongs-greek-dictionary.js')
+    .then(function(r){return r.text();})
+    .then(function(t){var d=_parseStrongsJs(t,'G');if(d){_SD['G']=d;_buildTlit(d,_SD_TLIT_G);}})
+    .catch(function(){}),
+  fetch('https://cdn.jsdelivr.net/npm/strongs@1.0.2/hebrew/strongs-hebrew-dictionary.js')
+    .then(function(r){return r.text();})
+    .then(function(t){var d=_parseStrongsJs(t,'H');if(d){_SD['H']=d;_buildTlit(d,_SD_TLIT_H);}})
+    .catch(function(){})
 ]).finally(function(){
   ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App,null));
 });

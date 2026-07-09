@@ -4,8 +4,8 @@
  * Bible data JSON: cache-first (large files, rarely change)
  */
 
-const CACHE_NAME = 'jammin-interlinear-v77';
-const DATA_CACHE  = 'jammin-data-v77';
+const CACHE_NAME = 'jammin-interlinear-v78';
+const DATA_CACHE  = 'jammin-data-v78';
 
 // ── Install ──────────────────────────────────────────────────────────────────
 self.addEventListener('install', event => {
@@ -35,6 +35,22 @@ self.addEventListener('activate', event => {
 // ── Fetch ────────────────────────────────────────────────────────────────────
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
+
+  // jsDelivr Strong's JS files → cache-first (pinned version, never changes)
+  if (url.hostname === 'cdn.jsdelivr.net' && url.pathname.includes('/npm/strongs')) {
+    event.respondWith(
+      caches.open(DATA_CACHE).then(cache =>
+        cache.match(event.request).then(cached => {
+          if (cached) return cached;
+          return fetch(event.request).then(response => {
+            if (response.ok) cache.put(event.request, response.clone());
+            return response;
+          });
+        })
+      )
+    );
+    return;
+  }
 
   // Bible data JSON → cache-first with background network update
   if (url.pathname.includes('/data/') && url.pathname.endsWith('.json')) {

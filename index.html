@@ -2617,7 +2617,7 @@ function WordCell({word,vNum,isNT,selKey,onClick}){
   const heb=!isNT;
   // Resolve effective Strong's: 1. data  2. static patch  3. transliteration reverse-index
   const _tNorm=word.t?word.t.toLowerCase().replace(/[^a-z]/g,''):'';
-  const ws=word.s||STRONGS_PATCH[_normGreek(word.o)]||(isNT?_SD_TLIT_G[_tNorm]:_SD_TLIT_H[_tNorm])||'';
+  const ws=(word.s||STRONGS_PATCH[_normGreek(word.o)]||(isNT?_SD_TLIT_G[_tNorm]:_SD_TLIT_H[_tNorm])||'').replace(/^([GH])0+([1-9])/,'$1$2');
   const hasLxx=!!LXX[ws];
   const _wb=word.b!=null?String(word.b).trim():"";
   const gloss=_wb||shortGloss(ws);

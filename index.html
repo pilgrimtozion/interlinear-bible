@@ -2598,7 +2598,30 @@ const STRONGS_PATCH={
   "Οὐρίου":"G3774","μνηστευθείσης":"G3423","δειγματίσαι":"G1165",
   "γεννᾶται":"G1080","ἐξετάσατε":"G1833","φαίνεται":"G5316",
   "κατωτέρω":"G2736","ἄγριον":"G66",
+  // Romans 12:2 — s:"" words (conform/transform)
+  "συσχηματίζεσθε":"G4964","συσχηματιζόμενοι":"G4964","συσχηματίζω":"G4964",
+  "μεταμορφοῦσθε":"G3339","μεταμορφούμεθα":"G3339","μετεμορφώθη":"G3339","μεταμορφόω":"G3339",
 };
+
+// Strip Greek/Hebrew diacritics (accents, breathing marks, iota subscript, dagesh, etc.)
+function _stripDiacritics(s){
+  return s?s.normalize('NFD').replace(/[\u0300-\u036f\u0591-\u05c7\u1ab0-\u1aff\u1dc0-\u1dff]/g,''):'';
+}
+// Lemma fallback: when s:"" and STRONGS_PATCH + tlit both miss, look up by stripped lemma.
+function _lemmaFallback(o,isNT){
+  var stripped=_stripDiacritics(_normGreek(o));
+  if(!stripped)return'';
+  var idx=isNT?_LEMMA_IDX_G:_LEMMA_IDX_H;
+  var pfx=isNT?_LEMMA_PFX_G:_LEMMA_PFX_H;
+  if(idx[stripped])return idx[stripped];
+  var len=stripped.length;
+  for(var n=Math.min(len,9);n>=5;n--){
+    var key=stripped.slice(0,n);
+    var cands=pfx[key];
+    if(cands&&cands.length===1)return cands[0];
+  }
+  return'';
+}
 
 function shortGloss(s){
   if(!s)return "";
@@ -2617,7 +2640,7 @@ function WordCell({word,vNum,isNT,selKey,onClick}){
   const heb=!isNT;
   // Resolve effective Strong's: 1. data  2. static patch  3. transliteration reverse-index
   const _tNorm=word.t?word.t.toLowerCase().replace(/[^a-z]/g,''):'';
-  const ws=(word.s||STRONGS_PATCH[_normGreek(word.o)]||(isNT?_SD_TLIT_G[_tNorm]:_SD_TLIT_H[_tNorm])||'').replace(/^([GH])0+([1-9])/,'$1$2');
+  const ws=(word.s||STRONGS_PATCH[_normGreek(word.o)]||(isNT?_SD_TLIT_G[_tNorm]:_SD_TLIT_H[_tNorm])||_lemmaFallback(word.o,isNT)||'').replace(/^([GH])0+([1-9])/,'$1$2');
   const hasLxx=!!LXX[ws];
   const _wb=word.b!=null?String(word.b).trim():"";
   const gloss=_wb||shortGloss(ws);
@@ -5706,6 +5729,25 @@ function App(){
 // Used to patch words where the source data has s:"" but word.t gives us a lookup key.
 var _SD_TLIT_G={};
 var _SD_TLIT_H={};
+var _LEMMA_IDX_G={}; // stripped lemma -> Strong's key
+var _LEMMA_IDX_H={};
+var _LEMMA_PFX_G={}; // N-char prefix -> [keys] for unambiguous stem matching
+var _LEMMA_PFX_H={};
+function _buildLemmaIdx(dict,lemmaIdx,pfxIdx){
+  Object.keys(dict).forEach(function(k){
+    var e=dict[k];
+    if(e.l){
+      var s=_stripDiacritics(e.l);
+      if(!lemmaIdx[s])lemmaIdx[s]=k;
+      var llen=s.length;
+      for(var n=Math.min(llen,9);n>=5;n--){
+        var p=s.slice(0,n);
+        if(!pfxIdx[p])pfxIdx[p]=[];
+        pfxIdx[p].push(k);
+      }
+    }
+  });
+}
 function _buildTlit(dict,target){
   Object.keys(dict).forEach(function(k){
     var e=dict[k];
@@ -5735,11 +5777,11 @@ function _parseStrongsJs(text, prefix){
 Promise.all([
   fetch('https://cdn.jsdelivr.net/npm/strongs@1.0.2/greek/strongs-greek-dictionary.js')
     .then(function(r){return r.text();})
-    .then(function(t){var d=_parseStrongsJs(t,'G');if(d){_SD['G']=d;_buildTlit(d,_SD_TLIT_G);}})
+    .then(function(t){var d=_parseStrongsJs(t,'G');if(d){_SD['G']=d;_buildTlit(d,_SD_TLIT_G);_buildLemmaIdx(d,_LEMMA_IDX_G,_LEMMA_PFX_G);}})
     .catch(function(){}),
   fetch('https://cdn.jsdelivr.net/npm/strongs@1.0.2/hebrew/strongs-hebrew-dictionary.js')
     .then(function(r){return r.text();})
-    .then(function(t){var d=_parseStrongsJs(t,'H');if(d){_SD['H']=d;_buildTlit(d,_SD_TLIT_H);}})
+    .then(function(t){var d=_parseStrongsJs(t,'H');if(d){_SD['H']=d;_buildTlit(d,_SD_TLIT_H);_buildLemmaIdx(d,_LEMMA_IDX_H,_LEMMA_PFX_H);}})
     .catch(function(){})
 ]).finally(function(){
   ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(App,null));

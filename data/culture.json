@@ -59,6 +59,17 @@
         "creation-cosmology",
         "kingship"
       ]
+    },
+    {
+      "cat": "language",
+      "icon": "🗣️",
+      "title": "Three Creation Verbs: בָּרָא, יָצַר, עָשָׂה (Bara, Yatzar, Asah)",
+      "body": "Hebrew uses three distinct verbs for God's creative activity, each with a different weight. בָּרָא (bara) — used exclusively with God as subject, never humans — means to create from nothing, to bring into existence what did not exist before. It appears in Gen 1:1 (heavens and earth), 1:21 (sea creatures), and 1:27 (humanity). יָצַר (yatzar) means to form or shape, like a potter working clay — used in Gen 2:7 when God forms Adam from dust and in 2:19 for the animals. עָשָׂה (asah) means to make or fashion, the same word used for human craftsmanship throughout the OT. The creation account deliberately weaves all three together, asserting both that God creates from nothing (bara) and that creation involves deliberate, intimate craftsmanship (yatzar, asah). When Isaiah 43:7 declares that God 'created (bara), formed (yatzar), and made (asah)' his people in sequence, it is stacking the full vocabulary of creation to say Israel is not accidental — they are uniquely, intentionally, and completely his work.",
+      "tags": [
+        "language-wordplay",
+        "creation",
+        "theology"
+      ]
     }
   ],
   "Genesis 2": [
@@ -90,6 +101,18 @@
       "tags": [
         "creation-cosmology"
       ]
+    },
+    {
+      "cat": "language",
+      "icon": "🗣️",
+      "title": "עֵזֶר כְּנֶגְדּוֹ (Ezer Kenegdo): Helper as Strength, Not Subordination",
+      "body": "Genesis 2:18 describes Eve as an עֵזֶר כְּנֶגְדּוֹ (ezer kenegdo) — translated 'helper suitable for him' or 'helpmeet.' The word עֵזֶר (ezer) appears 21 times in the OT. Only three times is it used of humans; the other 18 uses refer to God as Israel's helper: 'My help comes from YHWH' (Ps 121:2); 'the shield of your help' (Deut 33:29). This is a word of strength, rescue, and military aid — not subordination. An ezer arrives when the situation is desperate and the one helped cannot manage alone. כְּנֶגְדּוֹ (kenegdo) means 'corresponding to him' or 'facing him' — a counterpart of equal standing. The root neged means 'in front of, opposite, before' — the same spatial language used in cultic contexts to mean standing face-to-face. The woman is not an assistant; she is the completion of something the man cannot be or do alone. When Boaz calls Ruth an eshet chayil (Prov 31:10 language, woman of valor) in Ruth 3:11, he is reaching for the same vocabulary of feminine strength.",
+      "tags": [
+        "language-wordplay",
+        "gender",
+        "creation",
+        "theology"
+      ]
     }
   ],
   "Genesis 3": [
@@ -110,6 +133,18 @@
       "tags": [
         "honor-shame",
         "creation-cosmology"
+      ]
+    },
+    {
+      "cat": "language",
+      "icon": "🗣️",
+      "title": "עָרוּם (Arum): The Naked/Shrewd Wordplay Bridging Genesis 2–3",
+      "body": "Genesis 2:25 closes: 'The man and his wife were both עֲרוּמִּים (arummim) — naked — and felt no shame.' Genesis 3:1 opens: 'The serpent was more עָרוּם (arum) — shrewd/cunning — than any beast.' The two words share the same Hebrew root and sound nearly identical. This is deliberate. The narrator creates a sonic bridge: the pair are naked (arummim) and unashamed; the serpent is crafty (arum). After the serpent works its subtlety on the humans, their eyes open and they realize they are naked — the condition that had been innocent (arummim) now produces shame. The wordplay implies that the serpent's wisdom (arum) has contaminated the humans' nakedness (arummim), turning the same sound from innocence into exposure. The fall is not presented as brute temptation overcome — it is seduction through wisdom-language, which is precisely why the narrator wants readers wary of clever speech. The text is critiquing intelligence itself when it runs ahead of trust.",
+      "tags": [
+        "language-wordplay",
+        "creation",
+        "sin",
+        "theology"
       ]
     }
   ],
@@ -166,6 +201,19 @@
       "body": "The 'cutting' of a covenant (in Hebrew, karat berit — literally 'cut a covenant') involved slaughtering animals and walking between the halves — symbolising: 'may I become like these animals if I break this oath.' In Genesis 15, only God (as a smoking firepot and torch) passes between the pieces while Abram sleeps. God alone bears the curse of covenant-breaking — a foreshadowing of the cross.",
       "tags": [
         "covenant"
+      ]
+    },
+    {
+      "cat": "language",
+      "icon": "🗣️",
+      "title": "כָּרַת בְּרִית (Karat Berith): You Don't 'Make' a Covenant — You Cut One",
+      "body": "Throughout the OT, covenants are not 'made' — they are כָּרַת (karat), cut. In Gen 15:10, God instructs Abram to cut animals in half and arrange them in rows; then (v.17) a smoking firepot and blazing torch pass between the pieces — God's presence walking the covenant path. In the ancient Near East, this was a self-maledictory oath: both parties would walk between the pieces, declaring 'let what happened to these animals happen to me if I break this covenant.' In Gen 15, Abram is asleep. Only God walks through. This is an unconditional covenant — God swears by himself alone (Heb 6:13-14 notes this explicitly). The Hebrew idiom karat berith (cut a covenant) echoes in every subsequent covenant reference: with Noah (Gen 9:11), Sinai (Ex 24:8), David (2 Sam 23:5), and Jeremiah's new covenant (Jer 31:31). When Jesus at the Last Supper says 'this is my blood of the covenant' (Matt 26:28), he is reaching for this cutting-language: he is the sacrifice walked through, the oath enacted in a body.",
+      "tags": [
+        "language-wordplay",
+        "covenant",
+        "genesis",
+        "christology",
+        "atonement"
       ]
     }
   ],
@@ -250,6 +298,19 @@
       "tags": [
         "purity-laws"
       ]
+    },
+    {
+      "cat": "language",
+      "icon": "🗣️",
+      "title": "אֶהְיֶה אֲשֶׁר אֶהְיֶה (Ehyeh Asher Ehyeh): The Grammar of the Divine Name",
+      "body": "When Moses asks God's name, God answers in Ex 3:14: אֶהְיֶה אֲשֶׁר אֶהְיֶה — traditionally 'I AM THAT I AM.' But ehyeh is the first-person imperfect of הָיָה (hayah), 'to be,' and Hebrew imperfect tense expresses ongoing, uncompleted action: 'I WILL BE WHAT I WILL BE' or 'I AM BECOMING WHAT I AM BECOMING' are grammatically defensible. The name refuses to be fixed into a past identity: God cannot be reduced to what he has been. He then says, 'Tell them YHWH sent you' — YHWH being the third-person form of the same verb: 'he-is,' or 'he-causes-to-be.' The divine name is essentially the verb 'to be' personalized. When Jesus says 'Before Abraham was, I AM' (John 8:58) using the Greek ἐγώ εἰμι (ego eimi), he is not using an unusual Greek phrase — he is quoting the LXX translation of Exodus 3:14, which renders ehyeh as egō eimi. The crowd understands immediately. They pick up stones.",
+      "tags": [
+        "language-wordplay",
+        "divine-name",
+        "christology",
+        "moses",
+        "theology"
+      ]
     }
   ],
   "Exodus 12": [
@@ -317,6 +378,19 @@
         "purity-laws",
         "jewish-calendar"
       ]
+    },
+    {
+      "cat": "language",
+      "icon": "🗣️",
+      "title": "כִּפֶּר (Kipper): What 'Atonement' Actually Means in Hebrew",
+      "body": "The word translated 'atonement' throughout Leviticus is כִּפֶּר (kipper), a verb appearing 16 times in Leviticus 16 alone. Its root כֹּפֶר (kofer) means a covering, a ransom price, or a pitch used to seal a boat (Gen 6:14 — Noah's ark is 'pitched' with the same root). Kipper therefore carries three converging ideas: to cover (sins covered from God's sight), to ransom (a price paid to release what is owed), and to purge or cleanse (the sanctuary itself is 'kippered' in Lev 16:16-20, not just the people — the holy place accumulates the moral contamination of Israel and must be cleaned). The English 'atonement' is a 16th-century coinage by Tyndale: at-one-ment, making two parties one. This captures the relational restoration aspect but loses the ransom and purging dimensions. The Greek ἱλαστήριον (hilastērion) in the LXX and Rom 3:25 (where Paul applies the Day of Atonement imagery to Christ) means 'propitiation cover' — the same lid on the ark where blood was sprinkled (Ex 25:17-22, the 'mercy seat'). In Heb 9:5, hilastērion is the mercy seat explicitly.",
+      "tags": [
+        "language-wordplay",
+        "atonement",
+        "leviticus",
+        "theology",
+        "christology"
+      ]
     }
   ],
   "Leviticus 23": [
@@ -350,6 +424,19 @@
       "tags": [
         "covenant",
         "purity-laws"
+      ]
+    },
+    {
+      "cat": "language",
+      "icon": "🗣️",
+      "title": "שָׁלוֹם (Shalom): The Word the Aaronic Blessing Ends With",
+      "body": "The Aaronic blessing (Num 6:24-26) closes: 'and give you peace' — שָׁלוֹם (shalom). Shalom is consistently undertranslated as 'peace,' which in English suggests the absence of conflict. Shalom means wholeness, completeness, everything in its proper place, each thing flourishing in its right relationship to every other thing. It comes from the root שָׁלֵם (shalem), complete, intact. Shalom is used for a finished wall (1 Kings 9:25), for a repaid debt, for a healed wound, for the state of a treaty. It can describe a city prospering (Jer 29:7 — 'seek the shalom of the city'), a body that is whole, or a relationship fully restored. In Isaiah 53:5, the servant's punishment brings שְׁלוֹמֵנוּ (shelomenu) — our shalom, our wholeness. In John 14:27, Jesus says 'my peace (εἰρήνη, eirēnē — the Greek equivalent) I give you — not as the world gives.' The world offers conflict-absence; Jesus offers shalom — comprehensive cosmic restoration. The Aaronic blessing is therefore not 'may you feel calm.' It is 'may you be whole.'",
+      "tags": [
+        "language-wordplay",
+        "shalom",
+        "theology",
+        "aaronic-blessing",
+        "peace"
       ]
     }
   ],
@@ -625,6 +712,19 @@
         "prophecy-fulfillment",
         "prayer-practices"
       ]
+    },
+    {
+      "cat": "language",
+      "icon": "🗣️",
+      "title": "עֲזַבְתַּנִי (Azabtani): The Word Jesus Cried from the Cross",
+      "body": "Psalm 22:1: 'My God, my God, why have you forsaken me?' — אֵלִי אֵלִי לָמָה עֲזַבְתַּנִי (eli eli lama azabtani). Jesus quotes this from the cross in Matt 27:46 and Mark 15:34 in Aramaic: Ἐλωΐ Ἐλωΐ λεμὰ σαβαχθανί (Eloi Eloi lema sabachthani). The verb עָזַב (azav) means to leave, abandon, desert. It is not a gentle word — it is used when a husband abandons his wife (Jer 3:8), when warriors flee the field (1 Sam 31:7), when a city is forsaken by God (Jer 4:29). The question facing interpreters: was God truly absent? Did Jesus despair? The Psalm itself moves from desolation (vv.1-21) to rescue and praise (vv.22-31 — 'he has not despised or scorned the suffering of the afflicted one; he has not hidden his face from him'). Jesus, quoting the psalm's opening, may be invoking the whole psalm as a text. But the Aramaic form he uses (instead of Hebrew) is the vernacular of the streets, not liturgical recitation — it sounds like a personal outcry, not a quotation. The bystanders hear it as a call to Elijah (Matt 27:47), confirming its raw, immediate sound.",
+      "tags": [
+        "language-wordplay",
+        "psalms",
+        "crucifixion",
+        "christology",
+        "lament"
+      ]
     }
   ],
   "Psalms 23": [
@@ -636,6 +736,19 @@
       "tags": [
         "kingship",
         "agriculture"
+      ]
+    },
+    {
+      "cat": "language",
+      "icon": "🗣️",
+      "title": "יְהוָה רֹעִי (YHWH Ro'i): The Politics of Calling God a Shepherd",
+      "body": "Psalm 23:1 — 'YHWH is my shepherd' (יְהוָה רֹעִי, YHWH ro'i). In the ancient Near East, calling a god a shepherd was a political-theological act. Mesopotamian kings routinely used רֹעֶה (ro'eh) as a royal title — the king was shepherd of his people, responsible for their justice, provision, and protection. Hammurabi's law code opens with him as the shepherd appointed by the gods. By declaring YHWH his shepherd, David is declaring YHWH his king — not the human kings of neighboring nations. The following images all carry royal resonance: the 'prepared table' (v.5) evokes royal banquets and covenant meals; 'in the presence of my enemies' echoes a king hosting vassals while rivals look on; 'anointing with oil' was the gesture of royal and priestly consecration. When Jesus says 'I am the good shepherd' (John 10:11, 14), he is not using pastoral imagery in the modern sentimental sense — he is claiming the divine royal title that every Jew would recognize as YHWH's own. The religious leaders who hear him in John 10 understand this perfectly, which is why by v.31 they pick up stones.",
+      "tags": [
+        "language-wordplay",
+        "psalms",
+        "shepherd",
+        "kingship",
+        "christology"
       ]
     }
   ],
@@ -765,6 +878,19 @@
         "prayer-practices",
         "purity-laws"
       ]
+    },
+    {
+      "cat": "language",
+      "icon": "🗣️",
+      "title": "Three Hebrew Words for Sin: חַטָּאת, פֶּשַׁע, עָוֹן (Chatta't, Pesha, Avon)",
+      "body": "Psalm 51 opens with three distinct Hebrew words for sin, each with its own semantic range, layered in pairs. חַטָּאת (chatta't) — appearing in vv.2,3,9 — means to miss the mark, to err off course. It is the most common OT sin word, describing failure to hit a target, implying that right action was possible but missed. פֶּשַׁע (pesha) — vv.1,3 — means transgression in the sense of rebellion, the deliberate crossing of a boundary. It is the word used when a vassal defects from a king (1 Kings 12:19 — Israel 'rebelled' against the house of David). This is willful breach of covenant. עָוֹן (avon) — vv.2,5 — means iniquity, but its root suggests twistedness or distortion — being bent from what one ought to be, warped in orientation. David's prayer uses all three because a full confession requires them all: he missed (chatta't), he rebelled (pesha), he is bent (avon). The three verbs of forgiveness in the psalm correspond: 'blot out' (מָחָה, machah) transgressions, 'wash' (כָּבַס, kabas) iniquity, 'cleanse' (טָהֵר, taher) sin. The psalm's triple vocabulary is not rhetorical excess — it is comprehensive moral self-accounting.",
+      "tags": [
+        "language-wordplay",
+        "sin",
+        "repentance",
+        "psalms",
+        "theology"
+      ]
     }
   ],
   "Psalms 119": [
@@ -819,6 +945,19 @@
       "tags": [
         "women-roles",
         "family-household"
+      ]
+    },
+    {
+      "cat": "language",
+      "icon": "🗣️",
+      "title": "אֵשֶׁת חַיִל (Eshet Chayil): The Warrior-Woman of Proverbs 31",
+      "body": "Proverbs 31:10 opens: 'An excellent wife — who can find?' But the Hebrew is אֵשֶׁת חַיִל (eshet chayil): the woman of חַיִל (chayil). Chayil is not a domestic word. It appears 246 times in the OT and is most commonly translated 'army,' 'warrior,' 'strength,' 'valor,' or 'wealth.' Gideon is called a גִּבּוֹר חַיִל (gibbor chayil) — mighty warrior — in Judg 6:12. Boaz is described with the same phrase in Ruth 2:1. This is why Ruth 3:11 forms a perfect verbal mirror: Boaz calls Ruth an eshet chayil — a warrior-woman — using the same language the narrator uses for him. Proverbs 31 then describes this woman as one who rises before dawn, manages trade, directs a household staff, purchases fields, and extends generosity to the poor. The ancient world would have heard the text as describing a person of formidable economic and social power. The domestication of the passage in later tradition (the 'good housewife' reading) loses the military vocabulary entirely and turns a portrait of strength into a portrait of compliance.",
+      "tags": [
+        "language-wordplay",
+        "women",
+        "proverbs",
+        "chayil",
+        "ruth"
       ]
     }
   ],
@@ -927,6 +1066,19 @@
       "tags": [
         "prophecy-fulfillment"
       ]
+    },
+    {
+      "cat": "language",
+      "icon": "🗣️",
+      "title": "חֲבוּרָה (Chaburah): The Single Wound That Heals",
+      "body": "Isaiah 53:5 ends: וּבַחֲבֻרָתוֹ נִרְפָּא לָנוּ — 'and by his wounds/stripes we are healed.' The word is חֲבוּרָה (chaburah), a welt, bruise, or wound caused by blows. It appears 7 times in the OT: Gen 4:23; Ex 21:25; Ps 38:5; Prov 20:30; Isa 1:6; 53:5; and in 1 Pet 2:24 (quoting this verse). Proverbs 20:30 uses it as something that 'cleanses away evil' — the bruise of discipline that purges. Isaiah 1:6 uses it to describe all of unfaithful Israel as a body covered in wounds. The singular in 53:5 is rhetorically compressed: not 'all his many wounds' but one collective noun — one wounding, one bruise, that heals. Peter in 1 Pet 2:24 quotes the LXX's μώλωπι (mōlopi — bruise, stripe) in the singular, applying it directly to the crucifixion. The theological grammar: one wound, one servant, one healing. The compression into the singular is the grammar of substitution — his one chaburah covering what our many sins produce.",
+      "tags": [
+        "language-wordplay",
+        "isaiah",
+        "servant-songs",
+        "atonement",
+        "christology"
+      ]
     }
   ],
   "Jeremiah": [
@@ -949,6 +1101,19 @@
       "body": "Jeremiah 31:31-34 is the only passage in the OT that uses the phrase 'new covenant' (brit hadashah). Its distinctives: written on hearts rather than stone tablets, requiring no teacher because all will know YHWH directly, and grounded in complete forgiveness ('I will remember their sins no more,' v.34). The passage is quoted in full in Hebrews 8:8-12 — the longest OT quotation in the NT — as the theological foundation for Christ's priestly ministry. Every element of the Eucharist liturgy ('this cup is the new covenant in my blood,' Luke 22:20) directly invokes this text.",
       "tags": [
         "covenant"
+      ]
+    },
+    {
+      "cat": "language",
+      "icon": "🗣️",
+      "title": "בְּרִית חֲדָשָׁה (Berith Chadashah): Is the New Covenant New or Renewed?",
+      "body": "Jeremiah 31:31 — 'Behold, the days are coming, declares YHWH, when I will make a new covenant with the house of Israel and the house of Judah.' The word חֲדָשָׁה (chadashah) means 'new.' But Hebrew has two words for new: חָדָשׁ (chadash), which can mean either brand-new (never existed before) or renewed/refreshed (like a new moon — יֶרַח חָדָשׁ — which is the same moon returning). The contrast in Jer 31:32 is with the old covenant made at Sinai, which Israel 'broke' — suggesting that what is new is not the God, not the people, and not the basic shape of the relationship, but the mode of its internalization: 'I will put my Torah within them, and write it on their hearts' (v.33). The radical newness is not new content but new location — from stone tablets to hearts. Hebrews 8 quotes this passage at length and calls it proof that the first covenant was 'becoming obsolete' (v.13). Hebrews reads chadash as new-in-kind, not renewed. The tension between Jewish and Christian readings of Jer 31 turns precisely on this word.",
+      "tags": [
+        "language-wordplay",
+        "covenant",
+        "jeremiah",
+        "theology",
+        "new-covenant"
       ]
     }
   ],
@@ -1037,6 +1202,20 @@
       "body": "Isaiah 7:14 ('the virgin will conceive and give birth to a son, and will call him Immanuel') was given to Ahaz as a sign that the Syro-Ephraimite coalition threatening Jerusalem would collapse before the child was old enough to distinguish good from evil. The Hebrew word almah means 'young woman of marriageable age'; the Septuagint translated it parthenos (virgin), which Matthew 1:23 cites. The passage has both an immediate historical referent and a deeper messianic fulfilment — a pattern the prophets repeat: events near at hand foreshadow events of ultimate significance.",
       "tags": [
         "prophecy-fulfillment"
+      ]
+    },
+    {
+      "cat": "language",
+      "icon": "🗣️",
+      "title": "עַלְמָה (Almah) vs בְּתוּלָה (Betulah): The Word Behind 'Virgin' in Isaiah 7:14",
+      "body": "Isaiah 7:14 — 'Behold, the almah shall conceive and bear a son, and shall call his name Immanuel' — is perhaps the most debated word choice in the OT. עַלְמָה (almah) means a young woman of marriageable age. It appears 9 times in the OT (Gen 24:43; Ex 2:8; Ps 68:25; Prov 30:19; Song 1:3; 6:8; Isa 7:14; and two others) and carries no explicit statement about virginity. The Hebrew word that specifically denotes virginity is בְּתוּלָה (betulah). Isaiah chose almah, not betulah. The Septuagint, translated in Alexandria ca. 250 BC, rendered almah as παρθένος (parthenos) — the Greek word most commonly meaning 'virgin.' Matthew 1:23 cites the LXX, not the Hebrew. The debate: was the LXX an interpretive move (reading theological significance into the Hebrew), or does almah in context imply virginity? The immediate Isaian context (vv.10-17) presents the sign as near-term — something Ahaz can observe as confirmation in the Syro-Ephraimite crisis. The NT reads a deeper layer fulfilled in Mary. Both readings exist in tension: strip the Matthean reading and you miss the Christological claim; strip the historical context and you read the text out of the moment that required it.",
+      "tags": [
+        "language-wordplay",
+        "prophecy",
+        "virgin",
+        "isaiah",
+        "christology",
+        "otlink"
       ]
     }
   ],
@@ -2186,6 +2365,32 @@
       "tags": [
         "honor-shame"
       ]
+    },
+    {
+      "cat": "language",
+      "icon": "🗣️",
+      "title": "Πτωχός (Ptōchos): 'Poor in Spirit' — Destitute, Not Just Modest",
+      "body": "Matthew 5:3 — 'Blessed are the πτωχοί τῷ πνεύματι (ptōchoi tō pneumati) — the poor in spirit.' The word πτωχός (ptōchos) is abject, destitute poverty — not πένης (penēs), the working poor who lack surplus. Ptōchos describes someone who crouches, who has nothing, who depends entirely on charity. It is the word for a beggar. The LXX uses it to translate the Hebrew עָנִי (ani) — the humble, afflicted, crushed — and דַּל (dal) — the thin one, the powerless. 'Poor in spirit' does not mean spiritual humility as a personality trait or modest self-assessment. It describes those who know themselves to be spiritually bankrupt — who approach God empty-handed, who have stopped pretending. Luke's version (6:20) has simply 'Blessed are the poor' — dropping 'in spirit' — which sharpens the economic edge. Matthew's 'in spirit' extends the destitution inward: those who know themselves as nothing before God inhabit the same posture as the crouching beggar in the street.",
+      "tags": [
+        "language-wordplay",
+        "sermon-on-the-mount",
+        "beatitudes",
+        "poverty",
+        "matthew"
+      ]
+    },
+    {
+      "cat": "language",
+      "icon": "🗣️",
+      "title": "Τέλειος (Teleios): 'Be Perfect' — Complete, Not Flawless",
+      "body": "Matthew 5:48 — 'Be perfect (τέλειοι, teleioi) as your heavenly Father is perfect.' The word τέλειος (teleios) comes from τέλος (telos) — end, goal, completion. It does not primarily mean moral flawlessness. It means having reached one's telos — complete, mature, whole, fully formed for its purpose. The same word appears in 1 Cor 14:20 ('be mature in thinking'), Heb 5:14 ('mature believers'), James 1:4 ('that you may be mature and complete, lacking nothing'). The context in Matt 5 is instructive: Jesus has just commanded love of enemies (vv.43-47), and ends with teleios. The parallel passage in Luke 6:36 uses 'merciful' (οἰκτίρμων) instead of 'perfect' — as if Luke is explaining what Jesus means. Matthew's 'perfect' is not a call to sinlessness; it is a call to completeness in love that includes enemies, not just friends — the fullness of love that makes you whole, as God's love is whole. The Greek tradition heard teleios as the final stage of philosophical formation. Jesus uses it for everyone in the crowd.",
+      "tags": [
+        "language-wordplay",
+        "sermon-on-the-mount",
+        "perfection",
+        "matthew",
+        "theology"
+      ]
     }
   ],
   "Matthew 26": [
@@ -2221,6 +2426,17 @@
       "tags": [
         "greek-culture",
         "honor-shame"
+      ]
+    },
+    {
+      "cat": "language",
+      "icon": "📖",
+      "title": "Titles Used for Jesus in the Gospels",
+      "body": "The Gospels use at least four distinct titles when addressing Jesus, each carrying a different social and theological register. Didaskalos (διδάσκαλος, Teacher) is the Greek rendering of rabbi — used mostly by outsiders: Pharisees, scribes, and crowds who respect his teaching authority but have not yet moved further. Rabbi (ῥαββί) is the Aramaic honorific, meaning 'my great one,' used by disciples in Matthew, Mark, and John before the resurrection. Luke substitutes epistatēs (ἐπιστάτης, Master/Overseer) for rabbi at equivalent moments — a deliberate choice for his Gentile audience: a Greek administrative term for someone with command over a group. Kyrios (κύριος, Lord) is the summit: the word the LXX uses over 6,000 times to translate YHWH. Each Gospel traces the movement from the lesser titles toward kyrios — and that journey is the Christological arc of the narrative. Watching which title a character uses, and when they switch, is one of the most reliable windows into where they stand in their understanding of Jesus.",
+      "tags": [
+        "christology",
+        "language-wordplay",
+        "discipleship"
       ]
     }
   ],
@@ -2279,6 +2495,20 @@
         "greek-culture",
         "creation-cosmology"
       ]
+    },
+    {
+      "cat": "language",
+      "icon": "🗣️",
+      "title": "Λόγος (Logos): What John 1:1 Meant to a Greek and to a Jew",
+      "body": "John 1:1 — 'In the beginning was the Λόγος (Logos), and the Logos was with God, and the Logos was God.' The word has two entirely different resonances for John's audience. For Greek-educated readers, logos was the Stoic principle of rational order — the mind of the cosmos, the organizing intelligence governing all things. Heraclitus (ca. 500 BC) first used it philosophically; the Stoics developed it as the divine reason that permeates and sustains the universe. Philo of Alexandria (a Jewish philosopher, contemporary of Jesus) had already fused Stoic logos with the Hebrew concept of divine wisdom (Prov 8). For Jewish readers, logos echoes the דָּבָר (davar) of God — the divine word that creates (Gen 1: 'God said'), reveals, and accomplishes (Isa 55:11: 'my word shall not return to me empty'). The LXX translates davar as logos. The Aramaic Targums routinely substituted 'the Memra (Word/Utterance) of YHWH' wherever God acts directly — a reverent way of speaking of divine activity. John's prologue simultaneously announces: this is what the philosophers meant by logos (and it is a person), and this is what the Torah meant by God speaking (and it became flesh, v.14). The first-century reader who knew both worlds would have been stopped in their tracks by the first three words.",
+      "tags": [
+        "language-wordplay",
+        "christology",
+        "logos",
+        "philosophy",
+        "john",
+        "theology"
+      ]
     }
   ],
   "John 2": [
@@ -2330,6 +2560,18 @@
       "body": "'As Moses lifted up the serpent in the wilderness' references Numbers 21, where Israelites bitten by snakes were healed by looking at a bronze serpent on a pole. The LXX uses hypsōthēnai (to be lifted up/exalted) in both passages. Jesus maps his own crucifixion onto this image — and the word 'lifted up' in John carries the double meaning of physical crucifixion and divine exaltation throughout (8:28; 12:32).",
       "tags": [
         "prophecy-fulfillment"
+      ]
+    },
+    {
+      "cat": "language",
+      "icon": "🗣️",
+      "title": "Μονογενής (Monogenes): 'Only-Begotten' or 'One of a Kind'?",
+      "body": "John 3:16 — 'God so loved the world that he gave his μονογενής (monogenes) Son.' The KJV translates monogenes as 'only begotten'; modern versions often prefer 'one and only' or 'unique.' The debate turns on etymology. The traditional reading breaks the word as monos (only) + gennao (to beget), producing 'only-begotten' — implying eternal generation of the Son from the Father, a creedal concept developed in the Nicene formulation. But many scholars argue monogenes comes from monos + genos (kind, class, type), meaning 'one of a kind' or 'uniquely his own.' The LXX uses monogenes for Isaac in Gen 22:2, 12 — even though Abraham had Ishmael: Isaac is monogenes not because he is literally Abraham's only son, but because he is the uniquely-elect son through whom the promise runs. The same word describes Jephthah's daughter (Judg 11:34, who is explicitly his only child) and appears in Ps 22:20 for 'my only life.' John uses monogenes five times (1:14, 18; 3:16, 18; 1 John 4:9), and in each case the emphasis is on Jesus's singular, unparalleled status — relational uniqueness within the Godhead, not reproductive biology.",
+      "tags": [
+        "language-wordplay",
+        "christology",
+        "john",
+        "theology"
       ]
     }
   ],
@@ -2448,6 +2690,20 @@
       "tags": [
         "jewish-calendar"
       ]
+    },
+    {
+      "cat": "language",
+      "icon": "🗣️",
+      "title": "Γλώσσαις (Glossais): Tongues — Known Languages or Ecstatic Speech?",
+      "body": "Acts 2:4 — 'They began to speak in other γλώσσαις (glossais) — tongues/languages.' The Greek glōssa means both 'tongue' (the organ) and 'language' (what the tongue produces). Acts 2:8-11 is explicit: each person in the crowd heard the disciples speaking in their own native language — Parthians, Medes, Elamites, residents of Mesopotamia, Judea, Cappadocia, Pontus, Asia, Phrygia, Pamphylia, Egypt, Libya, Rome, Crete, Arabia. This is xenoglossia — speaking a foreign human language one has not learned. The theological backdrop is Babel (Gen 11): where humanity's languages were scattered in judgment, Pentecost reverses the scattering through the Spirit. But 1 Corinthians 14 describes a very different glossolalia: speech that requires interpretation (v.13), that no one understands without a gift of interpretation (v.28), that the speaker himself may not fully comprehend (v.14). Whether Acts 2 and 1 Cor 14 describe the same phenomenon is genuinely debated. Luke (author of Acts) and Paul are both describing glōssais, but the Acts crowd's comprehension without interpretation is absent from 1 Corinthians. Some scholars see two distinct gifts; others see a single phenomenon described from different angles.",
+      "tags": [
+        "language-wordplay",
+        "acts",
+        "holy-spirit",
+        "pentecost",
+        "tongues",
+        "corinthians"
+      ]
     }
   ],
   "Acts 10": [
@@ -2501,6 +2757,20 @@
       "body": "Romans 1:16-17 states Paul's thesis: 'I am not ashamed of the gospel, because it is the power of God that brings salvation to everyone who believes: first to the Jew, then to the Gentile. For in the gospel the righteousness of God is revealed.' The word for 'power' (dynamis — source of 'dynamite') is not rhetorical; Paul is comparing the gospel to imperial power. Caesar's power saves through military force; the gospel saves through the cross. 'The righteousness of God' (dikaiosyne theou) is both God's covenant faithfulness and the status he gives to those who believe — the subject of the entire letter through chapter 11.",
       "tags": [
         "prophecy-fulfillment"
+      ]
+    },
+    {
+      "cat": "language",
+      "icon": "🗣️",
+      "title": "Δικαιοσύνη (Dikaiosynē): The Word English Splits into 'Righteousness' and 'Justice'",
+      "body": "Romans 1:17 — 'For in it the δικαιοσύνη (dikaiosynē) of God is revealed.' English Bibles translate dikaiosynē as 'righteousness' throughout Paul's letters — but the same Greek word also means 'justice,' and English theology has largely lost the connection. In Greek, δίκαιος (dikaios) is both the righteous person and the just person — one word, not two. The LXX uses dikaiosynē to translate the Hebrew צְדָקָה (tsedaqah), which carried both moral integrity and covenant faithfulness — and in the prophets (Amos 5:24; Isa 1:27) is routinely paired with מִשְׁפָּט (mishpat), justice in the legal-social sense: 'let justice roll down like waters, and tsedaqah like an ever-flowing stream.' When Paul says the dikaiosynē of God is revealed in the gospel, he is saying both: God's moral integrity is vindicated (righteousness), and God's covenant-keeping, world-righting power is unleashed (justice). Stripping the word to 'righteousness' makes Romans about individual moral standing before God; keeping the justice dimension makes it about God's comprehensive restoration of the cosmos. Both are in the word.",
+      "tags": [
+        "language-wordplay",
+        "romans",
+        "righteousness",
+        "justice",
+        "paul",
+        "theology"
       ]
     }
   ],
@@ -2725,6 +2995,19 @@
       "tags": [
         "honor-shame"
       ]
+    },
+    {
+      "cat": "language",
+      "icon": "🗣️",
+      "title": "Εὐθύς (Euthys): Mark's Grammar of Urgency",
+      "body": "Mark's Gospel uses εὐθύς (euthys) — 'immediately,' 'at once,' 'right away' — approximately 42 times, compared to 8 in Matthew, 1 in Luke, and 4 in John. The word saturates the first chapter: Jesus comes up from the water and immediately (euthys) sees the Spirit descending (1:10); immediately the Spirit drives him into the wilderness (1:12); after his temptation, immediately he calls Simon and Andrew (1:18); immediately on the Sabbath he teaches (1:21); immediately a man with an unclean spirit confronts him (1:23); immediately after the synagogue they enter Simon's house (1:29); immediately he heals Peter's mother-in-law (1:31). This is not careless narrative. The relentless euthys creates a theological claim: the kingdom of God does not pause, negotiate, or request permission. Jesus moves with divine momentum. Matthew and Luke, written later and more carefully arranged, often replace euthys with more deliberate narrative transitions. Mark's rough urgency may be the earliest Gospel tradition, preserving the raw witness of eyewitness memory.",
+      "tags": [
+        "language-wordplay",
+        "mark",
+        "kingdom",
+        "narrative",
+        "theology"
+      ]
     }
   ],
   "Luke 1": [
@@ -2850,6 +3133,19 @@
       "body": "Hebrews 11's catalogue of faith ('the ancients were commended for... faith,' 11:2) is more than inspiration; it is a theological argument. Each figure acted on promises they did not live to receive (11:13 — 'they did not receive the things promised; they only saw them and welcomed them from a distance'). The entire OT community of faith was running a race whose finish line is in Christ — which is why Hebrews 12:1-2 immediately follows with 'since we are surrounded by so great a cloud of witnesses, let us run with perseverance.' The past saints are not audience members watching passively but witnesses who give testimony: faith is liveable, the finish is real.",
       "tags": [
         "covenant"
+      ]
+    },
+    {
+      "cat": "language",
+      "icon": "🗣️",
+      "title": "Ὑπόστασις (Hypostasis): The Word That Became a Creedal Term",
+      "body": "Hebrews 11:1 — 'Faith is the ὑπόστασις (hypostasis) of things hoped for, the ἔλεγχος (elenchos) of things not seen.' Hypostasis is a compound: ὑπό (hypo, under) + στάσις (stasis, standing) — what stands under, the foundation or ground of something. It appears in Heb 1:3 where Christ is 'the exact imprint of [God's] hypostasis' — usually translated 'nature' or 'being.' English Bibles translate hypostasis in 11:1 variously as 'substance' (KJV), 'assurance' (ESV), 'confidence' (NIV), 'reality' (NLT). Each catches a dimension: faith as the substantial reality that makes hope concrete (substance), as the subjective certainty that grounds the believer (assurance), or as the objective existence of what is unseen (reality). The word's later theological career is significant: the Nicene-Constantinopolitan Creed (381 AD) uses hypostasis to describe the three persons of the Trinity — Father, Son, and Spirit are three hypostases, one οὐσία (ousia, essence). The word that in Hebrews 11 means the ground under hope became the word for the personal distinctness of the divine persons. The same word; very different applications.",
+      "tags": [
+        "language-wordplay",
+        "hebrews",
+        "faith",
+        "theology",
+        "trinity"
       ]
     }
   ],
@@ -3545,6 +3841,19 @@
         "prayer-practices",
         "covenant"
       ]
+    },
+    {
+      "cat": "language",
+      "icon": "🗣️",
+      "title": "שְׁמַע (Shema): Hear as Obey — The Hebrew Integration of Listening and Action",
+      "body": "The Shema (Deut 6:4-5) takes its name from שְׁמַע (shema), the imperative of שָׁמַע (shama). In English, 'hear' is primarily sensory — sound waves registering in the ear. In Hebrew, shama carries an inherent expectation of response: to hear means to take seriously, to act on. The same verb is translated 'obey' when paired with the preposition בְּ (be) or the voice of YHWH — so 'listen to YHWH's voice' and 'obey YHWH' are the same Hebrew construction. When Israel 'does not hear' the prophets, it does not mean they were deaf — it means they refused to act. Deuteronomy 6:5 commands love with all your לֵבָב (levav) — an intensified, doubled form of לֵב (lev), heart. Levav appears instead of lev throughout Deuteronomy; the doubled form suggests the whole heart including its resistant inner chambers. When Jesus in Mark 12:29-30 quotes the Shema, he is quoting Deuteronomy, but his audience already lives inside this word: every Jewish man recited it twice daily. The question is not whether they know it — it is whether they hear it.",
+      "tags": [
+        "language-wordplay",
+        "shema",
+        "obedience",
+        "theology",
+        "deuteronomy"
+      ]
     }
   ],
   "Deuteronomy 24": [
@@ -4086,6 +4395,17 @@
         "fishing",
         "money-exchange"
       ]
+    },
+    {
+      "cat": "language",
+      "icon": "🗣️",
+      "title": "Epistatēs → Kyrios: Luke's Vocabulary of Recognition (5:5–8)",
+      "body": "In Luke 5:5, Simon addresses Jesus as epistatā (ἐπιστάτα) — a Greek term for a superintendent or overseer, used exclusively by Luke (6×) among the Gospel writers. It acknowledges authority over a group or enterprise without the theological weight of kyrios. Three verses later, after the nets nearly split from fish, Simon falls at Jesus's knees and cries kyrie (κύριε) — Lord, the word the LXX uses to translate the divine name YHWH. Luke does not say Simon 'realized Jesus was divine.' He shows it through a single vocabulary shift. The miraculous catch does what argument cannot: it breaks open the category. The same pattern appears in Thomas (John 20:28: 'My Lord and my God') and Isaiah in the temple (6:5: 'I am ruined — I have seen the Lord'). Holiness produces collapse before it produces confession. Note: the other Gospels use rabbi or didaskalos (teacher) at equivalent moments — Luke's choice of epistatēs, a Gentile administrative term, is itself a translation decision for his Greco-Roman audience.",
+      "tags": [
+        "language-wordplay",
+        "christology",
+        "discipleship"
+      ]
     }
   ],
   "Luke 6": [
@@ -4369,6 +4689,19 @@
       "tags": [
         "fishing",
         "geography"
+      ]
+    },
+    {
+      "cat": "language",
+      "icon": "🗣️",
+      "title": "Ἀγαπάω vs Φιλέω (Agapaō vs Phileō): Does John 21 Hinge on Two Love Words?",
+      "body": "In John 21:15-17, Jesus asks Peter three times whether he loves him — and the Greek uses two different verbs. In vv.15-16 Jesus asks ἀγαπᾷς με (agapas me, using ἀγαπάω/agapaō); Peter answers φιλῶ σε (philō se, using φιλέω/phileō). In v.17 Jesus switches: φιλεῖς με (phileis me — Peter's word). Classical Greek often distinguished them: agapaō was principled, self-giving love (developed fully in 1 Cor 13); phileō was warm affection and friendship. The traditional reading: Jesus presses for agape-love; Peter, humbled by his denials, can only offer phileo-love; the third question 'grieves' Peter because Jesus descends to meet him where he is. But John elsewhere uses both words interchangeably for the same relationship: John 3:35 says the Father loves (agapaō) the Son; John 5:20 says the Father loves (phileō) the Son for the same thing. This suggests John does not consistently distinguish them. Many scholars now conclude the switch is literary variation for stylistic emphasis, not a theological descent. What is certain: Peter's three confessions mirror his three denials, and the threefold 'feed my sheep' reinstates his commission over the exact fault-line of his failure.",
+      "tags": [
+        "language-wordplay",
+        "love",
+        "john",
+        "peter",
+        "discipleship"
       ]
     }
   ],
@@ -4716,6 +5049,52 @@
         "money-exchange",
         "slavery",
         "prophecy-fulfillment"
+      ]
+    }
+  ],
+  "Romans 12": [
+    {
+      "cat": "language",
+      "icon": "🗣️",
+      "title": "Μεταμορφόω vs Συσχηματίζω (Metamorphoō vs Syschēmatizō): Inner Transformation vs Outer Conformity",
+      "body": "Romans 12:2 — 'Do not be συσχηματίζεσθε (syschēmatizesthe) to this age, but be μεταμορφοῦσθε (metamorphousthe) by the renewing of your mind.' The two verbs make a precise contrast. Συσχηματίζω (syschēmatizō) is built on σχῆμα (schēma) — the outward fashion, shape, or form of a thing. Schēma is what can be put on and taken off, the surface that others see. To be syschēmatized is to have your visible form pressed into someone else's mold. Μεταμορφόω (metamorphoō) is built on μορφή (morphē) — the essential, inner form of a thing, what it really is. Metamorphoō is the word used for the Transfiguration (Matt 17:2; Mark 9:2) — where Jesus's inner divine nature shone through his outward appearance. The same verb appears in 2 Cor 3:18: 'we are being metamorphoōd into the same image.' Paul's instruction: the problem is not just behavioral conformity (wearing the world's pattern); the solution is not just behavioral reform (adopting a different pattern). It is metamorphosis — being changed at the level of what you essentially are, from the inside out, through the renewal of the mind.",
+      "tags": [
+        "language-wordplay",
+        "romans",
+        "transformation",
+        "paul",
+        "theology"
+      ]
+    }
+  ],
+  "1 Corinthians 13": [
+    {
+      "cat": "language",
+      "icon": "🗣️",
+      "title": "Ἀγάπη (Agapē): The NT's Most Specific Word for Love",
+      "body": "1 Corinthians 13 is built around the word ἀγάπη (agapē) — translated 'love' throughout, but not primarily an emotion. Ancient Greek had at least four love words: ἔρως (erōs) — passionate/romantic desire; στοργή (storgē) — familial affection; φιλία (philia) — friendship and reciprocal warmth; and ἀγάπη (agapē) — which in classical Greek was relatively rare and meant benevolent goodwill toward another. The early Christians seized agapē as their preferred word, using it nearly 250 times in the NT, because it was the least freighted with sexual or emotional connotation and could carry the content they needed: the OT's חֶסֶד (chesed) — covenant loyalty, steadfast love, the love that keeps its commitment whether or not it feels like it. Paul's agapē in 1 Cor 13:4-7 is defined by 15 active verbs: patient, kind, not envious, not boastful, not arrogant, not rude, not self-seeking, not easily angered, not keeping a record of wrongs, does not delight in evil, rejoices in truth, bears all things, believes all things, hopes all things, endures all things. None of these describe a feeling. They describe a pattern of action chosen toward another person regardless of emotional state. Agapē is a practice, not a sensation.",
+      "tags": [
+        "language-wordplay",
+        "love",
+        "agape",
+        "corinthians",
+        "paul",
+        "theology"
+      ]
+    }
+  ],
+  "Philippians 2": [
+    {
+      "cat": "language",
+      "icon": "🗣️",
+      "title": "Μορφή vs Σχῆμα (Morphē vs Schēma): What Christ Kept and What He Put On",
+      "body": "Philippians 2:6-8 uses two different Greek words for 'form' that are often flattened into synonyms in translation. In v.6, Christ 'being in the μορφή (morphē) of God' — and in v.7, 'taking the μορφή of a servant.' Morphē is the essential, inner form of a thing — what something really is at its core, as opposed to what it appears to be. In v.8, he is 'found in σχήματι (schēmati) as a man' — schēma being the outward fashion or appearance, what can be observed from outside. The Christological claim: Christ retained the morphē of God throughout the incarnation (his inner nature did not change) but took on the morphē of a servant (a genuine new inner reality, not play-acting) and was found in the schēma of a human being (the outward form that could be seen, handled, and crucified). Paul is saying both that the incarnation was fully real (not mere appearance — hence morphē of servant) and that the divinity was not abandoned (morphē of God). The precision is remarkable for a few verses of a letter to a congregation. This passage is the earliest high-Christology statement in Paul's letters, predating the Gospels in composition.",
+      "tags": [
+        "language-wordplay",
+        "christology",
+        "philippians",
+        "paul",
+        "incarnation"
       ]
     }
   ]
